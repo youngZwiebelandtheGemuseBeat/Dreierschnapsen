@@ -228,6 +228,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
 int checkContinue(char* player);
 void swapOrder(Player* players);
 int decomposeQWEASD (char character);
+void printTable(Player players);
 // CPU players
 char randomCall(int instance);
 int validCommandCPU(char to_compare, char* with);
@@ -280,7 +281,7 @@ int main(int argc, char* argv[])
 //  int points_A              = 0;
 //  int points_B              = 0;
 //  int points_C              = 0;
-  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
+  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, TRUE},
                                       {"Hansi ", 0, TRUE},    // CPU
                                       {"Franzi", 0, TRUE}};   // CPU
   int counter_players       = 0;
@@ -487,8 +488,12 @@ int main(int argc, char* argv[])
           // who wants to continue
           for (counter_players = 0; counter_players < QUANTITY_PLAYERS; counter_players++)
           {
-            check_continue[counter_players]
-              = checkContinue(players[counter_players].name_);
+            // check: human or CPU
+            if (players[counter_players].CPU_bool_ == TRUE)
+              check_continue[counter_players] = FALSE/*TRUE*/;
+            else
+              check_continue[counter_players]
+                = checkContinue(players[counter_players].name_);
           }
           // all three
           if (check_continue[0] == TRUE
@@ -778,7 +783,7 @@ void startGame(Card* deck, Card* deck_dealer,
     (*index_player_3)++;
   }
   
-  printHand(deck_player_3, 3, TURN_PLAYER_3, players[order[2]].name_);             // ACHTUNG HARD CODED VALUE
+  printHand(deck_player_3, 3, TURN_PLAYER_3, players[order[2]].name_);         // ACHTUNG HARD CODED VALUE
   
   // 2 CARDS (TALON)
   for (counter = 0; counter < TALON; counter++)
@@ -795,7 +800,15 @@ void startGame(Card* deck, Card* deck_dealer,
   // PLAYER 1 CALL TRUMP
   printf("Player 1 (%s), call trump!\n-----------------------\n",
          players[order[0]].name_);
-  *trump = callTrump(deck[ANE_AUF]);
+  // check: human or CPU
+  if (players[order[0]].CPU_bool_ == FALSE)
+    *trump = callTrump(deck[ANE_AUF]);
+  else
+  {
+    *trump = (rand() % (4 - 1 + 1)) + 1;
+//    printf("trump: %d\n", *trump);
+    printf("%s is trump!\n", decodeSuit(*trump));
+  }
   
   /* Naja, theoretisch könnten direkt jedem 6 Karten hingeteilt werden und nur
    3 gezeigt werden bevor Trumpf angesagt wurde ... */
@@ -1006,7 +1019,11 @@ Points playGame(Card* deck, Card* deck_dealer,
   *state = TURN_PLAYER_1;
 //  *state = order[0] ADD_ONE;
   
-  mode = callMode(mode, *state, &start, /*player_1*/ players[order[0]].name_);
+  // check: human or CPU
+  if (players[order[0]].CPU_bool_ == FALSE)
+    mode = callMode(mode, *state, &start, /*player_1*/ players[order[0]].name_);
+  else
+    mode = 1;
   
   if (mode < 5)
   {
@@ -1015,15 +1032,28 @@ Points playGame(Card* deck, Card* deck_dealer,
     // player 2 raise
     *state = TURN_PLAYER_2;
 //    *state = order[1] ADD_ONE;
-    mode = callMode(mode, *state, &start, players[order[1]].name_);
-    
+    // check: human or CPU
+    if (players[order[1]].CPU_bool_ == FALSE)
+      mode = callMode(mode, *state, &start, players[order[1]].name_);
+    else
+    {
+      printf("Player %d (%s(CPU)) does not raise.\n",
+             *state, players[order[1]].name_);
+    }
     if (start == TURN_PLAYER_2)
       mode_buffer_2 = mode;
 
     // player 3 raise
     *state = TURN_PLAYER_3;
 //    *state = order[2] ADD_ONE;
-    mode = callMode(mode, *state, &start, players[order[2]].name_);
+    // check: human or CPU
+    if (players[order[2]].CPU_bool_ == FALSE)
+      mode = callMode(mode, *state, &start, players[order[2]].name_);
+    else
+    {
+      printf("Player %d (%s(CPU)) does not raise.\n",
+             *state, players[order[2]].name_);
+    }
     if (start == TURN_PLAYER_3)
       mode_buffer_3 = mode;
     
@@ -1060,73 +1090,92 @@ Points playGame(Card* deck, Card* deck_dealer,
   // here might be a good time/place to sort hands
   sortHands(hands, suits);
   
-  // Spieler darf aus dem Talon kaufen
-  printHand(hands[start MINUS_ONE], 6, start, players[order[start MINUS_ONE]].name_);
-  
-  while (talon != BREAK && counter_talon < 2)  // maximum two exchanges
-//  while (talon != BREAK)  // so you may exchange and decide until you end with 0
+  // check: human or CPU
+  if (players[order[start MINUS_ONE]].CPU_bool_ == FALSE)
   {
-    talon = buy(start, hands, deck_dealer, &done_1, &done_2, players, order);
-    
-    // sort again hand after each exchange
-    // so far I do not care about the fact that all three hands will be sorted again
-    sortHands(hands, suits);
+    // Spieler darf aus dem Talon kaufen
     printHand(hands[start MINUS_ONE], 6, start, players[order[start MINUS_ONE]].name_);
     
-    counter_talon++;
+    while (talon != BREAK && counter_talon < 2)  // maximum two exchanges
+  //  while (talon != BREAK)  // so you may exchange and decide until you end with 0
+    {
+      talon = buy(start, hands, deck_dealer, &done_1, &done_2, players, order);
+      
+      // sort again hand after each exchange
+      // so far I do not care about the fact that all three hands will be sorted again
+      sortHands(hands, suits);
+      printHand(hands[start MINUS_ONE], 6, start, players[order[start MINUS_ONE]].name_);
+      
+      counter_talon++;
+    }
+    
+    mode = callRaise(mode, /**state,*/ start, players);
   }
-  
-  mode = callRaise(mode, /**state,*/ start, players);
   
   // Fleck and or Reh? - später interessant für Punkte
   // könnte man sauberer oder transparenter lösen
   switch (start)
   {
     case TURN_PLAYER_1:
-      if (fleck(TURN_PLAYER_2) && fleck(TURN_PLAYER_3))
-        {
-          *bool_fleck = TRUE;
-          printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
-                 players[order[start MINUS_ONE]].name_);
-          
-          *bool_retour = fleckBack(TURN_PLAYER_1);
-        }
+      if (players[1].CPU_bool_ == TRUE || players[2].CPU_bool_ == TRUE)
+        break;
       else
       {
-        *bool_fleck   = FALSE;
-        *bool_retour  = FALSE;
+        if (fleck(TURN_PLAYER_2) && fleck(TURN_PLAYER_3))
+          {
+            *bool_fleck = TRUE;
+            printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
+                   players[order[start MINUS_ONE]].name_);
+            
+            *bool_retour = fleckBack(TURN_PLAYER_1);
+          }
+        else
+        {
+          *bool_fleck   = FALSE;
+          *bool_retour  = FALSE;
+        }
       }
       break;
       
     case TURN_PLAYER_2:
-      if (fleck(TURN_PLAYER_1) && fleck(TURN_PLAYER_3))
-        {
-          *bool_fleck = TRUE;
-          printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
-                 players[order[start MINUS_ONE]].name_);
-          
-          *bool_retour = fleckBack(TURN_PLAYER_1);
-        }
+      if (players[0].CPU_bool_ == TRUE || players[2].CPU_bool_ == TRUE)
+        break;
       else
       {
-        *bool_fleck   = FALSE;
-        *bool_retour  = FALSE;
+        if (fleck(TURN_PLAYER_1) && fleck(TURN_PLAYER_3))
+          {
+            *bool_fleck = TRUE;
+            printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
+                   players[order[start MINUS_ONE]].name_);
+            
+            *bool_retour = fleckBack(TURN_PLAYER_1);
+          }
+        else
+        {
+          *bool_fleck   = FALSE;
+          *bool_retour  = FALSE;
+        }
       }
       break;
       
     case TURN_PLAYER_3:
-      if (fleck(TURN_PLAYER_1) && fleck(TURN_PLAYER_2))
-        {
-          *bool_fleck = TRUE;
-          printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
-                 players[order[start MINUS_ONE]].name_);
-          
-          *bool_retour = fleckBack(TURN_PLAYER_1);
-        }
+      if (players[0].CPU_bool_ == TRUE || players[1].CPU_bool_ == TRUE)
+        break;
       else
       {
-        *bool_fleck   = FALSE;
-        *bool_retour  = FALSE;
+        if (fleck(TURN_PLAYER_1) && fleck(TURN_PLAYER_2))
+          {
+            *bool_fleck = TRUE;
+            printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
+                   players[order[start MINUS_ONE]].name_);
+            
+            *bool_retour = fleckBack(TURN_PLAYER_1);
+          }
+        else
+        {
+          *bool_fleck   = FALSE;
+          *bool_retour  = FALSE;
+        }
       }
       break;
       
@@ -2208,6 +2257,8 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
   Points points_and_caller = {0, 0, 0};
   char buffer_higher[6] = {'\0'};
   
+  char input_CPU = '\0';
+  
   for (counter_turns = 0; counter_turns < MAXIMUM_TURNS; counter_turns++)
   {
     // call
@@ -2237,15 +2288,31 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
       // first to call
       if (i == 0)
       {
-        do
+        // check: human or CPU
+        if (players[player[i] MINUS_ONE].CPU_bool_ == FALSE)
         {
-          system ("/bin/stty raw");
-          buffer = getchar();
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, players_commands[i])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-        system ("/bin/stty cooked");
+          do
+          {
+            system ("/bin/stty raw");
+            buffer = getchar();
+            printf("\r");
+            if (!(check = seekAndDestroy(buffer, players_commands[i])))
+              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+          } while (!check);
+          system ("/bin/stty cooked");
+        }
+        
+        else
+        {
+          input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
+          
+          while (input_CPU == RETRY)
+          {
+            input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
+          }
+          
+          buffer = input_CPU;
+        }
         
         switch (buffer)
         {
@@ -3340,9 +3407,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
           }
         }
         
-//        printf("bock: %d\nsuit: %d\ntrump: %d\n",
-//               count_bock, count_suit, count_trump);
-        
         // .. and adjust ------------
         strcpy(players_commands[i], "000000");    // maybe there is a better
                                                   // more professinal way
@@ -3547,16 +3611,16 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
             
             else if (count_trump > 0)
             {
-//              printf("%d\n", (hands)[player[i MINUS_ONE] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
-              if ((hands)[player[i MINUS_ONE] MINUS_ONE][position[i MINUS_ONE]].is_trump_)
+//              printf("%d\n", (hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
+              if ((hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_)
               {
                 while (players_commands[i][counter_command] != '\0')
                 {
                   // only need to compare trump's value with answer 1
                   if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                      /* answer 1's card */ hands[player[i] - 2][position[1]].value_)
+                      /* answer 1's card */ hands[player[i] /*- 2*/][position[1]].value_)
                   {
-                    
+                    printf("\n!!! 3622 !!!\n");
                   }
                   else
                   {
@@ -3580,15 +3644,31 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
         
         // -----------
         
-        do
+        // check: human or CPU
+        if (players[player[i] MINUS_ONE].CPU_bool_ == FALSE)
         {
-          system ("/bin/stty raw");
-          buffer = getchar();
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, players_commands[i])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-        system ("/bin/stty cooked");
+          do
+          {
+            system ("/bin/stty raw");
+            buffer = getchar();
+            printf("\r");
+            if (!(check = seekAndDestroy(buffer, players_commands[i])))
+              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+          } while (!check);
+          system ("/bin/stty cooked");
+        }
+        
+        else
+        {
+          input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
+          
+          while (input_CPU == RETRY)
+          {
+            input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
+          }
+          
+          buffer = input_CPU;
+        }
         
         switch (buffer)
         {
@@ -14719,4 +14799,16 @@ char checkCPU(Player to_check, int instance, char* commands_possible)
   {
     return RETRY;
   }
+}
+
+//int humanOrCPU()
+//{
+//  return 0;
+//  return HUMAN;
+//}
+
+void printTable(Player players)
+{
+//  for (int i = 0; i < 3; i++)
+//    printf("[%s %s] ", players[i].sign_, deck[counter].image_);
 }
