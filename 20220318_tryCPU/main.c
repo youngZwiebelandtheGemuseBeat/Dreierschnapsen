@@ -213,7 +213,7 @@ int callSuit(int start);
 void setTrump(Card* deck, int trump);
 void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
                    Card answer_2, int* points_call, int* points_opponents,
-                   int* points_1, int* points_2, int* points_3);
+                   int* points_1, int* points_2, int* points_3, int* order);
 void setOrder(Card* deck, int test_case, int trump);
 void sortHands(Card** hands, char** suits);
 //void copyCard(Card* source, Card* target);
@@ -329,23 +329,26 @@ int main(int argc, char* argv[])
           state           = 0;
           
           // with loop iterating check who's currently who
-          if (!(counter % 3))
-          {
-            printf("Player 1 (%s) calls trump.\n", players[counter_players].name_);
-            printf("---------------------------------------------------------------\n");
-          }
-          
-          else if (!((counter MINUS_ONE) % 3))
-          {
-            printf("Player 1 (%s) calls trump.\n", players[counter_players].name_);
-            printf("---------------------------------------------------------------\n");
-          }
-          
-          else
-          {
-            printf("Player (%s) calls trump.\n", players[counter_players].name_);
-            printf("---------------------------------------------------------------\n");
-          }
+//          if (!(counter % 3))
+//          {
+//            printf("Player %d (%s) calls trump.\n",
+//                   order[counter_players] ADD_ONE, players[order[counter_players]].name_);
+//            printf("---------------------------------------------------------------\n");
+//          }
+//
+//          else if (!((counter MINUS_ONE) % 3))
+//          {
+//            printf("Player %d (%s) calls trump.\n",
+//                   order[counter_players] ADD_ONE, players[order[counter_players]].name_);
+//            printf("---------------------------------------------------------------\n");
+//          }
+//
+//          else
+//          {
+//            printf("Player %d (%s) calls trump.\n",
+//                   order[counter_players] ADD_ONE, players[order[counter_players]].name_);
+//            printf("---------------------------------------------------------------\n");
+//          }
           
           // GAME
           random_seed = getSeed(argv[1]);
@@ -365,6 +368,14 @@ int main(int argc, char* argv[])
             order[1] = 0;
             order[2] = 1;
           }
+          
+          if (counter_players == 0)
+          {
+            order[0] = counter_players;
+            order[1] = 1;
+            order[2] = 2;
+          }
+          
           // ------------------------------------------------------------------------
           
           points_and_caller = playGame(deck, deck_dealer,
@@ -758,32 +769,35 @@ void startGame(Card* deck, Card* deck_dealer,
   // 3 CARDS FOR PLAYER 1
   for (counter = 0; counter < 3; counter++)
   {
-    dealCards(*turns, index_player_1, deck, deck_player_1);
+    dealCards(*turns, index_player_1, deck, /*deck_player_1*/hands[order[0]]);
     (*turns)++;
     (*index_player_1)++;
   }
   
-  printHand(deck_player_1, 3, TURN_PLAYER_1, players[order[0]].name_);         // ACHTUNG HARD CODED VALUE
+  printHand(/*deck_player_1*/hands[order[0]], 3, /*TURN_PLAYER_1*/order[0] ADD_ONE,
+            players[order[0]].name_);         // ACHTUNG HARD CODED VALUE
   
   // 3 CARDS FOR PLAYER 2
   for (counter = 0; counter < 3; counter++)
   {
-    dealCards(*turns, index_player_2, deck, deck_player_2);
+    dealCards(*turns, index_player_2, deck, /*deck_player_2*/hands[order[1]]);
     (*turns)++;
     (*index_player_2)++;
   }
   
-  printHand(deck_player_2, 3, TURN_PLAYER_2, players[order[1]].name_);
+  printHand(/*deck_player_2*/hands[order[1]], 3, /*TURN_PLAYER_2*/ order[1] ADD_ONE,
+            players[order[1]].name_);
   
   // 3 CARDS FOR PLAYER 3
   for (counter = 0; counter < 3; counter++)
   {
-    dealCards(*turns, index_player_3, deck, deck_player_3);
+    dealCards(*turns, index_player_3, deck, /*deck_player_3*/hands[order[2]]);
     (*turns)++;
     (*index_player_3)++;
   }
   
-  printHand(deck_player_3, 3, TURN_PLAYER_3, players[order[2]].name_);         // ACHTUNG HARD CODED VALUE
+  printHand(/*deck_player_3*/hands[order[2]], 3, /*TURN_PLAYER_3*/ order[2] ADD_ONE,
+            players[order[2]].name_);    // ACHTUNG HARD CODED VALUE
   
   // 2 CARDS (TALON)
   for (counter = 0; counter < TALON; counter++)
@@ -798,8 +812,8 @@ void startGame(Card* deck, Card* deck_dealer,
   printf("---------------------------------------------------------------\n");
   
   // PLAYER 1 CALL TRUMP
-  printf("Player 1 (%s), call trump!\n-----------------------\n",
-         players[order[0]].name_);
+  printf("Player %d (%s), call trump!\n-----------------------\n",
+         order[0] ADD_ONE, players[order[0]].name_);
   // check: human or CPU
   if (players[order[0]].CPU_bool_ == FALSE)
     *trump = callTrump(deck[ANE_AUF]);
@@ -808,6 +822,7 @@ void startGame(Card* deck, Card* deck_dealer,
     *trump = (rand() % (4 - 1 + 1)) + 1;
 //    printf("trump: %d\n", *trump);
     printf("%s is trump!\n", decodeSuit(*trump));
+    printf("---------------------------------------------------------------\n");
   }
   
   /* Naja, theoretisch könnten direkt jedem 6 Karten hingeteilt werden und nur
@@ -816,7 +831,7 @@ void startGame(Card* deck, Card* deck_dealer,
   // 3 CARDS FOR PLAYER 1
   for (counter = 0; counter < 3; counter++)
   {
-    dealCards(*turns, index_player_1, deck, deck_player_1);
+    dealCards(*turns, index_player_1, deck, /*deck_player_1*/hands[order[0]]);
     (*turns)++;
     (*index_player_1)++;
   }
@@ -824,7 +839,7 @@ void startGame(Card* deck, Card* deck_dealer,
   // 3 CARDS FOR PLAYER 2
   for (counter = 0; counter < 3; counter++)
   {
-    dealCards(*turns, index_player_2, deck, deck_player_2);
+    dealCards(*turns, index_player_2, deck, /*deck_player_2*/hands[order[1]]);
     (*turns)++;
     (*index_player_2)++;
   }
@@ -832,15 +847,15 @@ void startGame(Card* deck, Card* deck_dealer,
   // 3 CARDS FOR PLAYER 3
   for (counter = 0; counter < 3; counter++)
   {
-    dealCards(*turns, index_player_3, deck, deck_player_3);
+    dealCards(*turns, index_player_3, deck, /*deck_player_3*/hands[order[2]]);
     (*turns)++;
     (*index_player_3)++;
   }
   
   // set trump cards
-  setTrump(deck_player_1, *trump);
-  setTrump(deck_player_2, *trump);
-  setTrump(deck_player_3, *trump);
+  setTrump(/*deck_player_1*/hands[order[0]], *trump);
+  setTrump(/*deck_player_2*/hands[order[1]], *trump);
+  setTrump(/*deck_player_3*/hands[order[2]], *trump);
   setTrump(deck_dealer, *trump);
   
   //CHEAT to debug
@@ -850,9 +865,12 @@ void startGame(Card* deck, Card* deck_dealer,
 //  setOrder(deck_dealer,   43, *trump);
   
   sortHands(hands, suits);
-  printHand(deck_player_1, HAND, TURN_PLAYER_1, players[order[0]].name_);
-  printHand(deck_player_2, HAND, TURN_PLAYER_2, players[order[1]].name_);
-  printHand(deck_player_3, HAND, TURN_PLAYER_3, players[order[2]].name_);
+  printHand(/*deck_player_1*/hands[order[0]], HAND, /*TURN_PLAYER_1*/ order[0] ADD_ONE,
+            players[order[0]].name_);
+  printHand(/*deck_player_2*/hands[order[1]], HAND, /*TURN_PLAYER_2*/ order[1] ADD_ONE,
+            players[order[1]].name_);
+  printHand(/*deck_player_3*/hands[order[2]], HAND, /*TURN_PLAYER_3*/ order[2] ADD_ONE,
+            players[order[2]].name_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1002,9 +1020,9 @@ Points playGame(Card* deck, Card* deck_dealer,
   Points points_and_caller = {0, 0, 0};
   
   // Hände der Einfachheit zusammenfassen
-  hands[0] = deck_player_1;
-  hands[1] = deck_player_2;
-  hands[2] = deck_player_3;
+  hands[order[0]] = deck_player_1;
+  hands[order[1]] = deck_player_2;
+  hands[order[2]] = deck_player_3;
   
   // deal three cards to each player
   // two cards as talon
@@ -1038,7 +1056,7 @@ Points playGame(Card* deck, Card* deck_dealer,
     else
     {
       printf("Player %d (%s(CPU)) does not raise.\n",
-             *state, players[order[1]].name_);
+             order[*state MINUS_ONE] ADD_ONE, players[order[1]].name_);
     }
     if (start == TURN_PLAYER_2)
       mode_buffer_2 = mode;
@@ -1052,7 +1070,7 @@ Points playGame(Card* deck, Card* deck_dealer,
     else
     {
       printf("Player %d (%s(CPU)) does not raise.\n",
-             *state, players[order[2]].name_);
+             order[*state MINUS_ONE] ADD_ONE, players[order[2]].name_);
     }
     if (start == TURN_PLAYER_3)
       mode_buffer_3 = mode;
@@ -1062,7 +1080,7 @@ Points playGame(Card* deck, Card* deck_dealer,
                               &mode, players, order);
     
     // player 1 begins anyway
-    if (start != TURN_PLAYER_1 && mode != SCHNAPSER && mode /* < */ != BAUERNSCHNAPSER)
+    if (start != /*TURN_PLAYER_1*/ order[0] ADD_ONE && mode != SCHNAPSER && mode /* < */ != BAUERNSCHNAPSER)
       // explanation: Kontraschnapser = 12: Player 1 would have to trump that
       //              with a Bauernschnapser and that "sounds" unlikely ..
       //               .. should have called it beforehand
@@ -2120,17 +2138,17 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
 //      || (value_1 < value_2 && value_2 < value_3))
   if (value_3 >= value_1 && value_3 >= value_2 && value_3 != GAME)
   {
-    printf("Player 3 (%s) starts!\n", players[order[2]].name_);
+    printf("Player %d (%s) starts!\n", order[2] ADD_ONE, players[order[2]].name_);
     *mode = value_3;
-    return TURN_PLAYER_3;
+    return /*TURN_PLAYER_3*/ order[2] ADD_ONE;
   }
   
 //  else if (value_1 == value_2 && value_1 == value_3 && value_1 != BAUERNSCHNAPSER)
   else if (value_1 > value_2 && value_1 > value_3)
   {
-    printf("Player 1 (%s) starts!\n", players[order[0]].name_);
+    printf("Player %d (%s) starts!\n", order[0] ADD_ONE, players[order[0]].name_);
     *mode = value_1;
-    return TURN_PLAYER_1;
+    return /*TURN_PLAYER_1*/ order[0] ADD_ONE;
   }
   
 //  else if (value_1 == value_2 && value_1 == value_3 && value_1 == BAUERNSCHNAPSER)
@@ -2143,16 +2161,16 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
   
   else if (value_1 == value_2 && value_1 == value_3 && value_1 == GAME)
   {
-    printf("Player 1 (%s) starts!\n", players[order[0]].name_);
+    printf("Player %d (%s) starts!\n", order[0] ADD_ONE, players[order[0]].name_);
     *mode = value_1;
-    return TURN_PLAYER_1;
+    return /*TURN_PLAYER_1*/ order[0] ADD_ONE;
   }
   
   else
   {
-    printf("Player 2 (%s) starts!\n", players[order[1]].name_);
+    printf("Player %d (%s) starts!\n", order[1] ADD_ONE, players[order[1]].name_);
     *mode = value_2;
-    return TURN_PLAYER_2;
+    return /*TURN_PLAYER_2*/ order[1] ADD_ONE;
   }
 }
 
@@ -2214,12 +2232,12 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
   strcpy(commands_3, commands);
   
   // default
-  int call      = TURN_PLAYER_1;
-  int answer_1  = TURN_PLAYER_2;
-  int answer_2  = TURN_PLAYER_3;
-//  int call      = order[0] ADD_ONE;
-//  int answer_1  = order[1] ADD_ONE;
-//  int answer_2  = order[2] ADD_ONE;
+//  int call      = TURN_PLAYER_1;
+//  int answer_1  = TURN_PLAYER_2;
+//  int answer_2  = TURN_PLAYER_3;
+  int call      = order[0] ADD_ONE;
+  int answer_1  = order[1] ADD_ONE;
+  int answer_2  = order[2] ADD_ONE;
   int turn[3] = {call, answer_1, answer_2};
   
   int player[3] = {call, answer_1, answer_2};
@@ -2267,7 +2285,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     // 3 cards each round
     for (i = 0; i < 3; i++)
     {
-      printHand(hands[player[i] MINUS_ONE], HAND, turn[i], players[turn[order[i]] MINUS_ONE].name_);
+      printHand(hands[player[i] MINUS_ONE], HAND, turn[i], players[turn[/*order[i]*/ i] MINUS_ONE].name_);
       printf("                         ^     ^     ^     ^     ^     ^  \n");
       printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
       
@@ -3618,7 +3636,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
                 {
                   // only need to compare trump's value with answer 1
                   if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                      /* answer 1's card */ hands[player[i] /*- 2*/][position[1]].value_)
+                      /* answer 1's card */ hands[player[i MINUS_ONE] MINUS_ONE][position[i MINUS_ONE]].value_)
                   {
                     printf("\n!!! 3622 !!!\n");
                   }
@@ -3747,13 +3765,8 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
                   (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
                   (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
                   &points_call, &points_opponents,
-                  &points[0], &points[1],
-                  &points[2]);
-    
-    // here we must check:    who potentially called 20 || 40
-    //                        who won the round
-    //                        may the one who called 20 || 40
-    //                        ad 20 || 40 to score
+                  &points[turn[0] MINUS_ONE], &points[turn[1] MINUS_ONE],
+                  &points[turn[2] MINUS_ONE], /*order*/turn);
     
     // player 1 wins but did not call
     if (player[0] != buffer_start && start == buffer_start)
@@ -5677,7 +5690,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                     (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
                     &points_call, &points_opponents,
                     &points[0], &points[1],
-                    &points[2]);
+                    &points[2], turn);
       
       // player 1 wins and played first
       /* else */ if (player[0] == buffer_start && start == buffer_start)
@@ -7860,7 +7873,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                       (hands)[TURN_PLAYER_3 MINUS_ONE][position[i + 2]],
                       &points_call, &points_opponents,
                       &points[0], &points[1],
-                      &points[2]);
+                      &points[2], turn);
         
         // calling player is not next to call and therefore lost
         if (buffer_start != start)
@@ -9470,7 +9483,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                       (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
                       &points_call, &points_opponents,
                       &points[0], &points[1],
-                      &points[2]);    // in this function call's points are
+                      &points[2], turn);    // in this function call's points are
                                       // is points[0]
         
         // calling player is not next to call and therefore lost
@@ -13553,7 +13566,7 @@ void setTrump(Card* deck, int trump)
 
 void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
                    Card answer_2, int* points_call, int* points_opponents,
-                   int* points_1, int* points_2, int* points_3)
+                   int* points_1, int* points_2, int* points_3, int* order)
 {
 //  printf("1. %d, 2. %d, 3. %d\n", call.value_, answer_1.value_,
 //         answer_2.value_);
@@ -13581,12 +13594,12 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
 //            *start = *start + 2;
           
           // warum nicht so?
-          if (*start == TURN_PLAYER_1)
-            *start = TURN_PLAYER_3;
-          else if (*start == TURN_PLAYER_2)
-            *start = TURN_PLAYER_1;
+          if (*start == order[TURN_PLAYER_1 MINUS_ONE])
+            *start = order[TURN_PLAYER_3 MINUS_ONE];
+          else if (*start == order[TURN_PLAYER_2 MINUS_ONE])
+            *start = order[TURN_PLAYER_1 MINUS_ONE];
           else /* if (*start == TURN_PLAYER_3) */
-            *start = TURN_PLAYER_2;
+            *start = order[TURN_PLAYER_2 MINUS_ONE];
           
           
 //          *points_opponents += (call.value_ + answer_1.value_
@@ -13598,7 +13611,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
         {
           // answer 1 wins
           if (*start + 1 > 3)
-            *start = TURN_PLAYER_1;
+            *start = order[TURN_PLAYER_1 MINUS_ONE];
           else
             *start = *start + 1;
           
@@ -13641,7 +13654,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
       {
         // answer 2 wins
         if (*start + 2 > 3)
-          *start = TURN_PLAYER_1;
+          *start = order[TURN_PLAYER_1 MINUS_ONE];
         else
           *start = *start + 2;
         
@@ -13666,7 +13679,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
       {
         // answer 1 wins
         if (*start + 1 > 3)
-          *start = TURN_PLAYER_1;
+          *start = order[TURN_PLAYER_1 MINUS_ONE];
         else
           *start = *start + 1;
         
@@ -13691,7 +13704,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
         {
           // answer 2 wins
           if (*start + 2 > 3)
-            *start = TURN_PLAYER_1;
+            *start = order[TURN_PLAYER_1 MINUS_ONE];
           else
             *start = *start + 2;
           
@@ -13704,7 +13717,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
         {
           // answer 1 wins
           if (*start + 1 > 3)
-            *start = TURN_PLAYER_1;
+            *start = order[TURN_PLAYER_1 MINUS_ONE];
           else
             *start = *start + 1;
           
@@ -13751,7 +13764,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
             {
               // answer 1 wins
               if (*start + 1 > 3)
-                *start = TURN_PLAYER_1;
+                *start = order[TURN_PLAYER_1 MINUS_ONE];
               else
                 *start = *start + 1;
               
@@ -13764,7 +13777,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
             {
               // answer 2 wins
               if (*start + 2 > 3)
-                *start = TURN_PLAYER_1;
+                *start = order[TURN_PLAYER_1 MINUS_ONE];
               else
                 *start = *start + 2;
               
@@ -13779,7 +13792,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
           {
             // answer 1 wins
             if (*start + 1 > 3)
-              *start = TURN_PLAYER_1;
+              *start = order[TURN_PLAYER_1 MINUS_ONE];
             else
               *start = *start + 1;
             
@@ -13798,12 +13811,12 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
 //              *start = *start + 2;
             
             // why not like this
-            if (*start == TURN_PLAYER_1)
-              *start = TURN_PLAYER_3;
-            else if (*start == TURN_PLAYER_2)
-              *start = TURN_PLAYER_1;
+            if (*start == order[TURN_PLAYER_1 MINUS_ONE])
+              *start = order[TURN_PLAYER_3 MINUS_ONE];
+            else if (*start == order[TURN_PLAYER_2 MINUS_ONE])
+              *start = order[TURN_PLAYER_1 MINUS_ONE];
             else /* if (*start == TURN_PLAYER_3) */
-              *start = TURN_PLAYER_2;
+              *start = order[TURN_PLAYER_2 MINUS_ONE];
             
 //            *points_opponents += (call.value_ + answer_1.value_
 //                                  + answer_2.value_);
@@ -13834,7 +13847,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
           {
             // answer_2 wins
             if (*start + 2 > 3)                                               // check !!
-              *start = TURN_PLAYER_1;
+              *start = order[TURN_PLAYER_1 MINUS_ONE];
             else
               *start = *start + 2;
             
@@ -13859,7 +13872,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
           {
             // answer_1 wins
             if (*start + 1 > 3)
-              *start = TURN_PLAYER_1;
+              *start = order[TURN_PLAYER_1 MINUS_ONE];
             else
               *start = *start + 1;
             
@@ -13877,7 +13890,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
         {
           // answer_1 wins
           if (*start + 1 > 3)
-            *start = TURN_PLAYER_1;
+            *start = order[TURN_PLAYER_1 MINUS_ONE];
           else
             *start = *start + 1;
           
@@ -13890,7 +13903,7 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
         {
           // answer_2 wins
           if (*start + 2 > 3)
-            *start = TURN_PLAYER_1;
+            *start = order[TURN_PLAYER_1 MINUS_ONE];
           else
             *start = *start + 2;
           
