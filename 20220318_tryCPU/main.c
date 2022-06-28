@@ -13932,38 +13932,35 @@ void next(int* initial_order, int* player, Card call, Card answer_1,
   {
     printf("Player %d called mode and round", player[0]);
     
-//    // caller_mode called round and wins
-//    if (call.value_ > answer_1.value_ && call.value_ > answer_2.value_)
-//    {
-//      printf(" and wins!\n");
-//    }
-//
-//    // caller_mode called round and loses
-//    else /* if () */
-//    {
-//      printf(" and loses!\n");
-//
-//      // opponent_1 (2) wins
-//
-//      // opponent_2 (3) wins
-//    }
-    
-    switch (highestCard(cards_on_table))
+    // caller_mode called round and wins
+    if (player[0] == highestCard(cards_on_table))
     {
-      case 0:
-        printf("BAAAAAAAAAA!!!\n");
-        break;
-        
-      default:
-        break;
+      printf(" and wins!\n");
     }
-    
+
+    // caller_mode called round and loses
+    else /* if () */
+    {
+      printf(" and loses");
+
+      // opponent_1 (2) wins
+      if (player[1] == highestCard(cards_on_table))
+      {
+        printf(" against Player %d.\n", player[1]);
+      }
+
+      // opponent_2 (3) wins
+      else
+      {
+        printf(" against Player %d.\n", player[2]);
+      }
+    }
   }
   
   // caller_mode wins round but did not call
   // so who of the two opponents called?
   
-  // opponent_1 (2) called round
+  // TODO: opponent_1 (2) called round
   if (player[0] == initial_order[1])    // tells us who called recent round
   {
     // caller_mode wins (= initial_order[0])
@@ -13973,7 +13970,7 @@ void next(int* initial_order, int* player, Card call, Card answer_1,
     // other opponent wins (= opponent_2 (3))
   }
   
-  // opponent_2 (3) called round
+  // TODO: opponent_2 (3) called round
   else /* if (player[0] == initial_ordder[2]) */
   {
     // caller_mode wins (= initial_order[0])
@@ -13997,14 +13994,14 @@ int highestCard(Card* cards)
   if (!cards[0].is_trump_ && !cards[1].is_trump_ && !cards[3].is_trump_)
   {
     printf("NO TRUMP ON THE TABLE\n");
-    // check highest card's index and pass
+    // TODO: check highest card's index and pass
   }
   
   // trump
   else
   {
     printf("TRUMP ON THE TABLE\n");
-    // check highest trump's index and pass
+    // TODO: check highest trump's index and pass
   }
   
   return index;
