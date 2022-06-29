@@ -138,6 +138,10 @@ typedef struct _Player_
   unsigned int CPU_bool_;
 } Player;
 
+//-----------------------------------------------------------------------------
+/// definition of the 'data type' Points
+///
+//
 typedef struct _Points_
 {
   int caller_;
@@ -233,7 +237,7 @@ char randomCall(int instance);
 int validCommandCPU(char to_compare, char* with);
 char checkCPU(Player to_check, int instance, char* commands);
 // new additions and fixes 20220628
-void next(int* initial_order, int* player, Card call, Card answer_1,
+Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2);
 int highestCard(Card* cards);
 
@@ -2247,6 +2251,8 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
   
   char input_CPU = '\0';
   
+  Points next_and_points = {0, 0, 0};
+  
   for (counter_turns = 0; counter_turns < MAXIMUM_TURNS; counter_turns++)
   {
     // call
@@ -3765,157 +3771,167 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     
     // probier'ma's aus - turn[] bleibt unverändert (3979)
     
-    next(initial_order, player, hands[player[i] MINUS_ONE][position[i]],
-         (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
-         (hands)[player[i + 2] MINUS_ONE][position[i + 2]]);
+    next_and_points = next(initial_order, player,
+                           hands[player[i] MINUS_ONE][position[i]],
+                           (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
+                           (hands)[player[i + 2] MINUS_ONE][position[i + 2]]);
     
-    nextAndPoints(&start, buffer_start, hands[player[i] MINUS_ONE][position[i]],
-                  (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
-                  (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
-                  &points_call, &points_opponents,
-                  &points[player[0] MINUS_ONE], &points[player[1] MINUS_ONE],
-                  &points[player[2] MINUS_ONE], /*order*/player);
+    start = next_and_points.winner_;
+    
+    if (start == initial_order[0])
+      points_call += next_and_points.points_;
+    else
+      points_opponents += next_and_points.points_;
+    
+    // next_and_points.points_ = 0;    // will be done further down
+    
+//    nextAndPoints(&start, buffer_start, hands[player[i] MINUS_ONE][position[i]],
+//                  (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
+//                  (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
+//                  &points_call, &points_opponents,
+//                  &points[player[0] MINUS_ONE], &points[player[1] MINUS_ONE],
+//                  &points[player[2] MINUS_ONE], /*order*/player);
     
     getCall(start, &call, &answer_1, &answer_2);
     
-    // player 1 wins but did not call
-    if (player[0] != buffer_start && start == buffer_start)
-    {
-      // player 2 called
-      if (player[0] == TURN_PLAYER_2)
-      {
-//        points_call += points[2];
-//        points_opponents += (points[0] + points[1]);
-        points_call += points[0];
-        points_opponents += (points[1] + points[2]);
-        
-        // case: player 2 called 20 or 40
-        if (points_opponents > 0)
-        {
-          points_opponents += points_pair;
-        }
-      }
-      // player 3 called
-      if (player[0] == TURN_PLAYER_3)
-      {
-        points_call += points[1];
-        points_opponents += (points[0] + points[2]);
-        
-        // case: player 3 called 20 or 40
-        if (points_opponents > 0)
-        {
-          points_opponents += points_pair;
-        }
-      }
-    }
-    
-    // player 1 wins and called
-    else if (player[0] == buffer_start && start == buffer_start)
-    {
-//      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-//             points[0], points[1],
-//             points[2]);
-      points_call       += points[0];
-      points_opponents  += points[1] + points[2];
-      
-      if (points_call > 0)
-      {
-        points_call += points_pair;
-      }
-    }
-    
-    // caller of recent round wins
-    else if (player[0] == start /* && player[0] != buffer_start */)
-    {
-//      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-//             points[0], points[1],
-//             points[2]);
-      points_call       += points[1];
-      points_opponents  += points[0] + points[2];
-      
-      // player 1 called
-      if (player[0] == buffer_start)
-      {
-        if (points_call > 0)   // naja wenn eh gestochen worden ist,
-                                    // ist diese condition wharscheinlich
-                                    // hinfällig
-        {
-          points_call += points_pair;
-        }
-      }
-      
-      // one of the opponents called
-      else if (player[0] != buffer_start)
-      {
-        if (points_opponents > 0)   // naja wenn eh gestochen worden ist,
-                                    // ist diese condition wharscheinlich
-                                    // hinfällig
-        {
-          points_opponents += points_pair;
-        }
-      }
-    }
-    
-    // player 2 aka. first answer of recent round wins
-//    else if (player[1] == buffer_start)
-    else if (player[1] == start /* && player[0] != buffer_start */)
-    {
-//      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-//             points[0], points[1],
-//             points[2]);
-      points_call       += points[0];
-      points_opponents  += points[1] + points[2];
-      
-      // player 1 called
-      if (player[0] == buffer_start)
-      {
-        if (points_call > 0)
-        {
-          points_call += points_pair;
-        }
-      }
-      
-      // one of the opponents called
-      else if (player[0] != buffer_start)
-      {
-        if (points_opponents > 0)
-        {
-          points_opponents += points_pair;
-        }
-      }
-    }
-    
-    // player 3 aka. second answer of recent round wins
-    else if (player[2] == start)
-    {
-//      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-//             points[0], points[1],
-//             points[2]);
-      points_call       += points[0];
-      points_opponents  += points[1] + points[2];
-      
-      // player 1 called
-      if (player[0] == buffer_start)
-      {
-        if (points_call > 0)   // naja wenn eh gestochen worden ist,
-                                    // ist diese condition wharscheinlich
-                                    // hinfällig
-        {
-          points_call += points_pair;
-        }
-      }
-      
-      // one of the opponents called
-      else if (player[0] != buffer_start)
-      {
-        if (points_opponents > 0)   // naja wenn eh gestochen worden ist,
-                                    // ist diese condition wharscheinlich
-                                    // hinfällig
-        {
-          points_opponents += points_pair;
-        }
-      }
-    }
+//    // player 1 wins but did not call
+//    if (player[0] != buffer_start && start == buffer_start)
+//    {
+//      // player 2 called
+//      if (player[0] == TURN_PLAYER_2)
+//      {
+////        points_call += points[2];
+////        points_opponents += (points[0] + points[1]);
+//        points_call += points[0];
+//        points_opponents += (points[1] + points[2]);
+//
+//        // case: player 2 called 20 or 40
+//        if (points_opponents > 0)
+//        {
+//          points_opponents += points_pair;
+//        }
+//      }
+//      // player 3 called
+//      if (player[0] == TURN_PLAYER_3)
+//      {
+//        points_call += points[1];
+//        points_opponents += (points[0] + points[2]);
+//
+//        // case: player 3 called 20 or 40
+//        if (points_opponents > 0)
+//        {
+//          points_opponents += points_pair;
+//        }
+//      }
+//    }
+//
+//    // player 1 wins and called
+//    else if (player[0] == buffer_start && start == buffer_start)
+//    {
+////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
+////             points[0], points[1],
+////             points[2]);
+//      points_call       += points[0];
+//      points_opponents  += points[1] + points[2];
+//
+//      if (points_call > 0)
+//      {
+//        points_call += points_pair;
+//      }
+//    }
+//
+//    // caller of recent round wins
+//    else if (player[0] == start /* && player[0] != buffer_start */)
+//    {
+////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
+////             points[0], points[1],
+////             points[2]);
+//      points_call       += points[1];
+//      points_opponents  += points[0] + points[2];
+//
+//      // player 1 called
+//      if (player[0] == buffer_start)
+//      {
+//        if (points_call > 0)   // naja wenn eh gestochen worden ist,
+//                                    // ist diese condition wharscheinlich
+//                                    // hinfällig
+//        {
+//          points_call += points_pair;
+//        }
+//      }
+//
+//      // one of the opponents called
+//      else if (player[0] != buffer_start)
+//      {
+//        if (points_opponents > 0)   // naja wenn eh gestochen worden ist,
+//                                    // ist diese condition wharscheinlich
+//                                    // hinfällig
+//        {
+//          points_opponents += points_pair;
+//        }
+//      }
+//    }
+//
+//    // player 2 aka. first answer of recent round wins
+////    else if (player[1] == buffer_start)
+//    else if (player[1] == start /* && player[0] != buffer_start */)
+//    {
+////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
+////             points[0], points[1],
+////             points[2]);
+//      points_call       += points[0];
+//      points_opponents  += points[1] + points[2];
+//
+//      // player 1 called
+//      if (player[0] == buffer_start)
+//      {
+//        if (points_call > 0)
+//        {
+//          points_call += points_pair;
+//        }
+//      }
+//
+//      // one of the opponents called
+//      else if (player[0] != buffer_start)
+//      {
+//        if (points_opponents > 0)
+//        {
+//          points_opponents += points_pair;
+//        }
+//      }
+//    }
+//
+//    // player 3 aka. second answer of recent round wins
+//    else if (player[2] == start)
+//    {
+////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
+////             points[0], points[1],
+////             points[2]);
+//      points_call       += points[0];
+//      points_opponents  += points[1] + points[2];
+//
+//      // player 1 called
+//      if (player[0] == buffer_start)
+//      {
+//        if (points_call > 0)   // naja wenn eh gestochen worden ist,
+//                                    // ist diese condition wharscheinlich
+//                                    // hinfällig
+//        {
+//          points_call += points_pair;
+//        }
+//      }
+//
+//      // one of the opponents called
+//      else if (player[0] != buffer_start)
+//      {
+//        if (points_opponents > 0)   // naja wenn eh gestochen worden ist,
+//                                    // ist diese condition wharscheinlich
+//                                    // hinfällig
+//        {
+//          points_opponents += points_pair;
+//        }
+//      }
+//    }
     
     // reset (points) for next round
     points[0] = 0;
@@ -3924,6 +3940,9 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     pairs = resetPairs(position_Q);
     resetHandlePairs(handle_pairs);
     points_pair = 0;
+    next_and_points.points_ = 0;
+    next_and_points.winner_ = 0;
+    next_and_points.caller_ = 0;
     
     if (points_call >= 66)
     {
@@ -13922,86 +13941,215 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
   //                    hier ist nämlich immer der "Ausspielende" call
   //                     .. und nicht der Trumpf-rufende
 
-void next(int* initial_order, int* player, Card call, Card answer_1,
+// determine next to call round
+// return value: int next .. will be received as start in game modes
+Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2)
 {
   Card cards_on_table[QUANTITY_PLAYERS] = {call, answer_1, answer_2}; // index corresponds to player[]
+  Points next = {0, 0, 0};
   
-  // caller_mode wins round and called - TODO: take TRUMP in account
-  if (player[0] == initial_order[0])    // tells us who called recent round
+//  printf("\n Trumps on the table: %d %d %d\n", cards_on_table[0].is_trump_,
+//         cards_on_table[1].is_trump_, cards_on_table[2].is_trump_);
+  
+  // caller_mode calls (1)
+  if (player[0] == initial_order[0])        // tells us who called recent round
   {
-    printf("Player %d called mode and round", player[0]);
+//    printf("Player %d calls mode and round", player[0]);
     
     // caller_mode called round and wins
     if (player[0] == highestCard(cards_on_table))
     {
-      printf(" and wins!\n");
+//      printf(" and wins!\n");
+      
+      next.winner_ = player[0];
     }
 
     // caller_mode called round and loses
     else /* if () */
     {
-      printf(" and loses");
+//      printf(" and loses");
 
       // opponent_1 (2) wins
-      if (player[1] == highestCard(cards_on_table))
+//      if (player[1] == highestCard(cards_on_table))
+      if (highestCard(cards_on_table) == TURN_PLAYER_2)
       {
-        printf(" against Player %d.\n", player[1]);
+//        printf(" against Player %d.\n", player[1]);
+        
+//        next.winner_ = initial_order[1]; // player[1];
+        next.winner_ = initial_order[1];
       }
 
       // opponent_2 (3) wins
       else
       {
-        printf(" against Player %d.\n", player[2]);
+//        printf(" against Player %d.\n", player[2]);
+        
+        next.winner_ = initial_order[2]; // player[2];
       }
     }
   }
   
-  // caller_mode wins round but did not call
-  // so who of the two opponents called?
-  
   // TODO: opponent_1 (2) called round
-  if (player[0] == initial_order[1])    // tells us who called recent round
+  else if (player[0] == initial_order[1])    // tells us who called recent round
   {
-    // caller_mode wins (= initial_order[0])
+//    printf("Player %d calls round", player[0]);
     
     // caller_round wins (= opponent_1 (2))
+    if (player[0] == highestCard(cards_on_table))
+    {
+//      printf(" and wins!\n");
+      
+      next.winner_ = player[0];
+    }
     
-    // other opponent wins (= opponent_2 (3))
+    else
+    {
+      // player 3
+      if (highestCard(cards_on_table) == TURN_PLAYER_3)
+      {
+        next.winner_ = initial_order[0];
+      }
+      // player 1
+      else /* if (highestCard(cards_on_table) == TURN_PLAYER_2) */
+      {
+        next.winner_ = initial_order[2];
+      }
+    }
   }
   
   // TODO: opponent_2 (3) called round
-  else /* if (player[0] == initial_ordder[2]) */
+  else /* if (player[0] == initial_order[2]) */
   {
-    // caller_mode wins (= initial_order[0])
+//    printf("Player %d calls round", player[0]);
     
     // caller_round wins (= opponent_2 (3))
+    if (player[0] == highestCard(cards_on_table))
+    {
+//      printf(" and wins!\n");
+      
+      next.winner_ = player[0];
+    }
     
-    // other opponent wins (= opponent_1 (2))
+    else
+    {
+//      printf(" and loses against");
+      
+      // caller_mode wins (= initial_order[0]) (1)
+//      if (player[1] == highestCard(cards_on_table))
+      if (highestCard(cards_on_table) == TURN_PLAYER_2)
+      {
+//        printf(" the player who called mode (%d).", player[1]);
+        
+        next.winner_ = initial_order[0]; // player[1];
+      }
+      
+      // other opponent wins (= opponent_1 (2))
+      else /* if (highestCard(cards_on_table) == TURN_PLAYER_3) */
+      {
+//        printf(" Player %d.\n", player[2]);
+        
+        next.winner_ = initial_order[1]; // player[2];
+      }
+    }
   }
+  
+  // next to call always receives recent round's points
+  next.points_ = call.value_ + answer_1.value_ + answer_2.value_;
+  
+  return next;
 }
 
-// returns index of player who has the highest card on the table
+// returns index of the player who has the highest card on the table
 int highestCard(Card* cards)
 {
   int index = 0;
+  int count_trump = 0;
+  int counter = 0;
+  int has_trump[QUANTITY_PLAYERS] = {FALSE, FALSE, FALSE};
   
-  printf("%d %d %d\n", cards[0].value_, cards[1].value_, cards[2].value_);
+  for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
+  {
+    if (cards[counter].is_trump_)
+    {
+      has_trump[counter] = TRUE;
+      count_trump++;
+    }
+  }
+  
+//  printf("%d %d %d\n", cards[0].value_, cards[1].value_, cards[2].value_);
+//  printf("%d trumps on table.\n", count_trump);
   
   // TODO: check highest card and do not forget about trump
   
-  // no trump
-  if (!cards[0].is_trump_ && !cards[1].is_trump_ && !cards[3].is_trump_)
+  // no trump or all trump
+//  if (!(cards[0].is_trump_ && cards[1].is_trump_ && cards[3].is_trump_)
+//      || (cards[0].is_trump_ && cards[1].is_trump_ && cards[3].is_trump_))
+  if (count_trump == 0 || count_trump == QUANTITY_PLAYERS)
   {
-    printf("NO TRUMP ON THE TABLE\n");
+//    printf("NONE OR ALL TRUMP ON THE TABLE\n");
     // TODO: check highest card's index and pass
+    if (cards[0].value_ > cards[1].value_ && cards[0].value_ > cards[2].value_)
+    {
+      index = TURN_PLAYER_1;
+    }
+    
+    else if (cards[1].value_ > cards[0].value_ && cards[1].value_ > cards[2].value_)
+    {
+      index = TURN_PLAYER_2;
+    }
+    
+    else /* if (cards[2].value_ > cards[0].value_ && cards[2].value_ > cards[1].value_) */
+    {
+      index = TURN_PLAYER_3;
+    }
   }
   
   // trump
   else
   {
-    printf("TRUMP ON THE TABLE\n");
+//    printf("AT LEAST ONE TRUMP ON THE TABLE\n");
     // TODO: check highest trump's index and pass
+    if (count_trump == 1)
+    {
+      for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
+      {
+        if (has_trump[counter] == TRUE)
+        {
+          index = counter ADD_ONE;
+        }
+      }
+    }
+    
+    else /* if (count_trump == 2) */
+    {
+      if (has_trump[0] && has_trump[1])
+      {
+        if (cards[0].value_ > cards[1].value_)
+          index = TURN_PLAYER_1;
+        
+        else
+          index = TURN_PLAYER_2;
+      }
+        
+      else if (has_trump[0] && has_trump[2])
+      {
+        if (cards[0].value_ > cards[2].value_)
+          index = TURN_PLAYER_1;
+        
+        else
+          index = TURN_PLAYER_3;
+      }
+        
+      else /* if (has_trump[1] && has_trump[2]) */
+      {
+        if (cards[1].value_ > cards[2].value_)
+          index = TURN_PLAYER_2;
+        
+        else
+          index = TURN_PLAYER_3;
+      }
+    }
   }
   
   return index;
