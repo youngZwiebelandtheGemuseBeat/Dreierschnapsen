@@ -288,9 +288,9 @@ int main(int argc, char* argv[])
 //  int points_A              = 0;
 //  int points_B              = 0;
 //  int points_C              = 0;
-  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, TRUE},
-                                      {"Hansi ", 0, TRUE},    // CPU
-                                      {"Franzi", 0, TRUE}};   // CPU
+  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
+                                      {"Hansi ", 0, FALSE},    // CPU
+                                      {"Franzi", 0, FALSE}};   // CPU
   int counter_players       = 0;
   int go_on                 = TRUE;
   int check_continue[QUANTITY_PLAYERS] = {0, 0, 0};
@@ -3762,15 +3762,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     
     i = 0;
     
-//    nextAndPoints(&start, buffer_start, hands[player[i] MINUS_ONE][position[i]],
-//                  (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
-//                  (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
-//                  &points_call, &points_opponents,
-//                  &points[turn[0] MINUS_ONE], &points[turn[1] MINUS_ONE],
-//                  &points[turn[2] MINUS_ONE], /*order*/turn);
-    
-    // probier'ma's aus - turn[] bleibt unverändert (3979)
-    
     next_and_points = next(initial_order, player,
                            hands[player[i] MINUS_ONE][position[i]],
                            (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
@@ -3782,15 +3773,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
       points_call += next_and_points.points_;
     else
       points_opponents += next_and_points.points_;
-    
-    // next_and_points.points_ = 0;    // will be done further down
-    
-//    nextAndPoints(&start, buffer_start, hands[player[i] MINUS_ONE][position[i]],
-//                  (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
-//                  (hands)[player[i + 2] MINUS_ONE][position[i + 2]],
-//                  &points_call, &points_opponents,
-//                  &points[player[0] MINUS_ONE], &points[player[1] MINUS_ONE],
-//                  &points[player[2] MINUS_ONE], /*order*/player);
     
     getCall(start, &call, &answer_1, &answer_2);
     
@@ -4078,7 +4060,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     }
   }
   
-  else /* caller wins (modeGamw() = player 1) */
+  else /* caller wins (modeGame() = player 1) */
   {
     if (points_opponents == 0)
     {
@@ -13962,7 +13944,7 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
     {
 //      printf(" and wins!\n");
       
-      next.winner_ = player[0];
+      next.winner_ = initial_order[0]; // player[0];
     }
 
     // caller_mode called round and loses
@@ -14000,7 +13982,7 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
     {
 //      printf(" and wins!\n");
       
-      next.winner_ = player[0];
+      next.winner_ = initial_order[0]; // player[0];
     }
     
     else
@@ -14028,7 +14010,7 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
     {
 //      printf(" and wins!\n");
       
-      next.winner_ = player[0];
+      next.winner_ = initial_order[0]; // player[0];
     }
     
     else
