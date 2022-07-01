@@ -2252,6 +2252,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
   char input_CPU = '\0';
   
   Points next_and_points = {0, 0, 0};
+  int bool_trumped_already = FALSE;
   
   for (counter_turns = 0; counter_turns < MAXIMUM_TURNS; counter_turns++)
   {
@@ -3374,7 +3375,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
             }
           }
           
-          else
+          else /* if (i == 2) */
           {
             if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
                 == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
@@ -3403,7 +3404,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
             }
           }
           
-          else
+          else /* if (i == 2) */
           {
             if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
                 && (hands)[player[i] MINUS_ONE][counter_cards].suit_
@@ -3513,7 +3514,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            else    // second to answer
+            else /* (i == 1) */   // second to answer
             {
               if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
                   == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
@@ -3560,16 +3561,21 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
             {
               while (players_commands[i][counter_command] != '\0')
               {
-                if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
+                if ((hands)[player[i] MINUS_ONE][counter_cards].value_ >
                     /* called card */ hands[player[0] MINUS_ONE][position[0]].value_)
                 {
-                  
-                }
-                else
-                {
+                  printf("%s %d - %s %d\n", hands[player[0] MINUS_ONE][position[0]].suit_,
+                         hands[player[0] MINUS_ONE][position[0]].value_,
+                         (hands)[player[i] MINUS_ONE][counter_cards].suit_,
+                         (hands)[player[i] MINUS_ONE][counter_cards].value_);
                   buffer_higher[counter_cards] = players_commands[i][counter_cards];
                   buffer_higher[counter_cards ADD_ONE] = '\0';
                   counter_cards++;
+                  
+                  if (player[0] == initial_order[0])
+                  {
+                    bool_trumped_already = TRUE;
+                  }
                 }
                 counter_command++;
               }
@@ -3597,22 +3603,31 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
             
             if (count_suit > 0)
             {
-              while (players_commands[i][counter_command] != '\0')
+              if (bool_trumped_already == FALSE)
               {
-                if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                    /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
-                    || (hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                    /* answer 1's card */ hands[player[i - 2] MINUS_ONE][position[1/*0*/]].value_)
+                while (players_commands[i][counter_command] != '\0')
                 {
-                  
-                }
-                else
-                {
-                  buffer_higher[counter_cards] = players_commands[i][counter_cards];
-                  buffer_higher[counter_cards ADD_ONE] = '\0';
-                  counter_cards++;
-                }
+                  // has to trump caller if possible
+                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
+                      /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
+                      || (hands)[player[i] MINUS_ONE][counter_cards].value_ <
+                      /* answer 1's card */ hands[player[i - 1] MINUS_ONE][position[1/*0*/]].value_)
+                  {
+
+                  }
+                  else
+                  {
+                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
+                    buffer_higher[counter_cards ADD_ONE] = '\0';
+                    counter_cards++;
+                  }
                 counter_command++;
+                }
+              }
+
+              else
+              {
+                // no need to trump caller
               }
             }
             
@@ -3925,6 +3940,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     next_and_points.points_ = 0;
     next_and_points.winner_ = 0;
     next_and_points.caller_ = 0;
+    bool_trumped_already = FALSE;
     
     if (points_call >= 66)
     {
