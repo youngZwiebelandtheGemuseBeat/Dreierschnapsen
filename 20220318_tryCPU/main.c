@@ -193,6 +193,8 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
 int habSelbst(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
+Points modeCaller(Card** hands, int start, char* trump, Player* players,
+                  int* order);
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
 Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players);
 Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trump,
@@ -240,6 +242,7 @@ char checkCPU(Player to_check, int instance, char* commands);
 Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2);
 int highestCard(Card* cards);
+void printBummerl(Player* players);
 
 //-----------------------------------------------------------------------------
 ///
@@ -288,9 +291,9 @@ int main(int argc, char* argv[])
 //  int points_A              = 0;
 //  int points_B              = 0;
 //  int points_C              = 0;
-  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
-                                      {"Hansi ", 0, FALSE},    // CPU
-                                      {"Franzi", 0, FALSE}};   // CPU
+  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, TRUE},
+                                      {"Hansi ", 0, TRUE},    // CPU
+                                      {"Franzi", 0, TRUE}};   // CPU
   int counter_players       = 0;
   int go_on                 = TRUE;
   int check_continue[QUANTITY_PLAYERS] = {0, 0, 0};
@@ -499,55 +502,58 @@ int main(int argc, char* argv[])
         } while (!(players[0].points_ >= 24) && !(players[1].points_ >= 24)
                  && !(players[2].points_ >= 24));   // end loop Bummerl
         
-        // another Bummerl? - TODO: put comments back in after finished job
+        printBummerl(players);
+        
+        // another Bummerl?
         if (players[0].points_ >= 24 || players[1].points_ >= 24
             || players[2].points_ >= 24)
         {
           // who wants to continue
-//          for (counter_players = 0; counter_players < QUANTITY_PLAYERS; counter_players++)
-//          {
-//            // check: human or CPU
-//            if (players[counter_players].CPU_bool_ == TRUE)
-//              check_continue[counter_players] = FALSE/*TRUE*/;
-//            else
-//              check_continue[counter_players]
-//                = checkContinue(players[counter_players].name_);
-//          }
-//          // all three
-//          if (check_continue[0] == TRUE
-//              && check_continue[0] == check_continue[1]
-//              && check_continue[1] == check_continue[2])
-//          {
-//            printf("Let's play another Bummerl!\n");
-//            go_on = TRUE;
-//
-//            // with each new Bummerl first to call changes
-//            swapOrder(players);
-//          }
-//
-//          // at this point we could "look for other player(s)" in case
-//          // not all three players quitting - for now it's "all or none"
-//          /*else*/ if (check_continue[0] != TRUE)
-//          {
-//            printf("%s quit.", players[0].name_);
-//            go_on = FALSE;
-//          }
-//
-//          /*else*/ if (check_continue[1] != TRUE)
-//          {
-//            printf("%s quit.", players[1].name_);
-//            go_on = FALSE;
-//          }
-//
-//          /*else*/ if (check_continue[2] != TRUE)
-//          {
-//            printf("%s quit.", players[2].name_);
-//            go_on = FALSE;
-//          }
+          for (counter_players = 0; counter_players < QUANTITY_PLAYERS; counter_players++)
+          {
+            // check: human or CPU
+            if (players[counter_players].CPU_bool_ == TRUE)
+              check_continue[counter_players] = FALSE/*TRUE*/;
+            else
+              check_continue[counter_players]
+                = checkContinue(players[counter_players].name_);
+          }
+          // all three
+          if (check_continue[0] == TRUE
+              && check_continue[0] == check_continue[1]
+              && check_continue[1] == check_continue[2])
+          {
+            printf("Let's play another Bummerl!\n");
+            go_on = TRUE;
+
+            // with each new Bummerl first to call changes
+            swapOrder(players);
+          }
+
+          // at this point we could "look for other player(s)" in case
+          // not all three players quitting - for now it's "all or none"
+          /*else*/ if (check_continue[0] != TRUE)
+          {
+            printf("%s quit.\n", players[0].name_);
+            go_on = FALSE;
+          }
+
+          /*else*/ if (check_continue[1] != TRUE)
+          {
+            printf("%s quit.\n", players[1].name_);
+            go_on = FALSE;
+          }
+
+          /*else*/ if (check_continue[2] != TRUE)
+          {
+            printf("%s quit.\n", players[2].name_);
+            go_on = FALSE;
+          }
           
           go_on = FALSE;
         }
       } while (go_on == TRUE);    // end loop: another Bummerl?
+      
     } // end if (SUCCESS)
     
     else
@@ -2262,7 +2268,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     // 3 cards each round
     for (i = 0; i < 3; i++)
     {
-//      printHand(hands[player[i] MINUS_ONE], HAND, turn[i], players[turn[/*order[i]*/ i] MINUS_ONE].name_);
       printHand(hands[player[i] MINUS_ONE], HAND, player[i], players[player[/*order[i]*/ i] MINUS_ONE].name_);
       printf("                         ^     ^     ^     ^     ^     ^  \n");
       printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
@@ -2270,14 +2275,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
       // highlight 20 & 40
       if (i == 0)
         pairs = highlight(hands[player[i] MINUS_ONE], player[i], position_Q);
-      
-//      printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
-      // this is how you access pairs
-//      printf("[%s %s] %d\n", hands[player[i] MINUS_ONE][position_Q[0]].sign_,
-//             hands[player[i] MINUS_ONE][position_Q[0]].image_,
-//             hands[player[i] MINUS_ONE][position_Q[0]].is_trump_);
-      // reset after use .. maybe not right here
-//      pairs = resetPairs(position_Q);
       
       printf("---------------------------------------------------------------\n");
       
@@ -3782,7 +3779,31 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
                            (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
                            (hands)[player[i + 2] MINUS_ONE][position[i + 2]]);
     
+    // ...
+    if (initial_order[0] == TURN_PLAYER_2)
+    {
+      if (next_and_points.winner_ == 2)
+        next_and_points.winner_ = TURN_PLAYER_3;
+      else if (next_and_points.winner_ == 3)
+        next_and_points.winner_ = TURN_PLAYER_1;
+      else
+        next_and_points.winner_ = TURN_PLAYER_2;
+    }
+    
+    if (initial_order[0] == TURN_PLAYER_3)
+    {
+      if (next_and_points.winner_ == 2)
+        next_and_points.winner_ = TURN_PLAYER_1;
+      else if (next_and_points.winner_ == 3)
+        next_and_points.winner_ = TURN_PLAYER_2;
+      else
+        next_and_points.winner_ = TURN_PLAYER_3;
+    }
+    // ...
+    
     start = next_and_points.winner_;
+    
+    // TODO: irgendwas passt nicht, wenn in weiterer Folge wer anderes Rufer ist
     
     if (start == initial_order[0])
       points_call += next_and_points.points_;
@@ -3790,145 +3811,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
       points_opponents += next_and_points.points_;
     
     getCall(start, &call, &answer_1, &answer_2);
-    
-//    // player 1 wins but did not call
-//    if (player[0] != buffer_start && start == buffer_start)
-//    {
-//      // player 2 called
-//      if (player[0] == TURN_PLAYER_2)
-//      {
-////        points_call += points[2];
-////        points_opponents += (points[0] + points[1]);
-//        points_call += points[0];
-//        points_opponents += (points[1] + points[2]);
-//
-//        // case: player 2 called 20 or 40
-//        if (points_opponents > 0)
-//        {
-//          points_opponents += points_pair;
-//        }
-//      }
-//      // player 3 called
-//      if (player[0] == TURN_PLAYER_3)
-//      {
-//        points_call += points[1];
-//        points_opponents += (points[0] + points[2]);
-//
-//        // case: player 3 called 20 or 40
-//        if (points_opponents > 0)
-//        {
-//          points_opponents += points_pair;
-//        }
-//      }
-//    }
-//
-//    // player 1 wins and called
-//    else if (player[0] == buffer_start && start == buffer_start)
-//    {
-////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-////             points[0], points[1],
-////             points[2]);
-//      points_call       += points[0];
-//      points_opponents  += points[1] + points[2];
-//
-//      if (points_call > 0)
-//      {
-//        points_call += points_pair;
-//      }
-//    }
-//
-//    // caller of recent round wins
-//    else if (player[0] == start /* && player[0] != buffer_start */)
-//    {
-////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-////             points[0], points[1],
-////             points[2]);
-//      points_call       += points[1];
-//      points_opponents  += points[0] + points[2];
-//
-//      // player 1 called
-//      if (player[0] == buffer_start)
-//      {
-//        if (points_call > 0)   // naja wenn eh gestochen worden ist,
-//                                    // ist diese condition wharscheinlich
-//                                    // hinfällig
-//        {
-//          points_call += points_pair;
-//        }
-//      }
-//
-//      // one of the opponents called
-//      else if (player[0] != buffer_start)
-//      {
-//        if (points_opponents > 0)   // naja wenn eh gestochen worden ist,
-//                                    // ist diese condition wharscheinlich
-//                                    // hinfällig
-//        {
-//          points_opponents += points_pair;
-//        }
-//      }
-//    }
-//
-//    // player 2 aka. first answer of recent round wins
-////    else if (player[1] == buffer_start)
-//    else if (player[1] == start /* && player[0] != buffer_start */)
-//    {
-////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-////             points[0], points[1],
-////             points[2]);
-//      points_call       += points[0];
-//      points_opponents  += points[1] + points[2];
-//
-//      // player 1 called
-//      if (player[0] == buffer_start)
-//      {
-//        if (points_call > 0)
-//        {
-//          points_call += points_pair;
-//        }
-//      }
-//
-//      // one of the opponents called
-//      else if (player[0] != buffer_start)
-//      {
-//        if (points_opponents > 0)
-//        {
-//          points_opponents += points_pair;
-//        }
-//      }
-//    }
-//
-//    // player 3 aka. second answer of recent round wins
-//    else if (player[2] == start)
-//    {
-////      printf("points_1: %d\npoints_2: %d\npoints_3: %d\n",
-////             points[0], points[1],
-////             points[2]);
-//      points_call       += points[0];
-//      points_opponents  += points[1] + points[2];
-//
-//      // player 1 called
-//      if (player[0] == buffer_start)
-//      {
-//        if (points_call > 0)   // naja wenn eh gestochen worden ist,
-//                                    // ist diese condition wharscheinlich
-//                                    // hinfällig
-//        {
-//          points_call += points_pair;
-//        }
-//      }
-//
-//      // one of the opponents called
-//      else if (player[0] != buffer_start)
-//      {
-//        if (points_opponents > 0)   // naja wenn eh gestochen worden ist,
-//                                    // ist diese condition wharscheinlich
-//                                    // hinfällig
-//        {
-//          points_opponents += points_pair;
-//        }
-//      }
-//    }
     
     // reset (points) for next round
     points[0] = 0;
@@ -4028,11 +3910,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
       players_commands[1] = commands_1;
       players_commands[2] = commands_2;
     }
-    
-    
-//    turn[0]   = call;
-//    turn[1]   = answer_1;
-//    turn[2]   = answer_2;
     
     // print points
     printf("player:  %d\nopponents:  %d\n", points_call, points_opponents);
@@ -13947,8 +13824,8 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
   Card cards_on_table[QUANTITY_PLAYERS] = {call, answer_1, answer_2}; // index corresponds to player[]
   Points next = {0, 0, 0};
   
-//  printf("\n Trumps on the table: %d %d %d\n", cards_on_table[0].is_trump_,
-//         cards_on_table[1].is_trump_, cards_on_table[2].is_trump_);
+  printf("\n Trumps on the table: %d %d %d\n", cards_on_table[0].is_trump_,
+         cards_on_table[1].is_trump_, cards_on_table[2].is_trump_);
   
   // caller_mode calls (1)
   if (player[0] == initial_order[0])        // tells us who called recent round
@@ -14026,7 +13903,8 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
     {
 //      printf(" and wins!\n");
       
-      next.winner_ = initial_order[0]; // player[0];
+//      next.winner_ = initial_order[0]; // player[0];
+      next.winner_ = player[2];
     }
     
     else
@@ -14047,7 +13925,8 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
       {
 //        printf(" Player %d.\n", player[2]);
         
-        next.winner_ = initial_order[1]; // player[2];
+//        next.winner_ = initial_order[1]; // player[2];
+        next.winner_ = player[1];
       }
     }
   }
@@ -15046,4 +14925,70 @@ void printTable(Player players)
 {
 //  for (int i = 0; i < 3; i++)
 //    printf("[%s %s] ", players[i].sign_, deck[counter].image_);
+}
+
+Points modeCaller(Card** hands, int start, char* trump, Player* players,
+                  int* order)
+{
+  Points points_and_next = {1, 0, 1};
+  // who calls - who is opponent
+  
+  // caller's input
+  
+  // opponents' inputs
+    // opponent_1 must trump call
+    //
+    // opponent_2 must trump call if opponent_1 could not but does not have to
+    // trump opponent_1 if they have already trumped call
+  
+  // distribute points
+  
+  // return points and the next one to call
+  
+  return points_and_next;
+}
+
+void printBummerl(Player* players)
+{
+  if (players[0].points_ != players[1].points_
+      && players[1].points_ != players[2].points_
+      && players[0].points_ != players[2].points_)
+  {
+    if (players[0].points_ < players[1].points_
+        && players[0].points_ < players[2].points_)
+      printf("%s gains a Bummerl.\n", players[0].name_);
+    else if (players[1].points_ < players[2].points_
+             && players[1].points_ < players[0].points_)
+      printf("%s gains a Bummerl.\n", players[1].name_);
+    else /* if (players[2].points_ < players[0].points_
+             && players[2].points_ < players[1].points_) */
+      printf("%s gains a Bummerl.\n", players[2].name_);
+  }
+  
+  else if (players[0].points_ == players[1].points_)
+  {
+    if (players[0].points_ < players[2].points_)
+      printf("%s and %s gain a Bummerl.\n",
+             players[0].name_, players[1].name_);
+    else
+      printf("%s gains a Bummerl.\n", players[2].name_);
+  }
+  
+  else if (players[0].points_ == players[2].points_)
+  {
+    if (players[0].points_ < players[1].points_)
+      printf("%s and %s gain a Bummerl.\n",
+             players[0].name_, players[2].name_);
+    else
+      printf("%s gains a Bummerl.\n", players[1].name_);
+  }
+  
+  else /* if (players[1].points_ == players[2].points_) */
+  {
+    if (players[1].points_ < players[0].points_)
+      printf("%s and %s gain a Bummerl.\n",
+             players[1].name_, players[2].name_);
+    else
+      printf("%s gains a Bummerl.\n", players[0].name_);
+  }
 }
