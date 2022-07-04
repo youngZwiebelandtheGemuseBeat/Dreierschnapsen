@@ -79,6 +79,7 @@
 #define INSTANCE_POLAR    2
 #define INSTANCE_CARD     6
 #define RETRY           'R'
+#define MAXIMUM_POINTS 66
 static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
 static const char COMMANDS_POLAR[2] = {'y', 'n'};
 static const char COMMANDS_TRUMP[5] = {0, 1, 2, 3, 4};
@@ -193,7 +194,8 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
 int habSelbst(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
-Points modeCaller(Card** hands, int start, char* trump, Player* players,
+Points modeRufer(Card** hands, int start, char* trump, Player* players);
+Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order);
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
 Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players);
@@ -243,6 +245,8 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2);
 int highestCard(Card* cards);
 void printBummerl(Player* players);
+void distributePoints(int points_call, int points_opponents,
+                      Points* points_and_caller);
 
 //-----------------------------------------------------------------------------
 ///
@@ -1186,8 +1190,10 @@ Points playGame(Card* deck, Card* deck_dealer,
   {
     case GAME:
       // 1 - 3 points
-      points_and_caller = modeGame(hands, start, decodeSuit(*trump), players,
-                                   order);
+//      points_and_caller = modeGame(hands, start, decodeSuit(*trump), players,
+//                                   order);
+      points_and_caller = switchRufer(hands, start, decodeSuit(*trump),
+                                      players, order);
       return points_and_caller;
       break;
       
@@ -14811,7 +14817,7 @@ int checkContinue(char* player)
 
 void swapOrder(Player* players)
 {
-  Player buffer = {"Hausdepp", 555};      // maybe unprofessional choice
+  Player buffer = {"Hausdepp", 555};      // maybe an unprofessional choice
   int counter = 0;
   
   strcpy(buffer.name_, players[0].name_);
@@ -14915,23 +14921,120 @@ char checkCPU(Player to_check, int instance, char* commands_possible)
   }
 }
 
-//int humanOrCPU()
-//{
-//  return 0;
-//  return HUMAN;
-//}
-
 void printTable(Player players)
 {
 //  for (int i = 0; i < 3; i++)
 //    printf("[%s %s] ", players[i].sign_, deck[counter].image_);
 }
 
-Points modeCaller(Card** hands, int start, char* trump, Player* players,
+// switchRufer()
+// sets order and calls modeRufer()
+// call like this:
+//                next_and_points
+//                  = switchRufer(hands, start, decodeSuit(*trump), players, order)
+//
+Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order)
 {
-  Points points_and_next = {1, 0, 1};
-  // who calls - who is opponent
+  Points next_and_points = {start, 0, 0};
+  Points points_and_caller = {start, 0, 0};
+  int points_caller = 0;
+  int points_opponents = 0;
+  int counter = 0;
+  
+  // who called mode - who is opponent
+  
+  // Player 1 called mode
+  if (order[0] ADD_ONE == TURN_PLAYER_1)
+  {
+    next_and_points.caller_ = TURN_PLAYER_1;
+    // start = TURN_PLAYER_1;
+    
+    while (points_caller < MAXIMUM_POINTS
+           && points_opponents < MAXIMUM_POINTS
+           && counter < MAXIMUM_TURNS)
+    {
+      // modeRufer() will therefore be just one turn
+      next_and_points
+        = modeRufer(hands, next_and_points.caller_, trump, players);
+      next_and_points.caller_ = next_and_points.winner_;
+      
+      // handle points
+      
+      // caller wins turn
+      if (next_and_points.winner_ == TURN_PLAYER_1)
+      {
+        points_caller += next_and_points.points_;
+      }
+      
+      // opponents win turn
+      else
+      {
+        points_opponents += next_and_points.points_;
+      }
+      
+      counter++;
+    } // end of while()
+    
+    distributePoints(points_caller, points_opponents, &points_and_caller);
+  }
+  
+  // Player 2 called mode
+  else if (order[0] ADD_ONE == TURN_PLAYER_2)
+  {
+    next_and_points.caller_ = TURN_PLAYER_2;
+    // start = TURN_PLAYER_2;
+    
+    // and here we will call the mode itself
+    next_and_points
+      = modeRufer(hands, next_and_points.caller_, trump, players);
+    
+    // caller wins
+    if (next_and_points.winner_ == TURN_PLAYER_2)
+    {
+      
+    }
+    
+    // opponents win
+    else
+    {
+      
+    }
+  }
+  
+  // Player 3 called mode
+  else /* if (order[0] ADD_ONE == TURN_PLAYER_3) */
+  {
+    next_and_points.caller_ = TURN_PLAYER_3;
+    // start = TURN_PLAYER_3;
+    
+    // and here we will call the mode itself
+    next_and_points
+      = modeRufer(hands, next_and_points.caller_, trump, players);
+    
+    // caller wins
+    if (next_and_points.winner_ == TURN_PLAYER_3)
+    {
+      
+    }
+    
+    // opponents win
+    else
+    {
+      
+    }
+  }
+  
+  return points_and_caller;
+}
+
+// One turn only, so it has to be called in a loop. Maybe this way I can clean
+// it up a bit and finally make it work
+Points modeRufer(Card** hands, int start, char* trump, Player* players)
+{
+  int player[3] = {start, 0, 0};
+  getCall(start, &player[0], &player[1], &player[2]);
+  Points points_and_next = {start, 0, 0};
   
   // caller's input
   
@@ -14941,9 +15044,27 @@ Points modeCaller(Card** hands, int start, char* trump, Player* players,
     // opponent_2 must trump call if opponent_1 could not but does not have to
     // trump opponent_1 if they have already trumped call
   
-  // distribute points
+  // who wins this round?
+    // (1)
+  if (1)
+  {
+    points_and_next.winner_ = player[0];
+  }
   
-  // return points and the next one to call
+    // (2)
+  else if (0)
+  {
+    points_and_next.winner_ = player[1];
+  }
+    // (3)
+  
+  else /* if () */
+  {
+    points_and_next.winner_ = player[2];
+  }
+  
+  // add point distribution function
+  points_and_next.points_ = 30;
   
   return points_and_next;
 }
@@ -14956,13 +15077,28 @@ void printBummerl(Player* players)
   {
     if (players[0].points_ < players[1].points_
         && players[0].points_ < players[2].points_)
-      printf("%s gains a Bummerl.\n", players[0].name_);
+    {
+      if (players[0].points_ == 0)
+      {
+        printf("%s gains two Bummerl.\n", players[0].name_);
+        // add two Bummerl to score_bummerl
+      }
+      else
+      {
+        printf("%s gains a Bummerl.\n", players[0].name_);
+        // add a Bummerl to score_bummerl
+      }
+    }
     else if (players[1].points_ < players[2].points_
              && players[1].points_ < players[0].points_)
+    {
       printf("%s gains a Bummerl.\n", players[1].name_);
+    }
     else /* if (players[2].points_ < players[0].points_
              && players[2].points_ < players[1].points_) */
+    {
       printf("%s gains a Bummerl.\n", players[2].name_);
+    }
   }
   
   else if (players[0].points_ == players[1].points_)
@@ -14990,5 +15126,72 @@ void printBummerl(Player* players)
              players[1].name_, players[2].name_);
     else
       printf("%s gains a Bummerl.\n", players[0].name_);
+  }
+}
+
+void distributePoints(int points_call, int points_opponents,
+                        Points* points_and_caller)
+{
+  if (points_call < 66)
+  {
+    if (points_call == 0)
+    {
+      (*points_and_caller).points_ = 3;
+      // points_and_caller.caller_ = IRGENDWER;
+      (*points_and_caller).winner_ = OPPONENTS_WIN;
+      printf("Opponents win 3 points!\n");
+      printf("---------------------------------------------------------------\n");
+      // return *points_and_caller;
+    }
+    
+    else if (points_call < 33)
+    {
+      (*points_and_caller).points_ = 2;
+      // points_and_caller.caller_ = IRGENDWER;
+      (*points_and_caller).winner_ = OPPONENTS_WIN;
+      printf("Opponents win 2 points!\n");
+      printf("---------------------------------------------------------------\n");
+      // return *points_and_caller;
+    }
+    
+    else /*if (points_call > 33)*/
+    {
+      (*points_and_caller).points_ = 1;
+      // points_and_caller.caller_ = IRGENDWER;
+      (*points_and_caller).winner_ = OPPONENTS_WIN;
+      printf("Opponents win 1 points!\n");
+      printf("---------------------------------------------------------------\n");
+      // return *points_and_caller;
+    }
+  }
+  
+  else /* caller wins (modeGame() = player 1) */
+  {
+    if (points_opponents == 0)
+    {
+      (*points_and_caller).points_ = 3;
+      (*points_and_caller).winner_ = TURN_PLAYER_1 /*buffer_start*/;
+      printf("Player %d wins 3 points!\n", (*points_and_caller).winner_);
+      printf("---------------------------------------------------------------\n");
+      // return *points_and_caller;
+    }
+    
+    else if (points_opponents < 33)
+    {
+      (*points_and_caller).points_ = 2;
+      (*points_and_caller).winner_ = TURN_PLAYER_1;
+      printf("Player %d wins 2 points!\n", (*points_and_caller).winner_);
+      printf("---------------------------------------------------------------\n");
+      // return *points_and_caller;
+    }
+    
+    else /*if (points_opponent > 33)*/
+    {
+      (*points_and_caller).points_ = 1;
+      (*points_and_caller).winner_ = TURN_PLAYER_1;
+      printf("Player %d wins 1 points!\n", (*points_and_caller).winner_);
+      printf("---------------------------------------------------------------\n");
+      // return *points_and_caller;
+    }
   }
 }
