@@ -15083,7 +15083,7 @@ void printBummerl(Player* players)
       if (players[0].points_ == 0)
       {
         printf("%s gains two Bummerl.\n", players[0].name_);
-        // add two Bummerl to score_bummerl[0]
+        // add two Bummerl to score_bummerl
       }
       else
       {
