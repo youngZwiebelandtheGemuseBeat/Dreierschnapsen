@@ -15071,10 +15071,12 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
 
 void printBummerl(Player* players)
 {
+  // all different
   if (players[0].points_ != players[1].points_
       && players[1].points_ != players[2].points_
       && players[0].points_ != players[2].points_)
   {
+    // Bummerl goes to player 1
     if (players[0].points_ < players[1].points_
         && players[0].points_ < players[2].points_)
     {
@@ -15089,43 +15091,145 @@ void printBummerl(Player* players)
         // add a Bummerl to score_bummerl
       }
     }
+    
+    // Bummerl goes to player 2
     else if (players[1].points_ < players[2].points_
              && players[1].points_ < players[0].points_)
     {
-      printf("%s gains a Bummerl.\n", players[1].name_);
+      if (players[1].points_ == 0)
+      {
+        printf("%s gains two Bummerl.\n", players[1].name_);
+        // add two Bummerl to score_bummerl
+      }
+      
+      else
+      {
+        printf("%s gains a Bummerl.\n", players[1].name_);
+        // add a Bummerl to score_bummerl
+      }
     }
+    
+    // Bummerl goes to player 3
     else /* if (players[2].points_ < players[0].points_
              && players[2].points_ < players[1].points_) */
     {
-      printf("%s gains a Bummerl.\n", players[2].name_);
+      if (players[2].points_ == 0)
+      {
+        printf("%s gains two Bummerl.\n", players[2].name_);
+        // add two Bummerl to score_bummerl
+      }
+      
+      else
+      {
+        printf("%s gains a Bummerl.\n", players[2].name_);
+        // add a Bummerl to score_bummerl
+      }
     }
   }
   
+  // player 1 and player 2 have identical points
   else if (players[0].points_ == players[1].points_)
   {
     if (players[0].points_ < players[2].points_)
-      printf("%s and %s gain a Bummerl.\n",
-             players[0].name_, players[1].name_);
+    {
+      if (players[0].points_ == 0)
+      {
+        printf("%s and %s gain two Bummerl each.\n",
+               players[0].name_, players[1].name_);
+        // add two Bummerl to their scores
+      }
+      
+      else
+      {
+        printf("%s and %s gain a Bummerl each.\n",
+               players[0].name_, players[1].name_);
+        // add a Bummerl to their scores
+      }
+    }
     else
-      printf("%s gains a Bummerl.\n", players[2].name_);
+    {
+      if (players[2].points_ == 0)
+      {
+        printf("%s gains two Bummerl.\n", players[2].name_);
+        // add two Bummerl to score_bummerl
+      }
+      
+      else
+      {
+        printf("%s gains a Bummerl.\n", players[2].name_);
+        // add a Bummerl to score_bummerl
+      }
+    }
   }
   
+  // player 1 and player 3 have identical points
   else if (players[0].points_ == players[2].points_)
   {
     if (players[0].points_ < players[1].points_)
-      printf("%s and %s gain a Bummerl.\n",
-             players[0].name_, players[2].name_);
+    {
+      if (players[0].points_ == 0)
+      {
+        printf("%s and %s gain two Bummerl each.\n",
+               players[0].name_, players[2].name_);
+        // TODO
+      }
+      
+      else
+      {
+        printf("%s and %s gain a Bummerl each.\n",
+               players[0].name_, players[2].name_);
+        // TODO
+      }
+    }
     else
-      printf("%s gains a Bummerl.\n", players[1].name_);
+    {
+      if (players[1].points_ == 0)
+      {
+        printf("%s gains two Bummerl.\n", players[1].name_);
+        // TODO
+      }
+      
+      else
+      {
+        printf("%s gains a Bummerl.\n", players[1].name_);
+        // TODO
+      }
+    }
   }
   
+  // player 2 and player 3 have identical points
   else /* if (players[1].points_ == players[2].points_) */
   {
     if (players[1].points_ < players[0].points_)
-      printf("%s and %s gain a Bummerl.\n",
-             players[1].name_, players[2].name_);
+    {
+      if (players[1].points_ == 0)
+      {
+        printf("%s and %s gain two Bummerl each.\n",
+               players[1].name_, players[2].name_);
+        // TODO
+      }
+      
+      else
+      {
+        printf("%s and %s gain a Bummerl each.\n",
+               players[1].name_, players[2].name_);
+        // TODO
+      }
+    }
     else
-      printf("%s gains a Bummerl.\n", players[0].name_);
+    {
+      if (players[0].points_ == 0)
+      {
+        printf("%s gains two Bummerl.\n", players[0].name_);
+        // TODO
+      }
+      
+      else
+      {
+        printf("%s gains a Bummerl.\n", players[0].name_);
+        // TODO
+      }
+    }
   }
 }
 
