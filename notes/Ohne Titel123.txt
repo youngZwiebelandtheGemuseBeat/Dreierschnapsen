@@ -1,0 +1,17 @@
+Demodulator: 	Was ist das?
+SNR_HF		Demodulator-Eingang
+SNR_NF		Demodulator-Ausgang
+Bandbreite:	welche Situationen bzw. Modulationen
+
+Leistungsgrößen	10log_10
+
+Pegelgrößen 
+
+…
+
+Nonolen?
+Triolen in ViertelTriolen - siehe Fill-Bei mir z'Haus: skt skt skt tkt tkt tkt
+s .. snare
+k .. kick
+t .. tom
+
