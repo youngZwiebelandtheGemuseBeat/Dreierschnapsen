@@ -1,4 +1,4 @@
 # 20220705_Dreierschnapsen_tryCPU
 finalizing Dreierschnapsen (C)
 
-The folder contains most resent files and changes.
+The folder "20220318_tryCPU" contains most resent files and changes, basically everything needed.
