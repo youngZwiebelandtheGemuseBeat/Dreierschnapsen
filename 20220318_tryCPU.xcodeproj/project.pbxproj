@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8174361027E521BB001F2286 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 8174360F27E521BB001F2286 /* main.c */; };
+		81A6CFAE2875A36C00413C49 /* modeGame_extractions.txt in Sources */ = {isa = PBXBuildFile; fileRef = 81A6CFAD2875A36C00413C49 /* modeGame_extractions.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		8174360527E52164001F2286 /* 20220318_tryCPU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 20220318_tryCPU; sourceTree = BUILT_PRODUCTS_DIR; };
 		8174360F27E521BB001F2286 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		81A6CFAD2875A36C00413C49 /* modeGame_extractions.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = modeGame_extractions.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				8174360F27E521BB001F2286 /* main.c */,
+				81A6CFAD2875A36C00413C49 /* modeGame_extractions.txt */,
 			);
 			path = 20220318_tryCPU;
 			sourceTree = "<group>";
@@ -120,6 +123,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8174361027E521BB001F2286 /* main.c in Sources */,
+				81A6CFAE2875A36C00413C49 /* modeGame_extractions.txt in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

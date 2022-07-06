@@ -1,0 +1,191 @@
+Draußen:
+
+if (i > 3) // exit condition: 20 or 40 shown only - enough & exit
+{
+  printf("points caller: %d\n", points_call);
+  printf("points opponents: %d\n", points_opponents);
+  break;
+}
+// --------------------------------------------------------------------------------
+
+i = 0;
+
+next_and_points = next(initial_order, player,
+                       hands[player[i] MINUS_ONE][position[i]],
+                       (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
+                       (hands)[player[i + 2] MINUS_ONE][position[i + 2]]);
+
+start = next_and_points.winner_; // retournier'I auf next_and_points.caller_
+
+getCall(start, &call, &answer_1, &answer_2);
+
+// reset (points) for next round
+points[0] = 0;
+points[1] = 0;
+points[2] = 0;
+pairs = resetPairs(position_Q);
+resetHandlePairs(handle_pairs);
+points_pair = 0;
+next_and_points.points_ = 0;
+next_and_points.winner_ = 0;
+next_and_points.caller_ = 0;
+bool_trumped_already = FALSE;
+
+if (points_call >= 66)
+{
+//      points_and_caller = {};
+  break;
+}
+
+else if (points_opponents >= 66)
+{
+//      points_and_caller = {};
+  break;
+}
+
+// who has played the highest card calls next - and exactly this is the bitch here
+
+// may we do this here -----------------------
+removeCard(&hands[player[i] MINUS_ONE][position[i]]);
+removeCard(&hands[player[i + 1] MINUS_ONE][position[i + 1]]);
+removeCard(&hands[player[i + 2] MINUS_ONE][position[i + 2]]);
+// -------------------------------------------
+// write all left over cards onto commands
+
+// player 1
+counter_position = 0 ;
+for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+{
+  if ((hands)[player[i] MINUS_ONE][counter_cards].suit_ != NULL)
+  {
+    players_commands[i][counter_position] = commands[counter_cards];
+    counter_position++;
+  }
+}
+players_commands[i][counter_position] = '\0';
+
+// player 2
+counter_position = 0 ;
+for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+{
+  if ((hands)[player[i + 1] MINUS_ONE][counter_cards].suit_ != NULL)
+  {
+    players_commands[i + 1][counter_position] = commands[counter_cards];
+    counter_position++;
+  }
+}
+players_commands[i + 1][counter_position] = '\0';
+
+// player 3
+counter_position = 0 ;
+for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+{
+  if ((hands)[player[i + 2] MINUS_ONE][counter_cards].suit_ != NULL)
+  {
+    players_commands[i + 2][counter_position] = commands[counter_cards];
+    counter_position++;
+  }
+}
+players_commands[i + 2][counter_position] = '\0';
+// -------------------------------------------
+
+// sort players' order
+//    getCall(start, &call, &answer_1, &answer_2); -> copied to 3771
+
+player[0] = call;
+player[1] = answer_1;
+player[2] = answer_2;
+
+
+if (player[0] == TURN_PLAYER_1)
+{
+  players_commands[0] = commands_1;
+  players_commands[1] = commands_2;
+  players_commands[2] = commands_3;
+}
+
+if (player[0] == TURN_PLAYER_2)
+{
+  players_commands[0] = commands_2;
+  players_commands[1] = commands_3;
+  players_commands[2] = commands_1;
+}
+
+if (player[0] == TURN_PLAYER_3)
+{
+  players_commands[0] = commands_3;
+  players_commands[1] = commands_1;
+  players_commands[2] = commands_2;
+}
+
+// print points
+printf("player:  %d\nopponents:  %d\n", points_call, points_opponents);
+
+} // end for()
+
+// TODO: letzter Stuch bringt nix .. Call < 66 = TOT
+
+points_and_caller.caller_ = TURN_PLAYER_1;
+
+if (points_call < 66)
+{
+if (points_call == 0)
+{
+  printf("Opponents win 3 points!\n");
+  printf("---------------------------------------------------------------\n");
+  points_and_caller.points_ = 3;
+  // points_and_caller.caller_ = IRGENDWER;
+  points_and_caller.winner_ = OPPONENTS_WIN;
+  return points_and_caller;
+}
+
+else if (points_call < 33)
+{
+  printf("Opponents win 2 points!\n");
+  printf("---------------------------------------------------------------\n");
+  points_and_caller.points_ = 2;
+  // points_and_caller.caller_ = IRGENDWER;
+  points_and_caller.winner_ = OPPONENTS_WIN;
+  return points_and_caller;
+}
+
+else /*if (points_call > 33)*/
+{
+  printf("Opponents win 1 points!\n");
+  printf("---------------------------------------------------------------\n");
+  points_and_caller.points_ = 1;
+  // points_and_caller.caller_ = IRGENDWER;
+  points_and_caller.winner_ = OPPONENTS_WIN;
+  return points_and_caller;
+}
+}
+
+else /* caller wins (modeGame() = player 1) */
+{
+if (points_opponents == 0)
+{
+  printf("Player %d wins 3 points!\n", buffer_start);
+  printf("---------------------------------------------------------------\n");
+  points_and_caller.points_ = 3;
+  points_and_caller.winner_ = TURN_PLAYER_1 /*buffer_start*/;
+  return points_and_caller;
+}
+
+else if (points_opponents < 33)
+{
+  printf("Player %d wins 2 points!\n", buffer_start);
+  printf("---------------------------------------------------------------\n");
+  points_and_caller.points_ = 2;
+  points_and_caller.winner_ = TURN_PLAYER_1;
+  return points_and_caller;
+}
+
+else /*if (points_opponent > 33)*/
+{
+  printf("Player %d wins 1 points!\n", buffer_start);
+  printf("---------------------------------------------------------------\n");
+  points_and_caller.points_ = 1;
+  points_and_caller.winner_ = TURN_PLAYER_1;
+  return points_and_caller;
+}
+}

@@ -79,7 +79,8 @@
 #define INSTANCE_POLAR    2
 #define INSTANCE_CARD     6
 #define RETRY           'R'
-#define MAXIMUM_POINTS 66
+#define MAXIMUM_POINTS  66
+#define ENOUGH          5
 static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
 static const char COMMANDS_POLAR[2] = {'y', 'n'};
 static const char COMMANDS_TRUMP[5] = {0, 1, 2, 3, 4};
@@ -248,6 +249,7 @@ void printBummerl(Player* players);
 void distributePoints(int points_call, int points_opponents,
                       Points* points_and_caller);
 void sortOrderHands(int start, Card** hands, Card* caller_mode);
+void sortOrderPlayers(int start, Player* players, Player caller_mode);
 
 //-----------------------------------------------------------------------------
 ///
@@ -2375,7 +2377,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -2502,7 +2504,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -2686,7 +2688,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -2925,7 +2927,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -3216,7 +3218,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -3306,7 +3308,7 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -4198,7 +4200,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 }
               }
               
-              if (i == 5)
+              if (i == ENOUGH)
               {
                 break;
               }
@@ -4323,7 +4325,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 }
               }
               
-              if (i == 5)
+              if (i == ENOUGH)
               {
                 break;
               }
@@ -4505,7 +4507,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 }
               }
               
-              if (i == 5)
+              if (i == ENOUGH)
               {
                 break;
               }
@@ -4742,7 +4744,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 }
               }
               
-              if (i == 5)
+              if (i == ENOUGH)
               {
                 break;
               }
@@ -5031,7 +5033,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 }
               }
               
-              if (i == 5)
+              if (i == ENOUGH)
               {
                 break;
               }
@@ -5119,7 +5121,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 }
               }
               
-              if (i == 5)
+              if (i == ENOUGH)
               {
                 break;
               }
@@ -5870,7 +5872,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -5996,7 +5998,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -6171,7 +6173,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -6401,7 +6403,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -6683,7 +6685,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -6774,7 +6776,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               }
             }
             
-            if (i == 5)
+            if (i == ENOUGH)
             {
               break;
             }
@@ -8053,7 +8055,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                   }
                 }
                 
-                if (i == 5)
+                if (i == ENOUGH)
                 {
                   break;
                 }
@@ -8179,7 +8181,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                   }
                 }
                 
-                if (i == 5)
+                if (i == ENOUGH)
                 {
                   break;
                 }
@@ -8362,7 +8364,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                   }
                 }
                 
-                if (i == 5)
+                if (i == ENOUGH)
                 {
                   break;
                 }
@@ -8600,7 +8602,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                   }
                 }
                 
-                if (i == 5)
+                if (i == ENOUGH)
                 {
                   break;
                 }
@@ -8890,7 +8892,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                   }
                 }
                 
-                if (i == 5)
+                if (i == ENOUGH)
                 {
                   break;
                 }
@@ -8980,7 +8982,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                   }
                 }
                 
-                if (i == 5)
+                if (i == ENOUGH)
                 {
                   break;
                 }
@@ -14465,7 +14467,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       {
         *points_call += points_to_add;
         printf("It is enough to show.\n"); //printf("Brauch I nit ausspielen!\n");
-        *i = 5;    // nenn'ma's a'foch 5
+        *i = ENOUGH;    // nenn'ma's a'foch 5
       }
     }
     
@@ -14475,7 +14477,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       {
         *points_opponents += points_to_add;
         printf("No need to go on.\n"); //printf("Brauch'ma nit ausspielen!\n");
-        *i = 5;    // nenn'ma's a'foch 5
+        *i = ENOUGH;    // nenn'ma's a'foch 5
       }
     }
     
@@ -14944,6 +14946,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   int counter = 0;
   Card callers_hand[6] = {"", 0, "", "", 0, 0};
   int counter_hand = 0;
+  Player caller = {"", 0, FALSE};
   
   // who called mode - who is opponent
   
@@ -14956,15 +14959,19 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     {
       callers_hand[counter_hand] = hands[order[0]][counter_hand];
     }
+    caller = players[0];
     
     while (points_caller < MAXIMUM_POINTS
            && points_opponents < MAXIMUM_POINTS
            && counter < MAXIMUM_TURNS)
     {
+      printf("TURN: %d\n", counter + 1);
+      
       // modeRufer() will therefore be just one turn
       
       // sort hands prior calling modeRufer()
       sortOrderHands(next_and_points.caller_, hands, callers_hand);
+      sortOrderPlayers(next_and_points.caller_, players, caller);
       
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players);
@@ -14989,6 +14996,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       counter++;
     } // end of while()
     
+    // game points
     distributePoints(points_caller, points_opponents, &points_and_caller);
   }
   
@@ -15049,9 +15057,9 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   int player[3] = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
   Points points_and_next = {start, 0, 0};
+  int counter = 0;
   
-  // ------
-  // copied from modeGame()
+  // -----------
   
   int counter_turns = 0;
   int counter_cards = 0;
@@ -15069,22 +15077,26 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   strcpy(commands_2, commands);
   strcpy(commands_3, commands);
   
+  // default
+//  int call      = TURN_PLAYER_1;
+//  int answer_1  = TURN_PLAYER_2;
+//  int answer_2  = TURN_PLAYER_3;
+  int call      = player[0];
+  int answer_1  = player[1];
+  int answer_2  = player[2];
+  int initial_order[3] = {call, answer_1, answer_2};   // initial order
   char* players_commands[3] = {commands_1, commands_2, commands_3};
-  
   int position[3]   = {0};
   int position_Q[3] = {0};
   int pairs         = 0;
-  
   int check = FALSE;
   int buffer = 0;
-  int i = 0;
   int counter_Q = 0;
   int points_call = 0;
   int points_opponents = 0;
   int points_pair = 0;
   int buffer_start = 0;
   int bool_trump = TRUE;
-  
   int points_1 = 0;
   int points_2 = 0;
   int points_3 = 0;
@@ -15094,1671 +15106,1534 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   int count_trump   = 0;   // trump
   int count_permit  = 0;
   int count_valid   = 0;
-  
   Pair handle_pairs[3] = {0, 0, 0};
-  
   Turn buffer_turn[3] = {{{NULL}, {0}, "", ' '}, ' ', 0};
+  getCall(start, &call, &answer_1, &answer_2);
   buffer_start = start;
   Points points_and_caller = {0, 0, 0};
   char buffer_higher[6] = {'\0'};
-  
   char input_CPU = '\0';
-  
   Points next_and_points = {0, 0, 0};
   int bool_trumped_already = FALSE;
   
-  // --------
-  
-  int counter = 0;
-  
-//  for (counter_turns = 0; counter_turns < MAXIMUM_TURNS; counter_turns++)
-//  {
-//    // call
-//    printf("TURN: %d\n", counter_turns + 1);
-//
-//    // 3 cards each round
-//    for (i = 0; i < 3; i++)
-//    {
-//      printHand(hands[player[i] MINUS_ONE], HAND, player[i], players[player[/*order[i]*/ i] MINUS_ONE].name_);
-//      printf("                         ^     ^     ^     ^     ^     ^  \n");
-//      printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
-//
-//      // highlight 20 & 40
-//      if (i == 0)
-//        pairs = highlight(hands[player[i] MINUS_ONE], player[i], position_Q);
-//
-//      printf("---------------------------------------------------------------\n");
-//
-//      // first to call
-//      if (i == 0)
-//      {
-//        // check: human or CPU
-//        if (players[player[i] MINUS_ONE].CPU_bool_ == FALSE)
-//        {
-//          do
-//          {
-//            system ("/bin/stty raw");
-//            buffer = getchar();
-//            printf("\r");
-//            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-//              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//          } while (!check);
-//          system ("/bin/stty cooked");
-//        }
-//
-//        else
-//        {
-//          input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-//
-//          while (input_CPU == RETRY)
-//          {
-//            input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-//          }
-//
-//          buffer = input_CPU;
-//        }
-//
-//        switch (buffer)
-//        {
-//          case 'q':
-//            position[i] = 0;
-//
-//            // check for 20 or 40
-//            if (pairs > 0)
-//            {
-//              // at this position we will only find a KING
-//              if (position[i] == position_Q[0] MINUS_ONE
-//                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[0] MINUS_ONE,
-//                                                           points_pair, &i, &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 40?\n");
-//                    pairs--;
-//                    // sollte ich hier nun auch theoretische positions_Q
-//                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                    //
-//                    // Ja sicher!
-//                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                    position_Q[1] = position_Q[2];                            // oba viel besseres
-//                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                  }
-//                }
-//                // 20
-//                else /* is_trump == FALSE */
-//                {
-//                  points_pair = 20;
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[0],
-//                                                           points_pair,
-//                                                           &i, &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 20?\n");
-//                    pairs--;
-//                    // sollte ich hier nun auch theoretische positions_Q
-//                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//                }
-//              }
-//            }
-//
-//            if (i == 5)
-//            {
-//              break;
-//            }
-//
-//            else
-//            {
-//              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-////              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                        players[turn[i] MINUS_ONE].name_);
-//              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                        players[player[i] MINUS_ONE].name_);
-//              printf("---------------------------------------------------------------\n");
-//              break;
-//            }
-//
-//          case 'w':
-//            position[i] = 1;
-//
-//            // check for 20 or 40
-//            if (pairs > 0)
-//            {
-//              // second card = QUEEN
-//              if (position[i] == position_Q[0]
-//                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-////                  printf("check Q 40?\n");
-//                }
-//                // 20
-//                else /* is_trump == FALSE */
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 20?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-////                  printf("check Q 20?\n");
-//                }
-//              }
-//              // second card = KING
-//              else if (position[i] == position_Q[0] MINUS_ONE
-//                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[0] MINUS_ONE,
-//                                                           points_pair, &i,
-//                                                           &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                    position_Q[1] = position_Q[2];                            // oba viel besseres
-//                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                  }
-////                  printf("check K 40?\n");
-//                }
-//                // 20
-//                else /* is_trump == FALSE */
-//                {
-//                  points_pair = 20;
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[0],
-//                                                           points_pair,
-//                                                           &i, &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 20?\n");
-//                    pairs--;
-//                    // sollte ich hier nun auch theoretische positions_Q
-//                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-////                  printf("check K 20?\n");
-//                }
-//              }
-//            }
-//
-//            if (i == 5)
-//            {
-//              break;
-//            }
-//
-//            else
-//            {
-//              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-////              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                        players[turn[i] MINUS_ONE].name_);
-//              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                        players[player[i] MINUS_ONE].name_);
-//              printf("---------------------------------------------------------------\n");
-//              break;
-//            }
-//
-//          case 'e':
-//            position[i] = 2;
-//
-//            // check for 20 or 40
-//            if (pairs > 0)
-//            {
-//              // third card = QUEEN
-//              if (position[i] == position_Q[0]
-//                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 40?\n");
-//                }
-//                // 20
-//                else /* is_trump == FALSE */
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 20?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 20?\n");
-//                }
-//              }
-//              // third card = KING
-//              else if ((position[i] == position_Q[0] MINUS_ONE
-//                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//                       || (position[i] == position_Q[1] MINUS_ONE
-//                           && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN))
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[0] MINUS_ONE,
-//                                                           points_pair, &i,
-//                                                           &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                    position_Q[1] = position_Q[2];                            // oba viel besseres
-//                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                  }
-//
-////                  printf("check K 40?\n");
-//                }
-//                // 40
-//                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[1] MINUS_ONE,
-//                                                           points_pair, &i,
-//                                                           &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                    position_Q[1] = position_Q[2];                            // oba viel besseres
-//                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                  }
-//
-////                  printf("check K 40?\n");
-//                }
-//                // 20
-//                else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[0],
-//                                                           points_pair,
-//                                                           &i, &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 20?\n");
-//                    pairs--;
-//                    // sollte ich hier nun auch theoretische positions_Q
-//                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check K 20?\n");
-//                }
-//                // 20
-//                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                           position_Q[1],
-//                                                           points_pair,
-//                                                           &i, &points_call,
-//                                                           &points_opponents,
-//                                                           hands[player[i] MINUS_ONE],
-//                                                           (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("K 20?\n");
-//                    pairs--;
-//                    // sollte ich hier nun auch theoretische positions_Q
-//                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check K 20?\n");
-//                }
-//              }
-//            }
-//
-//            if (i == 5)
-//            {
-//              break;
-//            }
-//
-//            else
-//            {
-//              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-////              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                        players[turn[i] MINUS_ONE].name_);
-//              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                        players[player[i] MINUS_ONE].name_);
-//              printf("---------------------------------------------------------------\n");
-//              break;
-//            }
-//
-//          case 'a':
-//            position[i] = 3;
-//
-//            // check for 20 or 40
-//            if (pairs > 0)
-//            {
-//              // fourth card = QUEEN
-//              if ((position[i] == position_Q[0]
-//                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//                  || ((position[i] == position_Q[1]
-//                       && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)))
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 40?\n");
-//                }
-//                // 40
-//                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[1],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 40?\n");
-//                }
-//                // 20
-//                else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 20?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 20?\n");
-//                }
-//                // 20
-//                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[1],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 20?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 20?\n");
-//                }
-//              }
-//              // fourth card = KING
-//              else if ((position[i] == position_Q[0] MINUS_ONE
-//                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//                       || (position[i] == position_Q[1] MINUS_ONE
-//                           && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN))
-//              {
-//                if (position_Q[0] > position[0])  // first 20 or 40
-//                {
-//                  // 40
-//                  if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                  {
-//                    points_pair = 40;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[0] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 40?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 40?\n");
-//                  }
-//                  // 20
-//                  else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-//                  {
-//                    points_pair = 20;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[0],
-//                                                             points_pair,
-//                                                             &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 20?\n");
-//                      pairs--;
-//                      // sollte ich hier nun auch theoretische positions_Q
-//                      // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                      position_Q[0] = position_Q[1];
-//                      position_Q[1] = position_Q[2];
-//                      position_Q[2] = 0;
-//                    }
-//
-////                    printf("check K 20?\n");
-//                  }
-//                }
-//
-//                else /* if (position_Q[0] < position[0]) */ // second 20 or 40
-//                {
-//                  // 40
-//                  if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-//                  {
-//                    points_pair = 40;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[1] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 40?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 40?\n");
-//                  }
-//                  // 20
-//                  else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-//                  {
-//                    points_pair = 20;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[1],
-//                                                             points_pair,
-//                                                             &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 20?\n");
-//                      pairs--;
-//                      // sollte ich hier nun auch theoretische positions_Q
-//                      // "hochrutschen"? - 1 auf 0, 2 auf 1
-//                      position_Q[0] = position_Q[1];
-//                      position_Q[1] = position_Q[2];
-//                      position_Q[2] = 0;
-//                    }
-//
-////                    printf("check K 20?\n");
-//                  }
-//                }
-//              }
-//            }
-//
-//            if (i == 5)
-//            {
-//              break;
-//            }
-//
-//            else
-//            {
-//              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-////              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                        players[turn[i] MINUS_ONE].name_);
-//              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                        players[player[i] MINUS_ONE].name_);
-//              printf("---------------------------------------------------------------\n");
-//              break;
-//            }
-//
-//          case 's':
-//            position[i] = 4;
-//
-//            // check for 20 or 40
-//            if (pairs > 0)
-//            {
-//              // fifth card = QUEEN
-//              if ((position[i] == position_Q[0]
-//                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//                  || ((position[i] == position_Q[1]
-//                       && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)))
-//              {
-//                // 40
-//                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 40?\n");
-//                }
-//                // 40
-//                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-//                {
-//                  points_pair = 40;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[1],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 40?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 40?\n");
-//                }
-//                // 20
-//                else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[0],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 20?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 20?\n");
-//                }
-//                // 20
-//                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-//                {
-//                  points_pair = 20;
-//
-//                  handle_pairs[i].bool_pair_
-//                    = pairHandler(handle_pairs, position_Q[1],
-//                                  points_pair, &i, &points_call,
-//                                  &points_opponents,
-//                                  hands[player[i] MINUS_ONE],
-//                                  (player[0] == buffer_start));
-//                  if (handle_pairs[i].bool_pair_ == TRUE)
-//                  {
-////                    printf("Q 20?\n");
-//
-//                    pairs--;
-//
-//                    position_Q[0] = position_Q[1];
-//                    position_Q[1] = position_Q[2];
-//                    position_Q[2] = 0;
-//                  }
-//
-////                  printf("check Q 20?\n");
-//                }
-//              }
-//              // fifth card = KING
-//              else if ((position[i] == position_Q[0] MINUS_ONE
-//                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//                       || (position[i] == position_Q[1] MINUS_ONE
-//                           && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)
-//                       || (position[i] == position_Q[2] MINUS_ONE
-//                           && hands[player[i] MINUS_ONE][position_Q[2]].value_ == QUEEN))
-//              {
-//                // first 20 or 40
-//                if (position_Q[0] > position[0])
-//                {
-//                  // 40
-//                  if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-//                  {
-//                    points_pair = 40;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[0] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 40?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 40?\n");
-//                  }
-//                  // 20
-//                  else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-//                  {
-//                    points_pair = 20;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[0] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 20?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 20?\n");
-//                  }
-//                }
-//                // third 20 or 40
-//                else if (position_Q[2] MINUS_ONE == 4)      // only possible
-//                                                            // on position 4
-//                {
-//                  // 40
-//                  if (hands[player[i] MINUS_ONE][position_Q[2]].is_trump_ == TRUE)
-//                  {
-//                    points_pair = 40;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[2] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 40?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 40?\n");
-//                  }
-//                  // 20
-//                  else if (hands[player[i] MINUS_ONE][position_Q[2]].is_trump_ != TRUE)
-//                  {
-//                    points_pair = 20;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[2] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 20?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 20?\n");
-//                  }
-//                }
-//                // second 20 or 40
-//                else /* best work around yet :D */
-//                {
-//                  // 40
-//                  if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-//                  {
-//                    points_pair = 40;
-//
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[1] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 40?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 40?\n");
-//                  }
-//                  // 20
-//                  else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-//                  {
-//                    points_pair = 20;
-//                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-//                                                             position_Q[1] MINUS_ONE,
-//                                                             points_pair, &i, &points_call,
-//                                                             &points_opponents,
-//                                                             hands[player[i] MINUS_ONE],
-//                                                             (player[0] == buffer_start));
-//                    if (handle_pairs[i].bool_pair_ == TRUE)
-//                    {
-////                      printf("K 20?\n");
-//
-//                      pairs--;
-//
-//                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-//                      position_Q[1] = position_Q[2];                            // oba viel besseres
-//                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-//                    }
-//
-////                    printf("check K 20?\n");
-//                  }
-//                }
-//              }
-//            }
-//
-//            if (i == 5)
-//            {
-//              break;
-//            }
-//
-//            else
-//            {
-//              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-////              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                        players[turn[i] MINUS_ONE].name_);
-//              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                        players[player[i] MINUS_ONE].name_);
-//              printf("---------------------------------------------------------------\n");
-//              break;
-//            }
-//
-//          case 'd':
-//            position[i] = 5;
-//
-//            // check for 20 or 40
-//            if (pairs > 0)
-//            {
-//              // at this position we will only find a QUEEN
-//              if ((position[i] == position_Q[0]
-//                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-//                  || (position[i] == position_Q[1]
-//                      && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)
-//                  || (position[i] == position_Q[2]
-//                      && hands[player[i] MINUS_ONE][position_Q[2]].value_ == QUEEN))
-//
-//                /* QUICK AND DIRTY FIX .. IMPROVE IN "POST PRODUCTION" (; */
-//
-//              {
-//                for (int j = 0; j < 3; j++)                       // sowas tu'I normalerwiese NIE
-//                {
-//                  if (position_Q[j] == position[i] /* 5 */)
-//                  {
-//                    // 40
-//                    if (hands[player[i] MINUS_ONE][position_Q[j]].is_trump_ == TRUE)
-//                    {
-//                      points_pair = 40;
-//
-//                      handle_pairs[i].bool_pair_
-//                        = pairHandler(handle_pairs, position_Q[j],
-//                                      points_pair, &i, &points_call,
-//                                      &points_opponents,
-//                                      hands[player[i] MINUS_ONE],
-//                                      (player[0] == buffer_start));
-//                      if (handle_pairs[i].bool_pair_ == TRUE)
-//                      {
-////                        printf("Q 40?\n");
-//
-//                        pairs--;
-//
-//                        position_Q[0] = position_Q[1];
-//                        position_Q[1] = position_Q[2];
-//                        position_Q[2] = 0;
-//                      }
-//
-////                      printf("check Q 40?\n");
-//                    }
-//                    // 20
-//                    else /* is_trump == FALSE */
-//                    {
-//                      points_pair = 20;
-//
-//                      handle_pairs[i].bool_pair_
-//                        = pairHandler(handle_pairs, position_Q[j],
-//                                      points_pair, &i, &points_call,
-//                                      &points_opponents,
-//                                      hands[player[i] MINUS_ONE],
-//                                      (player[0] == buffer_start));
-//                      if (handle_pairs[i].bool_pair_ == TRUE)
-//                      {
-////                        printf("Q 20?\n");
-//
-//                        pairs--;
-//
-//                        position_Q[0] = position_Q[1];
-//                        position_Q[1] = position_Q[2];
-//                        position_Q[2] = 0;
-//                      }
-//
-////                      printf("check Q 20?\n");
-//                    }
-//                  }
-//                }
-//              }
-//            }
-//
-//            if (i == 5)
-//            {
-//              break;
-//            }
-//
-//            else
-//            {
-//              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-////              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                        players[turn[i] MINUS_ONE].name_);
-//              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                        players[player[i] MINUS_ONE].name_);
-//              printf("---------------------------------------------------------------\n");
-//              break;
-//            }
-//
-//          default:
-//            break;
-//        }
-//      }
-//
-//      // further playing
-//      else if (i != 0 && i < 3)
-//      {
-//        // -----------
-//
-//        // rewind bock
-//        if (hands[player[i] MINUS_ONE][0].is_bock_ == TRUE) // hard coded 0 sollte passen
-//                                                            // zumal: ein bock: alle bock
-//        {
-//          for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-//          {
-//            hands[player[i] MINUS_ONE][counter_cards].is_bock_ = FALSE;
-//          }
-//        }
-//
-//        // check position(s) of valid cards for this round
-//        // do not allow any other card
-//        // delete non valid characters from commands
-//        count_bock    = 0;   // bock
-//        count_suit    = 0;   // right suit
-//        count_trump   = 0;   // trump
-//
-//        // seek
-//        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
-//             counter_cards++)
-//        {
-//          // have trump
-//          if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
-//          {
-////            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_)
-//            count_trump++;
-//          }
-//        }
-//
-//        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
-//             counter_cards++)
-//        {
-//          // right suit
-//          if (i == 1)
-//          {
-//            if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
-//                == (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
-//            {
-//              // rigtht suit is trump (: trump has been played )
-//              if (hands[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
-//              {
-//                count_trump--;
-//              }
-//              count_suit++;
-//            }
-//          }
-//
-//          else /* if (i == 2) */
-//          {
-//            if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
-//                == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
-//            {
-//              // rigtht suit is trump (: trump has been played )
-//              if (hands[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
-//              {
-//                count_trump--;
-//              }
-//              count_suit++;
-//            }
-//          }
-//        }
-//
-//        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
-//             counter_cards++)
-//        {
-//          // no trump && no suit = all bock
-//          if (i == 1)
-//          {
-//            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
-//                && (hands)[player[i] MINUS_ONE][counter_cards].suit_
-//                != (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
-//            {
-//              count_bock++;
-//            }
-//          }
-//
-//          else /* if (i == 2) */
-//          {
-//            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
-//                && (hands)[player[i] MINUS_ONE][counter_cards].suit_
-//                != (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
-//            {
-//              count_bock++;
-//            }
-//          }
-//        }
-//
-//        // .. and adjust ------------
-//        strcpy(players_commands[i], "000000");    // maybe there is a better
-//                                                  // more professinal way
-//
-//        counter_trump   = 0;
-//        counter_suit    = 0;
-//        counter_cards   = 0;
-//        counter_hand    = 0;
-//        counter_command = 0;
-//
-//        // all bock - no matter which answer
-//        if ((count_suit == 0 && count_trump == 0))
-//        {
-//          // according to turn, -1
-////          printf("Alles Bock!\n");
-//          while (counter_hand < (HAND))
-//          {
-//            if ((hands)[player[i] MINUS_ONE][counter_hand].suit_ != NULL)
-//            {
-//              players_commands[i][counter_cards] = commands[counter_command];
-//              counter_command++;
-//              counter_cards++;
-//            }
-//
-//            else
-//            {
-//              counter_command++;
-//            }
-//
-//            counter_hand++;
-//          }
-//        }
-//
-//        // no valid suit but at least one trump
-//        else if (count_suit == 0 && count_trump > 0)
-//        {
-//          counter_trump   = 0;
-//          counter_suit    = 0;
-//          counter_cards   = 0;
-//          counter_hand    = 0;
-//          counter_command = 0;
-//          // must hold trump
-//          // allow trump(s)
-////          printf("Muaßt an Trumpf spiel'n!\n");
-//
-//          while (counter_hand < (HAND/* - counter_turns*/)/* eben nicht strlen(players_commands[i])*/)
-//          {
-//            // differenciate between answer 1 and answer 2
-//            // answer 1 must trump call & answer 2 must trump either
-//            if ((hands)[player[i] MINUS_ONE][counter_hand].suit_ != NULL
-//                && hands[player[i] MINUS_ONE][counter_hand].is_trump_ == TRUE)
-//            {
-//              players_commands[i][counter_cards] = commands[counter_command];
-//              counter_command++;
-//              counter_cards++;
-//            }
-//
-//            else
-//            {
-//              counter_command++;
-//            }
-//
-//            counter_hand++;
-//          }
-//
-//          // remove right
-//          for (counter_cards = count_trump; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
-//          {
-//            players_commands[i][counter_cards] = '\0';
-//          }
-//        } // end else if (must play trump)
-//
-//        else /* must hold suit, at leas one */
-//        {
-////          printf("Muaßt Farb' spielen!\n");
-//          counter_cards = 0;
-//          counter_command = 0;
-//
-//          // remove left
-//          for (counter_hand = 0; counter_hand < (HAND/* - counter_turns*/); counter_hand++)
-//          {
-//            // suit found
-//            if (i == 1)   // first to answer
-//            {
-//              if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
-//                  == (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
-//              {
-////                printf("gleiche Farbe @ %d\n", counter_hand);
-////                printf("%c = %c\n", players_commands[i][counter_hand], commands[counter_command]);
-//                players_commands[i][counter_cards] = commands[counter_command];
-//                counter_command++;
-//                counter_cards++;
-//              }
-//              else
-//              {
-//                counter_command++;
-//              }
-//            }
-//
-//            else /* (i == 1) */   // second to answer
-//            {
-//              if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
-//                  == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
-//              {
-////                printf("gleiche Farbe @ %d\n", counter_hand);
-//                players_commands[i][counter_cards] = commands[counter_command];
-//                counter_command++;
-//                counter_cards++;
-//              }
-//              else
-//              {
-////                players_commands[i][counter_hand] = commands[counter_command];
-//                counter_command++;
-//              }
-//            }
-//          }
-//
-//          // remove right
-//          for (counter_cards = count_suit; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
-//          {
-//            players_commands[i][counter_cards] = '\0';
-//          }
-//        } // end else (must play suit)
-//
-//        // now that we have found valid cards, go on and only allow permitted cards
-//        // we do not have to mind case:     all bock
-//        // but                              trump (in case trump has been played)
-//        //                                  suit
-//        // what do we need? - (answer 1): called card's value
-//        //                    (answer 2): called card's value and answer 1's value
-//
-//        if (i == 1)
-//        {
-//          // if there is at least one valid card to answer with
-//          if (!(count_suit == 0 && count_trump == 0))
-//          {
-//            // compare values and only allow weaker cards if there is not one
-//            // which could trump call
-//            counter_command = 0;
-//            counter_cards   = 0;
-//            count_permit    = 0;
-//
-//            if (count_suit > 0)
-//            {
-//              while (players_commands[i][counter_command] != '\0')
-//              {
-//                if ((hands)[player[i] MINUS_ONE][counter_cards].value_ >
-//                    /* called card */ hands[player[0] MINUS_ONE][position[0]].value_)
-//                {
-//                  printf("%s %d - %s %d\n", hands[player[0] MINUS_ONE][position[0]].suit_,
-//                         hands[player[0] MINUS_ONE][position[0]].value_,
-//                         (hands)[player[i] MINUS_ONE][counter_cards].suit_,
-//                         (hands)[player[i] MINUS_ONE][counter_cards].value_);
-//                  buffer_higher[counter_cards] = players_commands[i][counter_cards];
-//                  buffer_higher[counter_cards ADD_ONE] = '\0';
-//                  counter_cards++;
-//
-//                  if (player[0] == initial_order[0])
-//                  {
-//                    bool_trumped_already = TRUE;
-//                  }
-//                }
-//                counter_command++;
-//              }
-//            }
-//
-//            if (counter_cards > 0)
-//            {
-//              strcpy(players_commands[i], "\0\0\0\0\0\0");
-//              strcpy(players_commands[i], buffer_higher);
-//              strcpy(buffer_higher, "\0\0\0\0\0\0");
-//            }
-//          }
-//        }
-//
-//        else /* if (i == 2) */
-//        {
-//          // if there is at least one valid card to answer with
-//          if (!(count_suit == 0 && count_trump == 0))
-//          {
-//            // compare values and only allow weaker cards if there is not one
-//            // which could trump any (call || answer 1)
-//            counter_command = 0;
-//            counter_cards   = 0;
-//            count_permit    = 0;
-//
-//            if (count_suit > 0)
-//            {
-//              if (bool_trumped_already == FALSE)
-//              {
-//                while (players_commands[i][counter_command] != '\0')
-//                {
-//                  // has to trump caller if possible
-//                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-//                      /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
-//                      || (hands)[player[i] MINUS_ONE][counter_cards].value_ <
-//                      /* answer 1's card */ hands[player[i - 1] MINUS_ONE][position[1/*0*/]].value_)
-//                  {
-//
-//                  }
-//                  else
-//                  {
-//                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
-//                    buffer_higher[counter_cards ADD_ONE] = '\0';
-//                    counter_cards++;
-//                  }
-//                counter_command++;
-//                }
-//              }
-//
-//              else
-//              {
-//                // no need to trump caller
-//              }
-//            }
-//
-//            else if (count_trump > 0)
-//            {
-////              printf("%d\n", (hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
-//              if ((hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_)
-//              {
-//                while (players_commands[i][counter_command] != '\0')
-//                {
-//                  // only need to compare trump's value with answer 1
-//                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-//                      /* answer 1's card */ hands[player[i MINUS_ONE] MINUS_ONE][position[i MINUS_ONE]].value_)
-//                  {
-//                    printf("\n!!! 3622 !!!\n");
-//                  }
-//                  else
-//                  {
-//                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
-//                    buffer_higher[counter_cards ADD_ONE] = '\0';
-//                    counter_cards++;
-//                  }
-//                  counter_command++;
-//                }
-//              }
-//            }
-//
-//            if (counter_cards > 0)
-//            {
-//              strcpy(players_commands[i], "\0\0\0\0\0\0");
-//              strcpy(players_commands[i], buffer_higher);
-//              strcpy(buffer_higher, "\0\0\0\0\0\0");
-//            }
-//          }
-//        }
-//
-//        // -----------
-//
-//        // check: human or CPU
-//        if (players[player[i] MINUS_ONE].CPU_bool_ == FALSE)
-//        {
-//          do
-//          {
-//            system ("/bin/stty raw");
-//            buffer = getchar();
-//            printf("\r");
-//            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-//              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//          } while (!check);
-//          system ("/bin/stty cooked");
-//        }
-//
-//        else
-//        {
-//          input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-//
-//          while (input_CPU == RETRY)
-//          {
-//            input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-//          }
-//
-//          buffer = input_CPU;
-//        }
-//
-//        switch (buffer)
-//        {
-//          case 'q':
-//            position[i] = 0;
-//            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//  //          playCard(&(buffer_turn)[i].card_);
-////            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                      players[turn[i] MINUS_ONE].name_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                      players[player[i] MINUS_ONE].name_);
-//            printf("---------------------------------------------------------------\n");
-//            break;
-//
-//          case 'w':
-//            position[i] = 1;
-//            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//  //          playCard(&(buffer_turn)[i].card_);
-////            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                      players[turn[i] MINUS_ONE].name_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                      players[player[i] MINUS_ONE].name_);
-//            printf("---------------------------------------------------------------\n");
-//            break;
-//
-//          case 'e':
-//            position[i] = 2;
-//            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//  //          playCard(&(buffer_turn)[i].card_);
-////            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                      players[turn[i] MINUS_ONE].name_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                      players[player[i] MINUS_ONE].name_);
-//            printf("---------------------------------------------------------------\n");
-//            break;
-//
-//          case 'a':
-//            position[i] = 3;
-//            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//  //          playCard(&(buffer_turn)[i].card_);
-////            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                      players[turn[i] MINUS_ONE].name_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                      players[player[i] MINUS_ONE].name_);
-//            printf("---------------------------------------------------------------\n");
-//            break;
-//
-//          case 's':
-//            position[i] = 4;
-//            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//  //          playCard(&(buffer_turn)[i].card_);
-////            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                      players[turn[i] MINUS_ONE].name_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                      players[player[i] MINUS_ONE].name_);
-//            printf("---------------------------------------------------------------\n");
-//            break;
-//
-//          case 'd':
-//            position[i] = 5;
-//            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//  //          playCard(&(buffer_turn)[i].card_);
-////            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-////                      players[turn[i] MINUS_ONE].name_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-//                      players[player[i] MINUS_ONE].name_);
-//            printf("---------------------------------------------------------------\n");
-//            break;
-//
-//          default:
-//            break;
-//        }
-//      } // end else
-//    } // end of for( i )
-//
-//    // --------------------------------------------------------------------------------
-//    if (i > 3) // exit condition: 20 or 40 shown only - enough & exit
-//    {
-//      printf("points caller: %d\n", points_call);
-//      printf("points opponents: %d\n", points_opponents);
-//      break;
-//    }
-//    // --------------------------------------------------------------------------------
-//
-//    i = 0;
-//
-//    start = next_and_points.winner_;
-//
-//    // distribute points
-//
-//    // reset (points) for next round
-//    points[0] = 0;
-//    points[1] = 0;
-//    points[2] = 0;
-//    pairs = resetPairs(position_Q);
-//    resetHandlePairs(handle_pairs);
-//    points_pair = 0;
-//    next_and_points.points_ = 0;
-//    next_and_points.winner_ = 0;
-//    next_and_points.caller_ = 0;
-//    bool_trumped_already = FALSE;
-//
-//    // who has played the highest card calls next - and exactly this is the bitch here
-//
-//    // may we do this here -----------------------
-//    removeCard(&hands[player[i] MINUS_ONE][position[i]]);
-//    removeCard(&hands[player[i + 1] MINUS_ONE][position[i + 1]]);
-//    removeCard(&hands[player[i + 2] MINUS_ONE][position[i + 2]]);
-//    // -------------------------------------------
-//    // write all left over cards onto commands
-//
-//    // player 1
-//    counter_position = 0 ;
-//    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-//    {
-//      if ((hands)[player[i] MINUS_ONE][counter_cards].suit_ != NULL)
-//      {
-//        players_commands[i][counter_position] = commands[counter_cards];
-//        counter_position++;
-//      }
-//    }
-//    players_commands[i][counter_position] = '\0';
-//
-//    // player 2
-//    counter_position = 0 ;
-//    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-//    {
-//      if ((hands)[player[i + 1] MINUS_ONE][counter_cards].suit_ != NULL)
-//      {
-//        players_commands[i + 1][counter_position] = commands[counter_cards];
-//        counter_position++;
-//      }
-//    }
-//    players_commands[i + 1][counter_position] = '\0';
-//
-//    // player 3
-//    counter_position = 0 ;
-//    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-//    {
-//      if ((hands)[player[i + 2] MINUS_ONE][counter_cards].suit_ != NULL)
-//      {
-//        players_commands[i + 2][counter_position] = commands[counter_cards];
-//        counter_position++;
-//      }
-//    }
-//    players_commands[i + 2][counter_position] = '\0';
-//    // -------------------------------------------
-//
-//    // sort players' order
-////    getCall(start, &call, &answer_1, &answer_2); -> copied to 3771
-//
-//    player[0] = call;
-//    player[1] = answer_1;
-//    player[2] = answer_2;
-//
-//
-//    if (player[0] == TURN_PLAYER_1)
-//    {
-//      players_commands[0] = commands_1;
-//      players_commands[1] = commands_2;
-//      players_commands[2] = commands_3;
-//    }
-//
-//    if (player[0] == TURN_PLAYER_2)
-//    {
-//      players_commands[0] = commands_2;
-//      players_commands[1] = commands_3;
-//      players_commands[2] = commands_1;
-//    }
-//
-//    if (player[0] == TURN_PLAYER_3)
-//    {
-//      players_commands[0] = commands_3;
-//      players_commands[1] = commands_1;
-//      players_commands[2] = commands_2;
-//    }
-//
-//    // print points
-//    printf("player:  %d\nopponents:  %d\n", points_call, points_opponents);
-//
-//  } // end for()
-  
+  // -----------
   
   for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
   {
+//    printHand(hands[player[counter] MINUS_ONE], HAND, player[counter],
+//              players[player[counter] MINUS_ONE].name_);
+    printHand(hands[counter], HAND, player[counter],
+              players[counter].name_);
+    printf("                         ^     ^     ^     ^     ^     ^  \n");
+    printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
+    
+    // highlight 20 & 40
+    if (counter == 0)
+      pairs = highlight(hands[counter], player[counter], position_Q);
+    
+    printf("---------------------------------------------------------------\n");
+    
     // caller's input - may call arbitrary
-    if (counter )
+    if (counter == 0)
     {
+      do
+      {
+        system ("/bin/stty raw");
+        buffer = getchar();
+        printf("\r");
+        if (!(check = seekAndDestroy(buffer, players_commands[counter])))
+          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+      } while (!check);
+      system ("/bin/stty cooked");
       
+      switch (buffer)
+      {
+        case 'q':
+          position[counter] = 0;
+          
+          // check for 20 or 40
+          if (pairs > 0)
+          {
+            // at this position we will only find a KING
+            if (position[counter] == position_Q[0] MINUS_ONE
+                 && hands[counter][position_Q[0]].value_ == QUEEN)
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[0] MINUS_ONE,
+                                                         points_pair, &counter, &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 40?\n");
+                  pairs--;
+                  // sollte ich hier nun auch theoretische positions_Q
+                  // "hochrutschen"? - 1 auf 0, 2 auf 1
+                  //
+                  // Ja sicher!
+                  position_Q[0] = position_Q[1];                            // naja, hardcoded
+                  position_Q[1] = position_Q[2];                            // oba viel besseres
+                  position_Q[2] = 0;                                        // fällt mir hier nit ein
+                }
+              }
+              // 20
+              else /* is_trump == FALSE */
+              {
+                points_pair = 20;
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[0],
+                                                         points_pair,
+                                                         &counter, &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 20?\n");
+                  pairs--;
+                  // sollte ich hier nun auch theoretische positions_Q
+                  // "hochrutschen"? - 1 auf 0, 2 auf 1
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+              }
+            }
+          }
+          
+          if (counter == ENOUGH)
+          {
+            break;
+          }
+          
+          else
+          {
+            playCard(&(hands)[counter][position[counter]]);
+            printHand((hands)[counter], 6, player[counter],
+                      players[counter].name_);
+            printf("---------------------------------------------------------------\n");
+            break;
+          }
+          
+        case 'w':
+          position[counter] = 1;
+          
+          // check for 20 or 40
+          if (pairs > 0)
+          {
+            // second card = QUEEN
+            if (position[counter] == position_Q[0]
+                 && hands[counter][position_Q[0]].value_ == QUEEN)
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[player[counter] MINUS_ONE],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+//                  printf("check Q 40?\n");
+              }
+              // 20
+              else /* is_trump == FALSE */
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 20?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+//                  printf("check Q 20?\n");
+              }
+            }
+            // second card = KING
+            else if (position[counter] == position_Q[0] MINUS_ONE
+                     && hands[counter][position_Q[0]].value_ == QUEEN)
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[0] MINUS_ONE,
+                                                         points_pair, &counter,
+                                                         &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];                            // naja, hardcoded
+                  position_Q[1] = position_Q[2];                            // oba viel besseres
+                  position_Q[2] = 0;                                        // fällt mir hier nit ein
+                }
+//                  printf("check K 40?\n");
+              }
+              // 20
+              else /* is_trump == FALSE */
+              {
+                points_pair = 20;
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[0],
+                                                         points_pair,
+                                                         &counter, &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 20?\n");
+                  pairs--;
+                  // sollte ich hier nun auch theoretische positions_Q
+                  // "hochrutschen"? - 1 auf 0, 2 auf 1
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+//                  printf("check K 20?\n");
+              }
+            }
+          }
+          
+          if (counter == ENOUGH)
+          {
+            break;
+          }
+          
+          else
+          {
+            playCard(&(hands)[counter][position[counter]]);
+            printHand((hands)[counter], 6, player[counter],
+                      players[counter].name_);
+            printf("---------------------------------------------------------------\n");
+            break;
+          }
+          
+        case 'e':
+          position[counter] = 2;
+          
+          // check for 20 or 40
+          if (pairs > 0)
+          {
+            // third card = QUEEN
+            if (position[counter] == position_Q[0]
+                 && hands[counter][position_Q[0]].value_ == QUEEN)
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 40?\n");
+              }
+              // 20
+              else /* is_trump == FALSE */
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 20?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 20?\n");
+              }
+            }
+            // third card = KING
+            else if ((position[counter] == position_Q[0] MINUS_ONE
+                     && hands[counter][position_Q[0]].value_ == QUEEN)
+                     || (position[counter] == position_Q[1] MINUS_ONE
+                         && hands[counter][position_Q[1]].value_ == QUEEN))
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[0] MINUS_ONE,
+                                                         points_pair, &counter,
+                                                         &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];                            // naja, hardcoded
+                  position_Q[1] = position_Q[2];                            // oba viel besseres
+                  position_Q[2] = 0;                                        // fällt mir hier nit ein
+                }
+                
+//                  printf("check K 40?\n");
+              }
+              // 40
+              else if (hands[counter][position_Q[1]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[1] MINUS_ONE,
+                                                         points_pair, &counter,
+                                                         &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];                            // naja, hardcoded
+                  position_Q[1] = position_Q[2];                            // oba viel besseres
+                  position_Q[2] = 0;                                        // fällt mir hier nit ein
+                }
+                
+//                  printf("check K 40?\n");
+              }
+              // 20
+              else if (hands[counter][position_Q[0]].is_trump_ != TRUE)
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[0],
+                                                         points_pair,
+                                                         &counter, &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 20?\n");
+                  pairs--;
+                  // sollte ich hier nun auch theoretische positions_Q
+                  // "hochrutschen"? - 1 auf 0, 2 auf 1
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check K 20?\n");
+              }
+              // 20
+              else if (hands[counter][position_Q[1]].is_trump_ != TRUE)
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                         position_Q[1],
+                                                         points_pair,
+                                                         &counter, &points_call,
+                                                         &points_opponents,
+                                                         hands[counter],
+                                                         (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("K 20?\n");
+                  pairs--;
+                  // sollte ich hier nun auch theoretische positions_Q
+                  // "hochrutschen"? - 1 auf 0, 2 auf 1
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check K 20?\n");
+              }
+            }
+          }
+          
+          if (counter == ENOUGH)
+          {
+            break;
+          }
+          
+          else
+          {
+            playCard(&(hands)[counter][position[counter]]);
+            printHand((hands)[counter], 6, player[counter],
+                      players[counter].name_);
+            printf("---------------------------------------------------------------\n");
+            break;
+          }
+          
+        case 'a':
+          position[counter] = 3;
+          
+          // check for 20 or 40
+          if (pairs > 0)
+          {
+            // fourth card = QUEEN
+            if ((position[counter] == position_Q[0]
+                 && hands[counter][position_Q[0]].value_ == QUEEN)
+                || ((position[counter] == position_Q[1]
+                     && hands[counter][position_Q[1]].value_ == QUEEN)))
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 40?\n");
+              }
+              // 40
+              else if (hands[counter][position_Q[1]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[1],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 40?\n");
+              }
+              // 20
+              else if (hands[counter][position_Q[0]].is_trump_ != TRUE)
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 20?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 20?\n");
+              }
+              // 20
+              else if (hands[counter][position_Q[1]].is_trump_ != TRUE)
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[1],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 20?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 20?\n");
+              }
+            }
+            // fourth card = KING
+            else if ((position[counter] == position_Q[0] MINUS_ONE
+                     && hands[counter][position_Q[0]].value_ == QUEEN)
+                     || (position[counter] == position_Q[1] MINUS_ONE
+                         && hands[counter][position_Q[1]].value_ == QUEEN))
+            {
+              if (position_Q[0] > position[0])  // first 20 or 40
+              {
+                // 40
+                if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+                {
+                  points_pair = 40;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[0] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 40?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 40?\n");
+                }
+                // 20
+                else if (hands[counter][position_Q[0]].is_trump_ != TRUE)
+                {
+                  points_pair = 20;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[0],
+                                                           points_pair,
+                                                           &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 20?\n");
+                    pairs--;
+                    // sollte ich hier nun auch theoretische positions_Q
+                    // "hochrutschen"? - 1 auf 0, 2 auf 1
+                    position_Q[0] = position_Q[1];
+                    position_Q[1] = position_Q[2];
+                    position_Q[2] = 0;
+                  }
+                  
+//                    printf("check K 20?\n");
+                }
+              }
+              
+              else /* if (position_Q[0] < position[0]) */ // second 20 or 40
+              {
+                // 40
+                if (hands[counter][position_Q[1]].is_trump_ == TRUE)
+                {
+                  points_pair = 40;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[1] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 40?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 40?\n");
+                }
+                // 20
+                else if (hands[counter][position_Q[1]].is_trump_ != TRUE)
+                {
+                  points_pair = 20;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[1],
+                                                           points_pair,
+                                                           &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 20?\n");
+                    pairs--;
+                    // sollte ich hier nun auch theoretische positions_Q
+                    // "hochrutschen"? - 1 auf 0, 2 auf 1
+                    position_Q[0] = position_Q[1];
+                    position_Q[1] = position_Q[2];
+                    position_Q[2] = 0;
+                  }
+                  
+//                    printf("check K 20?\n");
+                }
+              }
+            }
+          }
+          
+          if (counter == ENOUGH)
+          {
+            break;
+          }
+          
+          else
+          {
+            playCard(&(hands)[counter][position[counter]]);
+            printHand((hands)[counter], 6, player[counter],
+                      players[counter].name_);
+            printf("---------------------------------------------------------------\n");
+            break;
+          }
+          
+        case 's':
+          position[counter] = 4;
+          
+          // check for 20 or 40
+          if (pairs > 0)
+          {
+            // fifth card = QUEEN
+            if ((position[counter] == position_Q[0]
+                 && hands[counter][position_Q[0]].value_ == QUEEN)
+                || ((position[counter] == position_Q[1]
+                     && hands[counter][position_Q[1]].value_ == QUEEN)))
+            {
+              // 40
+              if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 40?\n");
+              }
+              // 40
+              else if (hands[counter][position_Q[1]].is_trump_ == TRUE)
+              {
+                points_pair = 40;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[1],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 40?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 40?\n");
+              }
+              // 20
+              else if (hands[counter][position_Q[0]].is_trump_ != TRUE)
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[0],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 20?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 20?\n");
+              }
+              // 20
+              else if (hands[counter][position_Q[1]].is_trump_ != TRUE)
+              {
+                points_pair = 20;
+                
+                handle_pairs[counter].bool_pair_
+                  = pairHandler(handle_pairs, position_Q[1],
+                                points_pair, &counter, &points_call,
+                                &points_opponents,
+                                hands[counter],
+                                (player[0] == buffer_start));
+                if (handle_pairs[counter].bool_pair_ == TRUE)
+                {
+//                    printf("Q 20?\n");
+                  
+                  pairs--;
+                  
+                  position_Q[0] = position_Q[1];
+                  position_Q[1] = position_Q[2];
+                  position_Q[2] = 0;
+                }
+                
+//                  printf("check Q 20?\n");
+              }
+            }
+            // fifth card = KING
+            else if ((position[counter] == position_Q[0] MINUS_ONE
+                     && hands[counter][position_Q[0]].value_ == QUEEN)
+                     || (position[counter] == position_Q[1] MINUS_ONE
+                         && hands[counter][position_Q[1]].value_ == QUEEN)
+                     || (position[counter] == position_Q[2] MINUS_ONE
+                         && hands[counter][position_Q[2]].value_ == QUEEN))
+            {
+              // first 20 or 40
+              if (position_Q[0] > position[0])
+              {
+                // 40
+                if (hands[counter][position_Q[0]].is_trump_ == TRUE)
+                {
+                  points_pair = 40;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[0] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 40?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 40?\n");
+                }
+                // 20
+                else if (hands[counter][position_Q[0]].is_trump_ != TRUE)
+                {
+                  points_pair = 20;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[0] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 20?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 20?\n");
+                }
+              }
+              // third 20 or 40
+              else if (position_Q[2] MINUS_ONE == 4)      // only possible
+                                                          // on position 4
+              {
+                // 40
+                if (hands[counter][position_Q[2]].is_trump_ == TRUE)
+                {
+                  points_pair = 40;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[2] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 40?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 40?\n");
+                }
+                // 20
+                else if (hands[counter][position_Q[2]].is_trump_ != TRUE)
+                {
+                  points_pair = 20;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[2] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 20?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 20?\n");
+                }
+              }
+              // second 20 or 40
+              else /* best work around yet :D */
+              {
+                // 40
+                if (hands[counter][position_Q[1]].is_trump_ == TRUE)
+                {
+                  points_pair = 40;
+                  
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[1] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 40?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 40?\n");
+                }
+                // 20
+                else if (hands[counter][position_Q[1]].is_trump_ != TRUE)
+                {
+                  points_pair = 20;
+                  handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
+                                                           position_Q[1] MINUS_ONE,
+                                                           points_pair, &counter, &points_call,
+                                                           &points_opponents,
+                                                           hands[counter],
+                                                           (player[0] == buffer_start));
+                  if (handle_pairs[counter].bool_pair_ == TRUE)
+                  {
+//                      printf("K 20?\n");
+                    
+                    pairs--;
+                    
+                    position_Q[0] = position_Q[1];                            // naja, hardcoded
+                    position_Q[1] = position_Q[2];                            // oba viel besseres
+                    position_Q[2] = 0;                                        // fällt mir hier nit ein
+                  }
+                  
+//                    printf("check K 20?\n");
+                }
+              }
+            }
+          }
+          
+          if (counter == ENOUGH)
+          {
+            break;
+          }
+          
+          else
+          {
+            playCard(&(hands)[counter][position[counter]]);
+            printHand((hands)[counter], 6, player[counter],
+                      players[counter].name_);
+            printf("---------------------------------------------------------------\n");
+            break;
+          }
+          
+        case 'd':
+          position[counter] = 5;
+          
+          // check for 20 or 40
+          if (pairs > 0)
+          {
+            // at this position we will only find a QUEEN
+            if ((position[counter] == position_Q[0]
+                 && hands[counter][position_Q[0]].value_ == QUEEN)
+                || (position[counter] == position_Q[1]
+                    && hands[counter][position_Q[1]].value_ == QUEEN)
+                || (position[counter] == position_Q[2]
+                    && hands[counter][position_Q[2]].value_ == QUEEN))
+              
+              /* QUICK AND DIRTY FIX .. IMPROVE IN "POST PRODUCTION" (; */
+              
+            {
+              for (int j = 0; j < 3; j++)                       // sowas tu'I normalerwiese NIE
+              {
+                if (position_Q[j] == position[counter] /* 5 */)
+                {
+                  // 40
+                  if (hands[counter][position_Q[j]].is_trump_ == TRUE)
+                  {
+                    points_pair = 40;
+                    
+                    handle_pairs[counter].bool_pair_
+                      = pairHandler(handle_pairs, position_Q[j],
+                                    points_pair, &counter, &points_call,
+                                    &points_opponents,
+                                    hands[counter],
+                                    (player[0] == buffer_start));
+                    if (handle_pairs[counter].bool_pair_ == TRUE)
+                    {
+//                        printf("Q 40?\n");
+                      
+                      pairs--;
+                      
+                      position_Q[0] = position_Q[1];
+                      position_Q[1] = position_Q[2];
+                      position_Q[2] = 0;
+                    }
+                    
+//                      printf("check Q 40?\n");
+                  }
+                  // 20
+                  else /* is_trump == FALSE */
+                  {
+                    points_pair = 20;
+                    
+                    handle_pairs[counter].bool_pair_
+                      = pairHandler(handle_pairs, position_Q[j],
+                                    points_pair, &counter, &points_call,
+                                    &points_opponents,
+                                    hands[counter],
+                                    (player[0] == buffer_start));
+                    if (handle_pairs[counter].bool_pair_ == TRUE)
+                    {
+//                        printf("Q 20?\n");
+                      
+                      pairs--;
+                      
+                      position_Q[0] = position_Q[1];
+                      position_Q[1] = position_Q[2];
+                      position_Q[2] = 0;
+                    }
+                    
+//                      printf("check Q 20?\n");
+                  }
+                }
+              }
+            }
+          }
+          
+          if (counter == ENOUGH)
+          {
+            break;
+          }
+          
+          else
+          {
+            playCard(&(hands)[counter][position[counter]]);
+            printHand((hands)[counter], 6, player[counter],
+                      players[counter].name_);
+            printf("---------------------------------------------------------------\n");
+            break;
+          }
+          
+        default:
+          break;
+      }
     }
     
     // opponents' inputs - valid: suit, trump, bock
-      // opponent_1 must trump call
-      //
-      // opponent_2 must trump call if opponent_1 could not but does not have to
-      // trump opponent_1 if they have already trumped call
     
-    // who wins this round?
+    // rewind bock
+    if (hands[counter][0].is_bock_ == TRUE) // hard coded 0 sollte passen
+                                                        // zumal: ein bock: alle bock
+    {
+      for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+      {
+        hands[counter][counter_cards].is_bock_ = FALSE;
+      }
+    }
+
+    // check position(s) of valid cards for this round
+    // do not allow any other card
+    // delete non valid characters from commands
+    count_bock    = 0;   // bock
+    count_suit    = 0;   // right suit
+    count_trump   = 0;   // trump
+    
+    // seek
+    for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
+         counter_cards++)
+    {
+      // have trump
+      if ((hands)[counter][counter_cards].is_trump_ == TRUE)
+      {
+//            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_)
+        count_trump++;
+      }
+    }
+    
+    
+//    // opponent_1 must trump call
+//    if (counter == 1)
+//    {
+//
+//    }
+//
+//    // opponent_2 must trump call if opponent_1 could not but does not have to
+//    // trump opponent_1 if they have already trumped call
+//    if (counter == 2)
+//    {
+//
+//    }
+    
+    
+    // further playing
+    if (counter != 0 && counter < 3)
+    {
+      for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
+           counter_cards++)
+      {
+        // right suit
+        if (counter == 1)
+        {
+          if ((hands)[counter][counter_cards].suit_
+              == (hands)[counter - 1][position[counter - 1]].suit_)
+          {
+            // right suit is trump (: trump has been played )
+            if (hands[counter][counter_cards].is_trump_ == TRUE)
+            {
+              count_trump--;
+            }
+            count_suit++;
+          }
+        }
+        
+        else /* if (i == 2) */
+        {
+          if ((hands)[counter][counter_cards].suit_
+              == (hands)[counter - 2][position[counter - 2]].suit_)
+          {
+            // rigtht suit is trump (: trump has been played )
+            if (hands[counter][counter_cards].is_trump_ == TRUE)
+            {
+              count_trump--;
+            }
+            count_suit++;
+          }
+        }
+      }
+      
+      for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
+           counter_cards++)
+      {
+        // no trump && no suit = all bock
+        if (counter == 1)
+        {
+          if ((hands)[counter][counter_cards].is_trump_ == FALSE
+              && (hands)[counter][counter_cards].suit_
+              != (hands)[counter - 1][position[counter - 1]].suit_)
+          {
+            count_bock++;
+          }
+        }
+        
+        else /* if (i == 2) */
+        {
+          if ((hands)[counter][counter_cards].is_trump_ == FALSE
+              && (hands)[counter][counter_cards].suit_
+              != (hands)[counter - 2][position[counter - 2]].suit_)
+          {
+            count_bock++;
+          }
+        }
+      }
+      
+      // .. and adjust ------------
+      strcpy(players_commands[counter], "000000");    // maybe there is a better
+                                                // more professinal way
+      
+      counter_trump   = 0;
+      counter_suit    = 0;
+      counter_cards   = 0;
+      counter_hand    = 0;
+      counter_command = 0;
+      
+      // all bock - no matter which answer
+      if ((count_suit == 0 && count_trump == 0))
+      {
+        // according to turn, -1
+//          printf("Alles Bock!\n");
+        while (counter_hand < (HAND))
+        {
+          if ((hands)[counter][counter_hand].suit_ != NULL)
+          {
+            players_commands[counter][counter_cards] = commands[counter_command];
+            counter_command++;
+            counter_cards++;
+          }
+          
+          else
+          {
+            counter_command++;
+          }
+          
+          counter_hand++;
+        }
+      }
+      
+      // no valid suit but at least one trump
+      else if (count_suit == 0 && count_trump > 0)
+      {
+        counter_trump   = 0;
+        counter_suit    = 0;
+        counter_cards   = 0;
+        counter_hand    = 0;
+        counter_command = 0;
+        // must hold trump
+        // allow trump(s)
+//          printf("Muaßt an Trumpf spiel'n!\n");
+
+        while (counter_hand < (HAND/* - counter_turns*/)/* eben nicht strlen(players_commands[i])*/)
+        {
+          // differenciate between answer 1 and answer 2
+          // answer 1 must trump call & answer 2 must trump either
+          if ((hands)[counter][counter_hand].suit_ != NULL
+              && hands[counter][counter_hand].is_trump_ == TRUE)
+          {
+            players_commands[counter][counter_cards] = commands[counter_command];
+            counter_command++;
+            counter_cards++;
+          }
+          
+          else
+          {
+            counter_command++;
+          }
+          
+          counter_hand++;
+        }
+        
+        // remove right
+        for (counter_cards = count_trump; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
+        {
+          players_commands[counter][counter_cards] = '\0';
+        }
+      } // end else if (must play trump)
+      
+      else /* must hold suit, at leas one */
+      {
+//          printf("Muaßt Farb' spielen!\n");
+        counter_cards = 0;
+        counter_command = 0;
+        
+        // remove left
+        for (counter_hand = 0; counter_hand < (HAND/* - counter_turns*/); counter_hand++)
+        {
+          // suit found
+          if (counter == 1)   // first to answer
+          {
+            if ((hands)[counter][counter_hand].suit_
+                == (hands)[counter - 1][position[counter - 1]].suit_)
+            {
+//                printf("gleiche Farbe @ %d\n", counter_hand);
+//                printf("%c = %c\n", players_commands[i][counter_hand], commands[counter_command]);
+              players_commands[counter][counter_cards] = commands[counter_command];
+              counter_command++;
+              counter_cards++;
+            }
+            else
+            {
+              counter_command++;
+            }
+          }
+          
+          else /* (i == 2) */   // second to answer
+          {
+            if ((hands)[counter][counter_hand].suit_
+                == (hands)[counter - 2][position[counter - 2]].suit_)
+            {
+//                printf("gleiche Farbe @ %d\n", counter_hand);
+              players_commands[counter][counter_cards] = commands[counter_command];
+              counter_command++;
+              counter_cards++;
+            }
+            else
+            {
+//                players_commands[i][counter_hand] = commands[counter_command];
+              counter_command++;
+            }
+          }
+        }
+        
+        // remove right
+        for (counter_cards = count_suit; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
+        {
+          players_commands[counter][counter_cards] = '\0';
+        }
+      } // end else (must play suit)
+      
+      // now that we have found valid cards, go on and only allow permitted cards
+      // we do not have to mind case:     all bock
+      // but                              trump (in case trump has been played)
+      //                                  suit
+      // what do we need? - (answer 1): called card's value
+      //                    (answer 2): called card's value and answer 1's value
+      
+      if (counter == 1)
+      {
+        // if there is at least one valid card to answer with
+        if (!(count_suit == 0 && count_trump == 0))
+        {
+          // compare values and only allow weaker cards if there is not one
+          // which could trump call
+          counter_command = 0;
+          counter_cards   = 0;
+          count_permit    = 0;
+          
+          if (count_suit > 0)
+          {
+            while (players_commands[counter][counter_command] != '\0')
+            {
+              if ((hands)[counter][counter_cards].value_ >
+                  /* called card */ hands[0][position[0]].value_)
+              {
+                printf("%s %d - %s %d\n", hands[0][position[0]].suit_,
+                       hands[0][position[0]].value_,
+                       (hands)[counter][counter_cards].suit_,
+                       (hands)[counter][counter_cards].value_);
+                buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                buffer_higher[counter_cards ADD_ONE] = '\0';
+                counter_cards++;
+                
+                if (player[0] == initial_order[0])
+                {
+                  bool_trumped_already = TRUE;
+                }
+              }
+              counter_command++;
+            }
+          }
+          
+          if (counter_cards > 0)
+          {
+            strcpy(players_commands[counter], "\0\0\0\0\0\0");
+            strcpy(players_commands[counter], buffer_higher);
+            strcpy(buffer_higher, "\0\0\0\0\0\0");
+          }
+        }
+      }
+      
+      else /* if (i == 2) */
+      {
+        // if there is at least one valid card to answer with
+        if (!(count_suit == 0 && count_trump == 0))
+        {
+          // compare values and only allow weaker cards if there is not one
+          // which could trump any (call || answer 1)
+          counter_command = 0;
+          counter_cards   = 0;
+          count_permit    = 0;
+          
+          if (count_suit > 0)
+          {
+            // case: first answer could not trump call
+            if (bool_trumped_already == FALSE)
+            {
+              // TODO: this!
+//              while (players_commands[counter][counter_command] != '\0')
+//              {
+//                // has to trump caller if possible
+//                if ((hands)[counter][counter_command].value_ <
+//                    /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
+//                    || (hands)[counter][counter_cards].value_ <
+//                    /* answer 1's card */ hands[player[counter - 1] MINUS_ONE][position[1/*0*/]].value_)
+//                {
+//                  // does not work properly
+//                }
+//                else
+//                {
+//                  buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+//                  buffer_higher[counter_cards ADD_ONE] = '\0';
+//                  counter_cards++;
+//                }
+//
+//              counter_command++;
+//              }
+            }
+
+            else
+            {
+              // no need to trump caller
+            }
+          }
+          
+          else if (count_trump > 0)
+          {
+//              printf("%d\n", (hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
+            if ((hands)[counter][position[counter MINUS_ONE]].is_trump_)
+            {
+              while (players_commands[counter][counter_command] != '\0')
+              {
+                // only need to compare trump's value with answer 1
+                if ((hands)[counter][counter_cards].value_ <
+                    /* answer 1's card */ hands[player[counter MINUS_ONE] MINUS_ONE][position[counter MINUS_ONE]].value_)
+                {
+                  printf("\n!!! 3622 !!!\n");
+                }
+                else
+                {
+                  buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                  buffer_higher[counter_cards ADD_ONE] = '\0';
+                  counter_cards++;
+                }
+                counter_command++;
+              }
+            }
+          }
+          
+          if (counter_cards > 0)
+          {
+            strcpy(players_commands[counter], "\0\0\0\0\0\0");
+            strcpy(players_commands[counter], buffer_higher);
+            strcpy(buffer_higher, "\0\0\0\0\0\0");
+          }
+        }
+      }
+      
+      // -----------
+
+      do
+      {
+        system ("/bin/stty raw");
+        buffer = getchar();
+        printf("\r");
+        if (!(check = seekAndDestroy(buffer, players_commands[counter])))
+          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+      } while (!check);
+      system ("/bin/stty cooked");
+      
+      switch (buffer)
+      {
+        case 'q':
+          position[counter] = 0;
+          playCard(&(hands)[counter][position[counter]]);
+//          playCard(&(buffer_turn)[i].card_);
+//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
+//                      players[turn[i] MINUS_ONE].name_);
+          printHand((hands)[counter], 6, player[counter],
+                    players[counter].name_);
+          printf("---------------------------------------------------------------\n");
+          break;
+          
+        case 'w':
+          position[counter] = 1;
+          playCard(&(hands)[counter][position[counter]]);
+//          playCard(&(buffer_turn)[i].card_);
+//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
+//                      players[turn[i] MINUS_ONE].name_);
+          printHand((hands)[counter], 6, player[counter],
+                    players[counter].name_);
+          printf("---------------------------------------------------------------\n");
+          break;
+          
+        case 'e':
+          position[counter] = 2;
+          playCard(&(hands)[counter][position[counter]]);
+//          playCard(&(buffer_turn)[i].card_);
+//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
+//                      players[turn[i] MINUS_ONE].name_);
+          printHand((hands)[counter], 6, player[counter],
+                    players[counter].name_);
+          printf("---------------------------------------------------------------\n");
+          break;
+          
+        case 'a':
+          position[counter] = 3;
+          playCard(&(hands)[counter][position[counter]]);
+//          playCard(&(buffer_turn)[i].card_);
+//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
+//                      players[turn[i] MINUS_ONE].name_);
+          printHand((hands)[counter], 6, player[counter],
+                    players[counter].name_);
+          printf("---------------------------------------------------------------\n");
+          break;
+          
+        case 's':
+          position[counter] = 4;
+          playCard(&(hands)[counter][position[counter]]);
+//          playCard(&(buffer_turn)[i].card_);
+//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
+//                      players[turn[i] MINUS_ONE].name_);
+          printHand((hands)[counter], 6, player[counter],
+                    players[counter].name_);
+          printf("---------------------------------------------------------------\n");
+          break;
+          
+        case 'd':
+          position[counter] = 5;
+          playCard(&(hands)[counter][position[counter]]);
+//          playCard(&(buffer_turn)[i].card_);
+//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
+//                      players[turn[i] MINUS_ONE].name_);
+          printHand((hands)[counter], 6, player[counter],
+                    players[counter].name_);
+          printf("---------------------------------------------------------------\n");
+          break;
+          
+        default:
+          break;
+      }
+    }
   }
   
-    // (1)
-  if (1)
-  {
-    points_and_next.winner_ = player[0];
-  }
+  // ------------------
   
-    // (2)
-  else if (0)
-  {
-    points_and_next.winner_ = player[1];
-  }
-    // (3)
+  // --------------------------------------------------------------------------------
+//  if (i > 3) // exit condition: 20 or 40 shown only - enough & exit
+//  {
+//    printf("points caller: %d\n", points_call);
+//    printf("points opponents: %d\n", points_opponents);
+//    break;
+//  }
+
+  // ------------------
   
-  else /* if () */
-  {
-    points_and_next.winner_ = player[2];
-  }
+  counter = 0;
+
+  points_and_next = next(initial_order, player,
+                         hands[counter][position[counter]],
+                         (hands)[counter + 1][position[counter + 1]],
+                         (hands)[counter + 2][position[counter + 2]]);
   
-  // add point distribution function
-  points_and_next.points_ = 30;           // TODO
+  printf("Player %d, won %d points.\n", points_and_next.winner_,
+                                        points_and_next.points_);
+  
+//    // (1)
+//  if (1)
+//  {
+//    points_and_next.winner_ = player[0];
+//  }
+//
+//    // (2)
+//  else if (0)
+//  {
+//    points_and_next.winner_ = player[1];
+//  }
+//    // (3)
+//
+//  else /* if () */
+//  {
+//    points_and_next.winner_ = player[2];
+//  }
+//
+//  // add point distribution function
+//  points_and_next.points_ = 30;           // TODO
   
   return points_and_next;
 }
@@ -17005,8 +16880,8 @@ void sortOrderHands(int start, Card** hands, Card* initial_first)
     buffer[counter_cards] = hands[start MINUS_ONE][counter_cards];
   }
   
-  printf("\n[%s %s]\n", hands[0][0].sign_, hands[0][0].image_);
-  printf("\n[%s %s]\n", buffer[0].sign_, buffer[0].image_);
+//  printf("\n[%s %s]\n", hands[0][0].sign_, hands[0][0].image_);
+//  printf("\n[%s %s]\n", buffer[0].sign_, buffer[0].image_);
   
   // (1) = (1) - should not change anything
   if (buffer[0].value_ == initial_first[0].value_
@@ -17084,5 +16959,45 @@ void sortOrderHands(int start, Card** hands, Card* initial_first)
       hands[TURN_PLAYER_1 MINUS_ONE][counter_cards]
         = buffer[counter_cards];
     }
+  }
+}
+
+void sortOrderPlayers(int start, Player* players, Player initial_first)
+{
+  Player buffer = {"", 0, FALSE};
+  
+  // set buffer
+  buffer = players[start MINUS_ONE];
+  
+  // (1) = (1) - should not change anything
+  if (!strcmp(buffer.name_, initial_first.name_))
+  {
+    // do nothing
+  }
+  
+  // (2) = (1)
+  else if (!strcmp(buffer.name_, players[1].name_))
+  {
+    // (3) -> (2)
+    players[1] = players[2];
+
+    // (1) -> (3)
+    players[2] = players[0];
+
+    // (2) -> (1)
+    players[0] = buffer;
+  }
+
+  // (3) = (1)
+  else /* if (!strcmp(buffer.name_, players[2].name_)) */
+  {
+    // (2) -> (3)
+    players[2] = players[1];
+
+    // (1) -> (2)
+    players[1] = players[0];
+
+    // (3) -> (1)
+    players[0] = buffer;
   }
 }
