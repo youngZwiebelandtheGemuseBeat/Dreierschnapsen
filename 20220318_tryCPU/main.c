@@ -248,7 +248,7 @@ int highestCard(Card* cards);
 void printBummerl(Player* players);
 void distributePoints(int points_call, int points_opponents,
                       Points* points_and_caller);
-void sortOrderHands(int start, Card** hands, Card* caller_mode);
+void sortOrderHands(int start, Card** hands, Card** initial_hands);
 void sortOrderPlayers(int start, Player* players, Player caller_mode);
 
 //-----------------------------------------------------------------------------
@@ -14939,13 +14939,16 @@ void printTable(Player players)
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order)
 {
-  Points next_and_points = {start, 0, 0};
-  Points points_and_caller = {start, 0, 0};
+  Points next_and_points = {start, 0, start};
+  Points points_and_caller = {start, 0, start};
   int points_caller = 0;
   int points_opponents = 0;
   int counter = 0;
-  Card callers_hand[6] = {"", 0, "", "", 0, 0};
+//  Card initial_hands[QUANTITY_PLAYERS][6] = {"", 0, "", "", 0, 0};
+  Card* initial_hands[3]    = {};
   int counter_hand = 0;
+  int counter_cards = 0;
+  int counter_players = 0;
   Player caller = {"", 0, FALSE};
   
   // who called mode - who is opponent
@@ -14955,10 +14958,14 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   {
     next_and_points.caller_ = TURN_PLAYER_1;
     // start = TURN_PLAYER_1;
-    for (counter_hand = 0; counter_hand < HAND; counter_hand++)
-    {
-      callers_hand[counter_hand] = hands[order[0]][counter_hand];
-    }
+//    for (counter_players = 0; counter_players < QUANTITY_PLAYERS; counter_players++)
+//    {
+      for (counter_hand = 0; counter_hand < HAND; counter_hand++)
+      {
+//        initial_hands[counter_players][counter_hand] = hands[counter_players][counter_hand];
+        initial_hands[counter_hand] = hands[counter_hand];
+      }
+//    }
     caller = players[0];
     
     while (points_caller < MAXIMUM_POINTS
@@ -14970,8 +14977,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       // modeRufer() will therefore be just one turn
       
       // sort hands prior calling modeRufer()
-      sortOrderHands(next_and_points.caller_, hands, callers_hand);
-      sortOrderPlayers(next_and_points.caller_, players, caller);
+      sortOrderHands(/* next_and_points.caller_ */ next_and_points.winner_, hands, initial_hands);
+      sortOrderPlayers(/* next_and_points.caller_ */ next_and_points.winner_, players, caller);
       
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players);
@@ -14993,6 +15000,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
         points_opponents += next_and_points.points_;
       }
       
+      // remove played cards from hands
+//      removeCard(&hands[0][position[0]]);
+//      removeCard(&hands[1][position[1]]);
+//      removeCard(&hands[2][position[2]]);
+      // -------------------------------------------
+      // write all left over cards onto commands
+      
       counter++;
     } // end of while()
     
@@ -15000,7 +15014,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     distributePoints(points_caller, points_opponents, &points_and_caller);
   }
   
-  // Player 2 called mode - TODO: clone "Player 1 called mode"
+  // Player 2 called mode - TODO: clone "Player 2 called mode"
   else if (order[0] ADD_ONE == TURN_PLAYER_2)
   {
     next_and_points.caller_ = TURN_PLAYER_2;
@@ -15023,7 +15037,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     }
   }
   
-  // Player 3 called mode - TODO: clone "Player 1 called mode"
+  // Player 3 called mode - TODO: clone "Player 3 called mode"
   else /* if (order[0] ADD_ONE == TURN_PLAYER_3) */
   {
     next_and_points.caller_ = TURN_PLAYER_3;
@@ -15115,8 +15129,6 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   char input_CPU = '\0';
   Points next_and_points = {0, 0, 0};
   int bool_trumped_already = FALSE;
-  
-  // -----------
   
   for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
   {
@@ -16227,7 +16239,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
             count_suit++;
           }
         }
-      }
+      } // end: for()
       
       for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
            counter_cards++)
@@ -16252,7 +16264,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
             count_bock++;
           }
         }
-      }
+      } // end: for()
       
       // .. and adjust ------------
       strcpy(players_commands[counter], "000000");    // maybe there is a better
@@ -16446,6 +16458,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
             if (bool_trumped_already == FALSE)
             {
               // TODO: this!
+              printf("TODO!\n");
 //              while (players_commands[counter][counter_command] != '\0')
 //              {
 //                // has to trump caller if possible
@@ -16605,6 +16618,14 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   // ------------------
   
   counter = 0;
+  
+  printf("Table:\n[[%s %d] [%s %d] [%s %d]\n",
+         hands[counter][position[counter]].suit_,
+         hands[counter][position[counter]].value_,
+         (hands)[counter + 1][position[counter + 1]].suit_,
+         (hands)[counter + 1][position[counter + 1]].value_,
+         (hands)[counter + 2][position[counter + 2]].suit_,
+         (hands)[counter + 2][position[counter + 2]].value_);
 
   points_and_next = next(initial_order, player,
                          hands[counter][position[counter]],
@@ -16634,6 +16655,46 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
 //
 //  // add point distribution function
 //  points_and_next.points_ = 30;           // TODO
+  
+  removeCard(&hands[0][position[0]]);
+  removeCard(&hands[1][position[1]]);
+  removeCard(&hands[2][position[2]]);
+  
+  // player 1
+  counter_position = 0 ;
+  for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+  {
+    if ((hands)[0][counter_cards].suit_ != NULL)
+    {
+      players_commands[0][counter_position] = commands[counter_cards];
+      counter_position++;
+    }
+  }
+  players_commands[0][counter_position] = '\0';
+  
+  // player 2
+  counter_position = 0 ;
+  for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+  {
+    if ((hands)[1][counter_cards].suit_ != NULL)
+    {
+      players_commands[1][counter_position] = commands[counter_cards];
+      counter_position++;
+    }
+  }
+  players_commands[1][counter_position] = '\0';
+  
+  // player 3
+  counter_position = 0 ;
+  for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+  {
+    if ((hands)[player[2] MINUS_ONE][counter_cards].suit_ != NULL)
+    {
+      players_commands[2][counter_position] = commands[counter_cards];
+      counter_position++;
+    }
+  }
+  players_commands[2][counter_position] = '\0';
   
   return points_and_next;
 }
@@ -16869,9 +16930,10 @@ void distributePoints(int points_call, int points_opponents,
   }
 }
 
-void sortOrderHands(int start, Card** hands, Card* initial_first)
+void sortOrderHands(int start, Card** hands, Card** initial_hands)
 {
   Card buffer[6] = {"", 0, "", "", 0, 0};
+  Card buffer_initial[6] = {"", 0, "", "", 0, 0};
   int counter_cards = 0;
   
   // set buffer
@@ -16884,8 +16946,10 @@ void sortOrderHands(int start, Card** hands, Card* initial_first)
 //  printf("\n[%s %s]\n", buffer[0].sign_, buffer[0].image_);
   
   // (1) = (1) - should not change anything
-  if (buffer[0].value_ == initial_first[0].value_
-      && buffer[0].suit_ == initial_first[0].suit_)
+//  if (buffer[0].value_ == initial_first[0].value_
+//      && buffer[0].sign_ == initial_first[0].sign_)
+  if (hands[0][0].value_ == (initial_hands)[0][0].value_
+      && hands[0][0].image_ == (initial_hands)[0][0].image_)
   {
 //    // (1) -> (1)
 //    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
@@ -16910,54 +16974,62 @@ void sortOrderHands(int start, Card** hands, Card* initial_first)
   }
   
   // (2) = (1)
-  else if (buffer[0].value_ == hands[1][0].value_
-           && buffer[0].suit_ == hands[1][0].suit_)
+//  else if (buffer[0].value_ == hands[1][0].value_
+//           && buffer[0].sign_ == hands[1][0].sign_)
+  else if (hands[1][0].value_ == initial_hands[0][0].value_
+           && hands[1][0].image_ == initial_hands[0][0].image_)
   {
     // (3) -> (2)
     for (counter_cards = 0; counter_cards < HAND; counter_cards++)
     {
-      hands[TURN_PLAYER_2 MINUS_ONE][counter_cards]
-        = hands[TURN_PLAYER_3 MINUS_ONE][counter_cards];
+//      hands[TURN_PLAYER_2 MINUS_ONE][counter_cards]
+//        = hands[TURN_PLAYER_3 MINUS_ONE][counter_cards];
+      hands[1][counter_cards] = initial_hands[2][counter_cards];
     }
     
     // (1) -> (3)
     for (counter_cards = 0; counter_cards < HAND; counter_cards++)
     {
-      hands[TURN_PLAYER_3 MINUS_ONE][counter_cards]
-        = hands[TURN_PLAYER_1 MINUS_ONE][counter_cards];
+//      hands[TURN_PLAYER_3 MINUS_ONE][counter_cards]
+//        = hands[TURN_PLAYER_1 MINUS_ONE][counter_cards];
+      hands[2][counter_cards] = initial_hands[0][counter_cards];
     }
     
     // (2) -> (1)
     for (counter_cards = 0; counter_cards < HAND; counter_cards++)
     {
-      hands[TURN_PLAYER_1 MINUS_ONE][counter_cards]
-        = buffer[counter_cards];
+//      hands[TURN_PLAYER_1 MINUS_ONE][counter_cards]
+//        = buffer[counter_cards];
+      hands[0][counter_cards] = initial_hands[1][counter_cards];
     }
   }
   
   // (3) = (1)
-  else /* if (hands[2][0].value_ == buffer[0].value_
-              && hands[2][0].suit_ == buffer[0].suit_) */
+  else /* if (hands[2][0].value_ == initial_hands[0][0].value_
+        && hands[2][0].image_ == initial_hands[0][0].image_) */
   {
     // (2) -> (3)
     for (counter_cards = 0; counter_cards < HAND; counter_cards++)
     {
-      hands[TURN_PLAYER_3 MINUS_ONE][counter_cards]
-        = hands[TURN_PLAYER_2 MINUS_ONE][counter_cards];
+//      hands[TURN_PLAYER_3 MINUS_ONE][counter_cards]
+//        = hands[TURN_PLAYER_2 MINUS_ONE][counter_cards];
+      hands[2][counter_cards] = initial_hands[1][counter_cards];
     }
     
     // (1) -> (2)
     for (counter_cards = 0; counter_cards < HAND; counter_cards++)
     {
-      hands[TURN_PLAYER_2 MINUS_ONE][counter_cards]
-        = hands[TURN_PLAYER_1 MINUS_ONE][counter_cards];
+//      hands[TURN_PLAYER_2 MINUS_ONE][counter_cards]
+//        = hands[TURN_PLAYER_1 MINUS_ONE][counter_cards];
+      hands[1][counter_cards] = initial_hands[0][counter_cards];
     }
     
     // (3) -> (1)
     for (counter_cards = 0; counter_cards < HAND; counter_cards++)
     {
-      hands[TURN_PLAYER_1 MINUS_ONE][counter_cards]
-        = buffer[counter_cards];
+//      hands[TURN_PLAYER_1 MINUS_ONE][counter_cards]
+//        = buffer[counter_cards];
+      hands[0][counter_cards] = initial_hands[2][counter_cards];
     }
   }
 }
