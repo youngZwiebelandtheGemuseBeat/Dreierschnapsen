@@ -14960,18 +14960,14 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   if (order[0] ADD_ONE == TURN_PLAYER_1)
   {
     next_and_points.caller_ = TURN_PLAYER_1;
-    // start = TURN_PLAYER_1;
-//    for (counter_players = 0; counter_players < QUANTITY_PLAYERS; counter_players++)
-//    {
-      for (counter_hand = 0; counter_hand < HAND; counter_hand++)
-      {
-//        initial_hands[counter_players][counter_hand] = hands[counter_players][counter_hand];
-        initial_hands[counter_hand] = hands[counter_hand];
-      }
-//    }
     initial_players[0] = players[0];
     initial_players[1] = players[1];
     initial_players[2] = players[2];
+    
+    for (counter_hand = 0; counter_hand < HAND; counter_hand++)
+    {
+      initial_hands[counter_hand] = hands[counter_hand];
+    }
     
     while (points_caller < MAXIMUM_POINTS
            && points_opponents < MAXIMUM_POINTS
@@ -14992,7 +14988,6 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       next_and_points.caller_ = next_and_points.winner_;
       
       // handle points
-      
       // caller wins turn
       if (next_and_points.winner_ == TURN_PLAYER_1)
       {
