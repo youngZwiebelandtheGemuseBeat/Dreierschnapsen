@@ -195,7 +195,7 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
 int habSelbst(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
-Points modeRufer(Card** hands, int start, char* trump, Player* players);
+Points modeRufer(Card** hands, int start, char* trump, Player* players, char** players_commands);
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order);
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
@@ -250,6 +250,7 @@ void distributePoints(int points_call, int points_opponents,
                       Points* points_and_caller);
 void sortOrderHands(int start, Card** hands, Card** initial_hands);
 void sortOrderPlayers(int start, Player* players, Player* initial_order);
+void sortOrderCommands(int start, char** players_commands, int* initial_commands);
 
 //-----------------------------------------------------------------------------
 ///
@@ -14947,12 +14948,19 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   int points_caller = 0;
   int points_opponents = 0;
   int counter = 0;
-//  Card initial_hands[QUANTITY_PLAYERS][6] = {"", 0, "", "", 0, 0};
   Card* initial_hands[3]    = {};
   int counter_hand = 0;
-//  int counter_cards = 0;
-//  int counter_players = 0;
   Player initial_players[3] = {"", 0, FALSE};
+  
+  char commands[7] = "qweasd";
+  char commands_1[7] = "\0";
+  char commands_2[7] = "\0";
+  char commands_3[7] = "\0";
+  strcpy(commands_1, commands);
+  strcpy(commands_2, commands);
+  strcpy(commands_3, commands);
+  char* players_commands[3] = {commands_1, commands_2, commands_3};
+  int initial_commands[3] = {0, 1, 2};
   
   // who called mode - who is opponent
   
@@ -14980,9 +14988,10 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       // sort hands prior calling modeRufer()
       sortOrderHands(/* next_and_points.caller_ */ next_and_points.winner_, hands, initial_hands);
       sortOrderPlayers(/* next_and_points.caller_ */ next_and_points.winner_, players, initial_players);
+      sortOrderCommands(next_and_points.winner_, players_commands, initial_commands);
       
       next_and_points
-        = modeRufer(hands, next_and_points.caller_, trump, players);
+        = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
       
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
@@ -15022,7 +15031,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     
     // and here we will call the mode itself
     next_and_points
-      = modeRufer(hands, next_and_points.caller_, trump, players);
+      = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
     
     // caller wins
     if (next_and_points.winner_ == TURN_PLAYER_2)
@@ -15045,7 +15054,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     
     // and here we will call the mode itself
     next_and_points
-      = modeRufer(hands, next_and_points.caller_, trump, players);
+      = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
     
     // caller wins
     if (next_and_points.winner_ == TURN_PLAYER_3)
@@ -15066,7 +15075,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 
 // One turn only, so it has to be called in a loop. Maybe this way I can clean
 // it up a bit and finally make it work
-Points modeRufer(Card** hands, int start, char* trump, Player* players)
+Points modeRufer(Card** hands, int start, char* trump, Player* players, char** players_commands)
 {
   int player[3] = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
@@ -15087,13 +15096,14 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   int counter_hand = 0;
   int counter_command = 0;
   char commands[7] = "qweasd";
-//  long length_commands = strlen(commands);
-  char commands_1[7] = "\0";
-  char commands_2[7] = "\0";
-  char commands_3[7] = "\0";
-  strcpy(commands_1, commands);
-  strcpy(commands_2, commands);
-  strcpy(commands_3, commands);
+//  char commands_1[7] = "\0";
+//  char commands_2[7] = "\0";
+//  char commands_3[7] = "\0";
+//  strcpy(commands_1, commands);
+//  strcpy(commands_2, commands);
+//  strcpy(commands_3, commands);
+  
+  printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
   
   // default
 //  int call      = TURN_PLAYER_1;
@@ -15103,7 +15113,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   int answer_1  = player[1];
   int answer_2  = player[2];
   int initial_order[3] = {call, answer_1, answer_2};   // initial order
-  char* players_commands[3] = {commands_1, commands_2, commands_3};
+//  char* players_commands[3] = {commands_1, commands_2, commands_3};
   int position[3]   = {0};
   int position_Q[3] = {0};
   int pairs         = 0;
@@ -16639,27 +16649,6 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   printf("Player %d, won %d points.\n", points_and_next.winner_,
                                         points_and_next.points_);
   
-//    // (1)
-//  if (1)
-//  {
-//    points_and_next.winner_ = player[0];
-//  }
-//
-//    // (2)
-//  else if (0)
-//  {
-//    points_and_next.winner_ = player[1];
-//  }
-//    // (3)
-//
-//  else /* if () */
-//  {
-//    points_and_next.winner_ = player[2];
-//  }
-//
-//  // add point distribution function
-//  points_and_next.points_ = 30;           // TODO
-  
   removeCard(&hands[0][position[0]]);
   removeCard(&hands[1][position[1]]);
   removeCard(&hands[2][position[2]]);
@@ -17195,5 +17184,31 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order)
 //
 //    // (3) -> (1)
 //    players[0] = buffer;
+  }
+}
+
+void sortOrderCommands(int start, char** players_commands, int* initial_commands)
+{
+  char* buffer = players_commands[0];
+  
+  if (start == TURN_PLAYER_1)
+  {
+    players_commands[0] = buffer;
+    players_commands[1] = players_commands[1];
+    players_commands[2] = players_commands[2];
+  }
+  
+  else if (start == TURN_PLAYER_2)
+  {
+    players_commands[0] = players_commands[1];
+    players_commands[1] = players_commands[2];
+    players_commands[2] = buffer;
+  }
+  
+  else /* if (start == TURN_PLAYER_3) */
+  {
+    players_commands[0] = players_commands[2];
+    players_commands[2] = players_commands[1];
+    players_commands[1] = buffer;
   }
 }
