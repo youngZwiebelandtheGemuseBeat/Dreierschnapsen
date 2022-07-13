@@ -249,7 +249,7 @@ void printBummerl(Player* players);
 void distributePoints(int points_call, int points_opponents,
                       Points* points_and_caller);
 void sortOrderHands(int start, Card** hands, Card** initial_hands);
-void sortOrderPlayers(int start, Player* players, Player caller_mode);
+void sortOrderPlayers(int start, Player* players, Player* initial_order);
 
 //-----------------------------------------------------------------------------
 ///
@@ -602,7 +602,10 @@ void initializeDummyDeck(Card* dummy_deck)
 ///
 /// This function displays several cards in line.
 ///
-/// @param  deck    array to get images to be displayed from
+/// @param  deck      array to get images to be displayed from
+/// @param  number  number of cards to display
+/// @param  player  number of player
+/// @param  name      name of player
 ///
 /// @return no return value since this is a 'void' function
 //
@@ -14947,9 +14950,9 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 //  Card initial_hands[QUANTITY_PLAYERS][6] = {"", 0, "", "", 0, 0};
   Card* initial_hands[3]    = {};
   int counter_hand = 0;
-  int counter_cards = 0;
-  int counter_players = 0;
-  Player caller = {"", 0, FALSE};
+//  int counter_cards = 0;
+//  int counter_players = 0;
+  Player initial_players[3] = {"", 0, FALSE};
   
   // who called mode - who is opponent
   
@@ -14966,7 +14969,9 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
         initial_hands[counter_hand] = hands[counter_hand];
       }
 //    }
-    caller = players[0];
+    initial_players[0] = players[0];
+    initial_players[1] = players[1];
+    initial_players[2] = players[2];
     
     while (points_caller < MAXIMUM_POINTS
            && points_opponents < MAXIMUM_POINTS
@@ -14978,7 +14983,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       
       // sort hands prior calling modeRufer()
       sortOrderHands(/* next_and_points.caller_ */ next_and_points.winner_, hands, initial_hands);
-      sortOrderPlayers(/* next_and_points.caller_ */ next_and_points.winner_, players, caller);
+      sortOrderPlayers(/* next_and_points.caller_ */ next_and_points.winner_, players, initial_players);
       
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players);
@@ -15073,13 +15078,13 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   Points points_and_next = {start, 0, 0};
   int counter = 0;
   
-  printHand(hands[0], 6, 1, "test");
-  printHand(hands[1], 6, 2, "test");
-  printHand(hands[2], 6, 3, "test");
+//  printHand(hands[0], 6, 1, "test");
+//  printHand(hands[1], 6, 2, "test");
+//  printHand(hands[2], 6, 3, "test");
   
   // -----------
   
-  int counter_turns = 0;
+//  int counter_turns = 0;
   int counter_cards = 0;
   int counter_position = 0;
   int counter_suit = 0;
@@ -15087,7 +15092,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   int counter_hand = 0;
   int counter_command = 0;
   char commands[7] = "qweasd";
-  long length_commands = strlen(commands);
+//  long length_commands = strlen(commands);
   char commands_1[7] = "\0";
   char commands_2[7] = "\0";
   char commands_3[7] = "\0";
@@ -15109,29 +15114,29 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players)
   int pairs         = 0;
   int check = FALSE;
   int buffer = 0;
-  int counter_Q = 0;
+//  int counter_Q = 0;
   int points_call = 0;
   int points_opponents = 0;
   int points_pair = 0;
   int buffer_start = 0;
-  int bool_trump = TRUE;
-  int points_1 = 0;
-  int points_2 = 0;
-  int points_3 = 0;
-  int points[3] = {points_1, points_2, points_3};
+//  int bool_trump = TRUE;
+//  int points_1 = 0;
+//  int points_2 = 0;
+//  int points_3 = 0;
+//  int points[3] = {points_1, points_2, points_3};
   int count_bock    = 0;   // bock
   int count_suit    = 0;   // right suit
   int count_trump   = 0;   // trump
   int count_permit  = 0;
-  int count_valid   = 0;
+//  int count_valid   = 0;
   Pair handle_pairs[3] = {0, 0, 0};
-  Turn buffer_turn[3] = {{{NULL}, {0}, "", ' '}, ' ', 0};
+//  Turn buffer_turn[3] = {{{NULL}, {0}, "", ' '}, ' ', 0};
   getCall(start, &call, &answer_1, &answer_2);
   buffer_start = start;
-  Points points_and_caller = {0, 0, 0};
+//  Points points_and_caller = {0, 0, 0};
   char buffer_higher[6] = {'\0'};
-  char input_CPU = '\0';
-  Points next_and_points = {0, 0, 0};
+//  char input_CPU = '\0';
+//  Points next_and_points = {0, 0, 0};
   int bool_trumped_already = FALSE;
   
   for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
@@ -17130,45 +17135,70 @@ void sortOrderHands(int start, Card** hands, Card** initial_hands)
 //  }
 }
 
-void sortOrderPlayers(int start, Player* players, Player initial_first)
+void sortOrderPlayers(int start, Player* players, Player* initial_order)
 {
-  Player buffer = {"", 0, FALSE};
+//  Player buffer = {"", 0, FALSE};
   
   // set buffer
-  buffer = players[start MINUS_ONE];
+//  buffer = players[start MINUS_ONE];
+//  buffer = players[0];
   
   // (1) = (1) - should not change anything
 //  if (!strcmp(buffer.name_, initial_first.name_))
   if (start == TURN_PLAYER_1)
   {
     // do nothing
+    
+     players[0] = initial_order[0];
+     players[1] = initial_order[1];
+     players[2] = initial_order[2];
+    
+    // players[0] = buffer;
+    // players[1] = players[1];
+    // players[2] = players[2];
   }
   
   // (2) = (1)
 //  else if (!strcmp(buffer.name_, players[1].name_))
   else if (start == TURN_PLAYER_2)
   {
-    // (3) -> (2)
-    players[1] = players[2];
-
-    // (1) -> (3)
-    players[2] = players[0];
-
-    // (2) -> (1)
-    players[0] = buffer;
+    players[0] = initial_order[1];
+    players[1] = initial_order[2];
+    players[2] = initial_order[0];
+    
+//    players[0] = players[1];
+//    players[1] = players[2];
+//    players[2] = buffer;
+    
+//    // (3) -> (2)
+//    players[1] = players[2];
+//
+//    // (1) -> (3)
+//    players[2] = players[0];
+//
+//    // (2) -> (1)
+//    players[0] = buffer;
   }
 
   // (3) = (1)
   else /* if (!strcmp(buffer.name_, players[2].name_)) */
         /* if (start == TURN_PLAYER_3)*/
   {
-    // (2) -> (3)
-    players[2] = players[1];
-
-    // (1) -> (2)
-    players[1] = players[0];
-
-    // (3) -> (1)
-    players[0] = buffer;
+    players[0] = initial_order[2];
+    players[1] = initial_order[0];
+    players[2] = initial_order[1];
+    
+//    players[0] = players[2];
+//    players[1] = buffer;
+//    players[2] = players[1];
+    
+//    // (2) -> (3)
+//    players[2] = players[1];
+//
+//    // (1) -> (2)
+//    players[1] = players[0];
+//
+//    // (3) -> (1)
+//    players[0] = buffer;
   }
 }
