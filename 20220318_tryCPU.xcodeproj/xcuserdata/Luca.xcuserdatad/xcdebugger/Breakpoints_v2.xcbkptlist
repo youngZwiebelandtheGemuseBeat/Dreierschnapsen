@@ -855,22 +855,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E90A7FDF-3BF0-43CB-8FF7-DBE48F9DCE6A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "20220318_tryCPU/main.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17066"
-            endingLineNumber = "17066"
-            landmarkName = "sortOrderHands(start, hands, initial_hands)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "44013711-4455-4911-9EB5-BF67696C7708"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1111,22 +1095,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FF5D36F2-03A4-4BCC-80C6-6351F1EA7AEE"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "20220318_tryCPU/main.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17069"
-            endingLineNumber = "17069"
-            landmarkName = "sortOrderHands(start, hands, initial_hands)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "EA540EA6-4286-4697-9721-896D90D5B30A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1249,22 +1217,6 @@
             startingLineNumber = "15267"
             endingLineNumber = "15267"
             landmarkName = "modeRufer(hands, start, trump, players, players_commands)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F3E57B67-C0C4-4452-977A-A69F5BF4FC15"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "20220318_tryCPU/main.c"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16966"
-            endingLineNumber = "16966"
-            landmarkName = "sortOrderHands(start, hands, initial_hands)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1726,8 +1678,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17160"
-            endingLineNumber = "17160"
+            startingLineNumber = "16992"
+            endingLineNumber = "16992"
             landmarkName = "sortOrderPlayers(start, players, initial_order)"
             landmarkType = "9">
          </BreakpointContent>
