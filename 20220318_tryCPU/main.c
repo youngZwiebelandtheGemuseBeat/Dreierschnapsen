@@ -261,7 +261,8 @@ void distributePoints(int points_call, int points_opponents,
 void sortOrderHands(int start, Card** hands, Card** initial_hands);
 void sortOrderPlayers(int start, Player* players, Player* initial_order);
 void sortOrderCommands(int start, char** players_commands,
-                       int* current_players_order, char** last_commands);
+                       int* current_players_order);
+void setInitialOrder(int start, int* initial_order);
 
 //-----------------------------------------------------------------------------
 ///
@@ -13337,7 +13338,7 @@ void removeCard(Card* card)
 
 int seekAndDestroy(char find, char* list)
 {
-  int position = 0;
+  int spot = 0;
   int counter = 0;
   // WorkAround ---
   long length = strlen(list) /* - 1 */;                   // I glaub da scheißt mir
@@ -13356,9 +13357,9 @@ int seekAndDestroy(char find, char* list)
 //    buffer[counter] = (*list)[counter];
 //  }
   
-  for (position = 0; position < length; position++)
+  for (spot = 0; spot < length; spot++)
   {
-    if ((list)[position] == find)
+    if ((list)[spot] == find)
     {
       break;
     }
@@ -13368,9 +13369,9 @@ int seekAndDestroy(char find, char* list)
     }
   }
   
-  if ((list)[position] == find)
+  if ((list)[spot] == find)
   {
-    for (counter = position; counter < length - 1; counter++)
+    for (counter = spot; counter < length - 1; counter++)
     {
       (list)[counter] = (list)[counter + 1];  // vielleicht will er da irgendeinen string operator
                                                   // und in diesem Sinne, Gute Nacht :*
@@ -14972,7 +14973,6 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   strcpy(commands_2, commands);
   strcpy(commands_3, commands);
   char* players_commands[3] = {commands_1, commands_2, commands_3};
-  char* last_commands[3] = {"\0\0\0\0\0\0\0", "\0\0\0\0\0\0\0", "\0\0\0\0\0\0\0"};
   int current_players_order[3] = {TURN_PLAYER_1, TURN_PLAYER_2, TURN_PLAYER_3};
   
   // who called mode - who is opponent
@@ -14996,15 +14996,11 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     {
       printf("TURN: %d\n", counter + 1);
       
-      last_commands[0] = players_commands[0];
-      last_commands[1] = players_commands[1];
-      last_commands[2] = players_commands[2];
-      
       // sort hands prior calling modeRufer()
       sortOrderHands(/* next_and_points.caller_ */ next_and_points.winner_, hands, initial_hands);
       sortOrderPlayers(/* next_and_points.caller_ */ next_and_points.winner_, players, initial_players);
       sortOrderCommands(next_and_points.winner_, players_commands,
-                        current_players_order, last_commands);
+                        current_players_order);
 //      printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
       
       next_and_points
@@ -15110,10 +15106,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
   
 //  printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
   
-  int call      = player[0];
-  int answer_1  = player[1];
-  int answer_2  = player[2];
-  int initial_order[3] = {call, answer_1, answer_2};   // initial order
+//  int call      = player[0];
+//  int answer_1  = player[1];
+//  int answer_2  = player[2];
+//  int initial_order[3] = {call, answer_1, answer_2};   // initial order
   int position[3]   = {0};
   int position_Q[3] = {0};
   int pairs         = 0;
@@ -15128,9 +15124,13 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
   int count_trump   = 0;   // trump
   int count_permit  = 0;
   Pair handle_pairs[3] = {0, 0, 0};
-  getCall(start, &call, &answer_1, &answer_2);
+//  getCall(start, &call, &answer_1, &answer_2);
   buffer_start = start;
   char buffer_higher[6] = {'\0'};
+  
+  const int initial_order[3] = {player[0], player[1], player[2]};
+//  setInitialOrder(start, initial_order);
+//  setInitialOrder(start, player);
   
   for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
   {
@@ -16307,7 +16307,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
           if ((hands)[counter][counter_hand].suit_ != NULL
               && hands[counter][counter_hand].is_trump_ == TRUE)
           {
-            players_commands[counter][counter_cards] = commands[counter_command]; // hier wird position[0] verändert, warum!?
+            players_commands[counter][counter_cards] = commands[counter_command]; // hier wird position[0] verändert, warum!? - nicht mehr (...) jetzt ein paar Zeilen weiter unten
             counter_command++;
             counter_cards++;
           }
@@ -16323,7 +16323,9 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
         // remove right
         for (counter_cards = count_trump; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
         {
-          players_commands[counter][counter_cards] = '\0';
+          players_commands[counter][counter_cards] = '\0';  // (...) position[0] wird nun hier verändert
+                                                            // anscheinend stehen players_commands[] und positions[]
+                                                            // beieinander im Speicher
         }
       } // end else if (must play trump)
       
@@ -16976,9 +16978,9 @@ void distributePoints(int points_call, int points_opponents,
 
 void sortOrderHands(int start, Card** hands, Card** initial_hands)
 {
-  Card buffer[6] = {"", 0, "", "", 0, 0};
-  Card buffer_initial[6] = {"", 0, "", "", 0, 0};
-  int counter_cards = 0;
+//  Card buffer[6] = {"", 0, "", "", 0, 0};
+//  Card buffer_initial[6] = {"", 0, "", "", 0, 0};
+//  int counter_cards = 0;
   
   if (start == TURN_PLAYER_1)
   {
@@ -17030,7 +17032,7 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order)
 }
 
 void sortOrderCommands(int start, char** players_commands,
-                       int* current_players_order, char** last_commands)
+                       int* current_players_order)
 {
   int counter = 0;
   char buffer_commands[7] = "\0\0\0\0\0\0\0";
@@ -17099,6 +17101,29 @@ void sortOrderCommands(int start, char** players_commands,
     current_players_order[2] = TURN_PLAYER_2;
   }
   
-  printf("last\n%s\n%s\n%s\n", last_commands[0], last_commands[1], last_commands[2]);
   printf("players\n%s\n%s\n%s\n", players_commands[0], players_commands[1], players_commands[2]);
+}
+
+void setInitialOrder(int start, int* initial_order)
+{
+  if (start == TURN_PLAYER_1)
+  {
+    initial_order[0] = TURN_PLAYER_1;
+    initial_order[1] = TURN_PLAYER_2;
+    initial_order[2] = TURN_PLAYER_3;
+  }
+  
+  else if (start == TURN_PLAYER_2)
+  {
+    initial_order[0] = TURN_PLAYER_2;
+    initial_order[1] = TURN_PLAYER_3;
+    initial_order[2] = TURN_PLAYER_1;
+  }
+  
+  else /* if (start == TURN_PLAYER_3) */
+  {
+    initial_order[0] = TURN_PLAYER_3;
+    initial_order[1] = TURN_PLAYER_1;
+    initial_order[2] = TURN_PLAYER_2;
+  }
 }
