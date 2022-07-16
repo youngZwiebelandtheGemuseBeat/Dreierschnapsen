@@ -189,3 +189,347 @@ else /*if (points_opponent > 33)*/
   return points_and_caller;
 }
 }
+
+
+      // further playing
+      else if (i != 0 && i < 3)
+      {
+        // -----------
+        
+        // rewind bock
+        if (hands[player[i] MINUS_ONE][0].is_bock_ == TRUE) // hard coded 0 sollte passen
+                                                            // zumal: ein bock: alle bock
+        {
+          for (counter_cards = 0; counter_cards < HAND; counter_cards++)
+          {
+            hands[player[i] MINUS_ONE][counter_cards].is_bock_ = FALSE;
+          }
+        }
+
+        // check position(s) of valid cards for this round
+        // do not allow any other card
+        // delete non valid characters from commands
+        count_bock    = 0;   // bock
+        count_suit    = 0;   // right suit
+        count_trump   = 0;   // trump
+        
+        // seek
+        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
+             counter_cards++)
+        {
+          // have trump
+          if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
+          {
+//            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_)
+            count_trump++;
+          }
+        }
+        
+        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
+             counter_cards++)
+        {
+          // right suit
+          if (i == 1)
+          {
+            if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
+                == (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
+            {
+              // rigtht suit is trump (: trump has been played )
+              if (hands[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
+              {
+                count_trump--;
+              }
+              count_suit++;
+            }
+          }
+          
+          else /* if (i == 2) */
+          {
+            if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
+                == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
+            {
+              // rigtht suit is trump (: trump has been played )
+              if (hands[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
+              {
+                count_trump--;
+              }
+              count_suit++;
+            }
+          }
+        }
+        
+        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
+             counter_cards++)
+        {
+          // no trump && no suit = all bock
+          if (i == 1)
+          {
+            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
+                && (hands)[player[i] MINUS_ONE][counter_cards].suit_
+                != (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
+            {
+              count_bock++;
+            }
+          }
+          
+          else /* if (i == 2) */
+          {
+            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
+                && (hands)[player[i] MINUS_ONE][counter_cards].suit_
+                != (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
+            {
+              count_bock++;
+            }
+          }
+        }
+        
+        // .. and adjust ------------
+        strcpy(players_commands[i], "000000");    // maybe there is a better
+                                                  // more professinal way
+        
+        counter_trump   = 0;
+        counter_suit    = 0;
+        counter_cards   = 0;
+        counter_hand    = 0;
+        counter_command = 0;
+        
+        // all bock - no matter which answer
+        if ((count_suit == 0 && count_trump == 0))
+        {
+          // according to turn, -1
+//          printf("Alles Bock!\n");
+          while (counter_hand < (HAND))
+          {
+            if ((hands)[player[i] MINUS_ONE][counter_hand].suit_ != NULL)
+            {
+              players_commands[i][counter_cards] = commands[counter_command];
+              counter_command++;
+              counter_cards++;
+            }
+            
+            else
+            {
+              counter_command++;
+            }
+            
+            counter_hand++;
+          }
+        }
+        
+        // no valid suit but at least one trump
+        else if (count_suit == 0 && count_trump > 0)
+        {
+          counter_trump   = 0;
+          counter_suit    = 0;
+          counter_cards   = 0;
+          counter_hand    = 0;
+          counter_command = 0;
+          // must hold trump
+          // allow trump(s)
+//          printf("Muaßt an Trumpf spiel'n!\n");
+
+          while (counter_hand < (HAND/* - counter_turns*/)/* eben nicht strlen(players_commands[i])*/)
+          {
+            // differenciate between answer 1 and answer 2
+            // answer 1 must trump call & answer 2 must trump either
+            if ((hands)[player[i] MINUS_ONE][counter_hand].suit_ != NULL
+                && hands[player[i] MINUS_ONE][counter_hand].is_trump_ == TRUE)
+            {
+              players_commands[i][counter_cards] = commands[counter_command];
+              counter_command++;
+              counter_cards++;
+            }
+            
+            else
+            {
+              counter_command++;
+            }
+            
+            counter_hand++;
+          }
+          
+          // remove right
+          for (counter_cards = count_trump; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
+          {
+            players_commands[i][counter_cards] = '\0';
+          }
+        } // end else if (must play trump)
+        
+        else /* must hold suit, at leas one */
+        {
+//          printf("Muaßt Farb' spielen!\n");
+          counter_cards = 0;
+          counter_command = 0;
+          
+          // remove left
+          for (counter_hand = 0; counter_hand < (HAND/* - counter_turns*/); counter_hand++)
+          {
+            // suit found
+            if (i == 1)   // first to answer
+            {
+              if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
+                  == (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
+              {
+//                printf("gleiche Farbe @ %d\n", counter_hand);
+//                printf("%c = %c\n", players_commands[i][counter_hand], commands[counter_command]);
+                players_commands[i][counter_cards] = commands[counter_command];
+                counter_command++;
+                counter_cards++;
+              }
+              else
+              {
+                counter_command++;
+              }
+            }
+            
+            else /* (i == 1) */   // second to answer
+            {
+              if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
+                  == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
+              {
+//                printf("gleiche Farbe @ %d\n", counter_hand);
+                players_commands[i][counter_cards] = commands[counter_command];
+                counter_command++;
+                counter_cards++;
+              }
+              else
+              {
+//                players_commands[i][counter_hand] = commands[counter_command];
+                counter_command++;
+              }
+            }
+          }
+          
+          // remove right
+          for (counter_cards = count_suit; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
+          {
+            players_commands[i][counter_cards] = '\0';
+          }
+        } // end else (must play suit)
+        
+        // now that we have found valid cards, go on and only allow permitted cards
+        // we do not have to mind case:     all bock
+        // but                              trump (in case trump has been played)
+        //                                  suit
+        // what do we need? - (answer 1): called card's value
+        //                    (answer 2): called card's value and answer 1's value
+        
+        if (i == 1)
+        {
+          // if there is at least one valid card to answer with
+          if (!(count_suit == 0 && count_trump == 0))
+          {
+            // compare values and only allow weaker cards if there is not one
+            // which could trump call
+            counter_command = 0;
+            counter_cards   = 0;
+            count_permit    = 0;
+            
+            if (count_suit > 0)
+            {
+              while (players_commands[i][counter_command] != '\0')
+              {
+                if ((hands)[player[i] MINUS_ONE][counter_cards].value_ >
+                    /* called card */ hands[player[0] MINUS_ONE][position[0]].value_)
+                {
+                  printf("%s %d - %s %d\n", hands[player[0] MINUS_ONE][position[0]].suit_,
+                         hands[player[0] MINUS_ONE][position[0]].value_,
+                         (hands)[player[i] MINUS_ONE][counter_cards].suit_,
+                         (hands)[player[i] MINUS_ONE][counter_cards].value_);
+                  buffer_higher[counter_cards] = players_commands[i][counter_cards];
+                  buffer_higher[counter_cards ADD_ONE] = '\0';
+                  counter_cards++;
+                  
+                  if (player[0] == initial_order[0])
+                  {
+                    bool_trumped_already = TRUE;
+                  }
+                }
+                counter_command++;
+              }
+            }
+            
+            if (counter_cards > 0)
+            {
+              strcpy(players_commands[i], "\0\0\0\0\0\0");
+              strcpy(players_commands[i], buffer_higher);
+              strcpy(buffer_higher, "\0\0\0\0\0\0");
+            }
+          }
+        }
+        
+        else /* if (i == 2) */
+        {
+          // if there is at least one valid card to answer with
+          if (!(count_suit == 0 && count_trump == 0))
+          {
+            // compare values and only allow weaker cards if there is not one
+            // which could trump any (call || answer 1)
+            counter_command = 0;
+            counter_cards   = 0;
+            count_permit    = 0;
+            
+            if (count_suit > 0)
+            {
+              if (bool_trumped_already == FALSE)
+              {
+                while (players_commands[i][counter_command] != '\0')
+                {
+                  // has to trump caller if possible
+                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
+                      /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
+                      || (hands)[player[i] MINUS_ONE][counter_cards].value_ <
+                      /* answer 1's card */ hands[player[i - 1] MINUS_ONE][position[1/*0*/]].value_)
+                  {
+
+                  }
+                  else
+                  {
+                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
+                    buffer_higher[counter_cards ADD_ONE] = '\0';
+                    counter_cards++;
+                  }
+                counter_command++;
+                }
+              }
+
+              else
+              {
+                // no need to trump caller
+              }
+            }
+            
+            else if (count_trump > 0)
+            {
+//              printf("%d\n", (hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
+              if ((hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_)
+              {
+                while (players_commands[i][counter_command] != '\0')
+                {
+                  // only need to compare trump's value with answer 1
+                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
+                      /* answer 1's card */ hands[player[i MINUS_ONE] MINUS_ONE][position[i MINUS_ONE]].value_)
+                  {
+                    printf("\n!!! 3622 !!!\n");
+                  }
+                  else
+                  {
+                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
+                    buffer_higher[counter_cards ADD_ONE] = '\0';
+                    counter_cards++;
+                  }
+                  counter_command++;
+                }
+              }
+            }
+            
+            if (counter_cards > 0)
+            {
+              strcpy(players_commands[i], "\0\0\0\0\0\0");
+              strcpy(players_commands[i], buffer_higher);
+              strcpy(buffer_higher, "\0\0\0\0\0\0");
+            }
+          }
+        }
+        
+        // -----------

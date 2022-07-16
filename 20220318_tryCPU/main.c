@@ -14945,6 +14945,7 @@ void printTable(Player players)
 //    printf("[%s %s] ", players[i].sign_, deck[counter].image_);
 }
 
+///
 // switchRufer()
 // sets order and calls modeRufer()
 // call like this:
@@ -15107,12 +15108,6 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
   Points points_and_next = {start, 0, 0};
   int counter = 0;
   
-//  printHand(hands[0], 6, 1, "test");
-//  printHand(hands[1], 6, 2, "test");
-//  printHand(hands[2], 6, 3, "test");
-  
-  // -----------
-  
 //  int counter_turns = 0;
   int counter_cards = 0;
   int counter_position = 0;
@@ -15121,53 +15116,30 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
   int counter_hand = 0;
   int counter_command = 0;
   const char commands[7] = "qweasd";
-//  char commands_1[7] = "\0";
-//  char commands_2[7] = "\0";
-//  char commands_3[7] = "\0";
-//  strcpy(commands_1, commands);
-//  strcpy(commands_2, commands);
-//  strcpy(commands_3, commands);
   
-  printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
+//  printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
   
-  // default
-//  int call      = TURN_PLAYER_1;
-//  int answer_1  = TURN_PLAYER_2;
-//  int answer_2  = TURN_PLAYER_3;
   int call      = player[0];
   int answer_1  = player[1];
   int answer_2  = player[2];
   int initial_order[3] = {call, answer_1, answer_2};   // initial order
-//  char* players_commands[3] = {commands_1, commands_2, commands_3};
   int position[3]   = {0};
   int position_Q[3] = {0};
   int pairs         = 0;
   int check = FALSE;
   int buffer = 0;
-//  int counter_Q = 0;
   int points_call = 0;
   int points_opponents = 0;
   int points_pair = 0;
   int buffer_start = 0;
-//  int bool_trump = TRUE;
-//  int points_1 = 0;
-//  int points_2 = 0;
-//  int points_3 = 0;
-//  int points[3] = {points_1, points_2, points_3};
   int count_bock    = 0;   // bock
   int count_suit    = 0;   // right suit
   int count_trump   = 0;   // trump
   int count_permit  = 0;
-//  int count_valid   = 0;
   Pair handle_pairs[3] = {0, 0, 0};
-//  Turn buffer_turn[3] = {{{NULL}, {0}, "", ' '}, ' ', 0};
   getCall(start, &call, &answer_1, &answer_2);
   buffer_start = start;
-//  Points points_and_caller = {0, 0, 0};
   char buffer_higher[6] = {'\0'};
-//  char input_CPU = '\0';
-//  Points next_and_points = {0, 0, 0};
-  int bool_trumped_already = FALSE;
   
   for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
   {
@@ -16229,21 +16201,6 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
       }
     }
     
-    
-//    // opponent_1 must trump call
-//    if (counter == 1)
-//    {
-//
-//    }
-//
-//    // opponent_2 must trump call if opponent_1 could not but does not have to
-//    // trump opponent_1 if they have already trumped call
-//    if (counter == 2)
-//    {
-//
-//    }
-    
-    
     // further playing
     if (counter != 0 && counter < 3)
     {
@@ -16265,7 +16222,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
           }
         }
         
-        else /* if (i == 2) */
+        else /* if (counter == 2) */
         {
           if ((hands)[counter][counter_cards].suit_
               == (hands)[counter - 2][position[counter - 2]].suit_)
@@ -16294,7 +16251,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
           }
         }
         
-        else /* if (i == 2) */
+        else /* if (counter == 2) */
         {
           if ((hands)[counter][counter_cards].is_trump_ == FALSE
               && (hands)[counter][counter_cards].suit_
@@ -16306,7 +16263,9 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
       } // end: for()
       
       // .. and adjust ------------
-      strcpy(players_commands[counter], "000000");    // maybe there is a better
+      strcpy(players_commands[counter], "\0\0\0\0\0\0\0");
+                                                // "000000"
+                                                // maybe there is a better
                                                 // more professinal way
       
       counter_trump   = 0;
@@ -16454,18 +16413,13 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
               if ((hands)[counter][counter_cards].value_ >
                   /* called card */ hands[0][position[0]].value_)
               {
-                printf("%s %d - %s %d\n", hands[0][position[0]].suit_,
-                       hands[0][position[0]].value_,
-                       (hands)[counter][counter_cards].suit_,
-                       (hands)[counter][counter_cards].value_);
+//                printf("%s %d - %s %d\n", hands[0][position[0]].suit_,
+//                       hands[0][position[0]].value_,
+//                       (hands)[counter][counter_cards].suit_,
+//                       (hands)[counter][counter_cards].value_);
                 buffer_higher[counter_cards] = players_commands[counter][counter_cards];
                 buffer_higher[counter_cards ADD_ONE] = '\0';
                 counter_cards++;
-                
-                if (player[0] == initial_order[0])
-                {
-                  bool_trumped_already = TRUE;
-                }
               }
               counter_command++;
             }
@@ -16480,7 +16434,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
         }
       }
       
-      else /* if (i == 2) */
+      else /* if (counter == 2) */
       {
         // if there is at least one valid card to answer with
         if (!(count_suit == 0 && count_trump == 0))
@@ -16493,58 +16447,128 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
           
           if (count_suit > 0)
           {
-            // case: first answer could not trump call
-            if (bool_trumped_already == FALSE)
+            // answer 1 has trumped call already
+            if ((hands[1][position[1]].value_ > hands[0][position[0]].value_)
+                || (hands[1][position[1]].is_trump_ && !hands[0][position[0]].is_trump_))
             {
-              // TODO: this!
-              printf("TODO!\n");
-//              while (players_commands[counter][counter_command] != '\0')
-//              {
-//                // has to trump caller if possible
-//                if ((hands)[counter][counter_command].value_ <
-//                    /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
-//                    || (hands)[counter][counter_cards].value_ <
-//                    /* answer 1's card */ hands[player[counter - 1] MINUS_ONE][position[1/*0*/]].value_)
-//                {
-//                  // does not work properly
-//                }
-//                else
-//                {
-//                  buffer_higher[counter_cards] = players_commands[counter][counter_cards];
-//                  buffer_higher[counter_cards ADD_ONE] = '\0';
-//                  counter_cards++;
-//                }
-//
-//              counter_command++;
-//              }
+              // answer 2 must trump answer 1 if possible
+              
+              // answer 1 played trump therefore answer 2 cannot trump answer 1
+              if (hands[1][position[1]].is_trump_)
+              {
+                while (players_commands[counter][counter_command] != '\0')
+                {
+                  buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                  buffer_higher[counter_cards ADD_ONE] = '\0';
+                  counter_cards++;
+                  
+                  counter_command++;
+                }
+              }
+              
+              // all suit
+              else
+              {
+                while (players_commands[counter][counter_command] != '\0')
+                {
+                  // has to trump answer 1 if possible
+                  if ((hands)[player[counter] MINUS_ONE][counter_cards].value_ >
+                      /* answer 1's card */ hands[player[counter - 1] MINUS_ONE][position[1/*0*/]].value_)
+                  {
+                    buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                    buffer_higher[counter_cards ADD_ONE] = '\0';
+                    counter_cards++;
+                  }
+                  
+                  counter_command++;
+                }
+              }
             }
-
+            
+            // answer 1 did not trump call
             else
-            {
-              // no need to trump caller
-            }
-          }
-          
-          else if (count_trump > 0)
-          {
-//              printf("%d\n", (hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
-            if ((hands)[counter][position[counter MINUS_ONE]].is_trump_)
             {
               while (players_commands[counter][counter_command] != '\0')
               {
-                // only need to compare trump's value with answer 1
-                if ((hands)[counter][counter_cards].value_ <
-                    /* answer 1's card */ hands[player[counter MINUS_ONE] MINUS_ONE][position[counter MINUS_ONE]].value_)
-                {
-                  printf("\n!!! 16504 !!!\n");
-                }
-                else
+                // has to trump call if possible
+                if (hands[player[counter] MINUS_ONE][counter_cards].value_ >
+                    hands[player[0] MINUS_ONE][position[0]].value_)
                 {
                   buffer_higher[counter_cards] = players_commands[counter][counter_cards];
                   buffer_higher[counter_cards ADD_ONE] = '\0';
                   counter_cards++;
                 }
+                
                 counter_command++;
+              }
+            }
+          }
+          
+          else if (count_trump > 0)
+          {
+            if (hands[0][position[0]].is_trump_)
+            {
+              if (hands[1][position[1]].is_trump_)
+              {
+                if (hands[1][position[1]].value_ > hands[0][position[0]].value_)
+                {
+                  // answer 2 must trump answer 1 if possible
+                  while (players_commands[counter][counter_command] != '\0')
+                  {
+                    if (hands[counter][counter_cards].value_ >
+                        hands[player[1] MINUS_ONE][position[1]].value_)
+                    {
+                      buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                      buffer_higher[counter_cards ADD_ONE] = '\0';
+                      counter_cards++;
+                    }
+                    
+                    counter_command++;
+                  }
+                }
+              }
+              
+              else /* answer 1 == bock */
+              {
+                // answer 2 must trump call if possible
+                while (players_commands[counter][counter_command] != '\0')
+                {
+                  if (hands[counter][counter_cards].value_ >
+                      hands[player[0] MINUS_ONE][position[0]].value_)
+                  {
+                    buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                    buffer_higher[counter_cards ADD_ONE] = '\0';
+                    counter_cards++;
+                  }
+                  
+                  counter_command++;
+                }
+              }
+            }
+            
+            else /* call != trump */
+            {
+              if (hands[1][position[1]].is_trump_)
+              {
+                // answer 2 must trump answer 1 if possible
+                while (players_commands[counter][counter_command] != '\0')
+                {
+                  if (hands[counter][counter_cards].value_ >
+                      hands[player[1] MINUS_ONE][position[1]].value_)
+                  {
+                    buffer_higher[counter_cards] = players_commands[counter][counter_cards];
+                    buffer_higher[counter_cards ADD_ONE] = '\0';
+                    counter_cards++;
+                  }
+                  
+                  counter_command++;
+                }
+              }
+              
+              else
+              {
+                // answer 2 must play trump
+//                printf("// answer 2 must play trump\n");
               }
             }
           }
