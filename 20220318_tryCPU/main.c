@@ -15007,17 +15007,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order, last_commands);
 //      printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
       
-      // silly work around - since I am tired
-//      strcpy(current_commands[0], players_commands[0]);
-//      strcpy(current_commands[1], players_commands[1]);
-//      strcpy(current_commands[2], players_commands[2]);
-      
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
-      
-//      strcpy(players_commands[0], current_commands[0]);
-//      strcpy(players_commands[1], current_commands[1]);
-//      strcpy(players_commands[2], current_commands[2]);
       
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
@@ -16309,14 +16300,14 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
         // allow trump(s)
 //          printf("Muaßt an Trumpf spiel'n!\n");
 
-        while (counter_hand < (HAND/* - counter_turns*/)/* eben nicht strlen(players_commands[i])*/)
+        while (counter_hand < HAND)
         {
           // differenciate between answer 1 and answer 2
           // answer 1 must trump call & answer 2 must trump either
           if ((hands)[counter][counter_hand].suit_ != NULL
               && hands[counter][counter_hand].is_trump_ == TRUE)
           {
-            players_commands[counter][counter_cards] = commands[counter_command];
+            players_commands[counter][counter_cards] = commands[counter_command]; // hier wird position[0] verändert, warum!?
             counter_command++;
             counter_cards++;
           }
@@ -17041,7 +17032,9 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order)
 void sortOrderCommands(int start, char** players_commands,
                        int* current_players_order, char** last_commands)
 {
-  char* buffer_commands = players_commands[0];
+  int counter = 0;
+  char buffer_commands[7] = "\0\0\0\0\0\0\0";
+  strcpy(buffer_commands, players_commands[0]);
   
   // current order to default order
   if (current_players_order[0] == TURN_PLAYER_1)
@@ -17067,7 +17060,13 @@ void sortOrderCommands(int start, char** players_commands,
   }
   
   // default order to next order
-  buffer_commands = players_commands[0];
+  for (counter = 0; counter < 7; counter++)
+  {
+    if (players_commands[0][counter] == '\0')
+      counter++;
+    else
+      buffer_commands[counter] = players_commands[0][counter];
+  }
   
   if (start == TURN_PLAYER_1)
   {
