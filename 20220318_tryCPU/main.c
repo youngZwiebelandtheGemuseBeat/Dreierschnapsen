@@ -17049,31 +17049,38 @@ void sortOrderCommands(int start, char** players_commands,
   
   else if (current_players_order[0] == TURN_PLAYER_2)
   {
-    players_commands[0] = players_commands[2];
-    players_commands[2] = players_commands[1];
-    players_commands[1] = buffer_commands;
+//    players_commands[0] = players_commands[2];
+//    players_commands[2] = players_commands[1];
+//    players_commands[1] = buffer_commands;
+    
+    strcpy(players_commands[0], players_commands[2]);
+    strcpy(players_commands[2], players_commands[1]);
+    strcpy(players_commands[1], buffer_commands);
   }
   
   else /* if (current_players_order[0] == TURN_PLAYER_3) */
   {
-    players_commands[0] = players_commands[1];
-    players_commands[1] = players_commands[2];
-    players_commands[2] = buffer_commands;
+//    players_commands[0] = players_commands[1];
+//    players_commands[1] = players_commands[2];
+//    players_commands[2] = buffer_commands;
+    
+    strcpy(players_commands[0], players_commands[1]);
+    strcpy(players_commands[1], players_commands[2]);
+    strcpy(players_commands[2], buffer_commands);
   }
   
   // default order to next order
-  for (counter = 0; counter < 7; counter++)
-  {
-    if (players_commands[0][counter] == '\0')
-      counter++;
-    else
-      buffer_commands[counter] = players_commands[0][counter];
-  }
+//  for (counter = 0; counter < 7; counter++)
+//  {
+//    if (players_commands[0][counter] == '\0')
+//      counter++;
+//    else
+//      buffer_commands[counter] = players_commands[0][counter];
+//  }
+  strcpy(buffer_commands, players_commands[0]);
   
   if (start == TURN_PLAYER_1)
   {
-    // do nothing - I think
-    
     current_players_order[0] = TURN_PLAYER_1;
     current_players_order[1] = TURN_PLAYER_2;
     current_players_order[2] = TURN_PLAYER_3;
@@ -17081,9 +17088,13 @@ void sortOrderCommands(int start, char** players_commands,
   
   else if (start == TURN_PLAYER_2)
   {
-    players_commands[0] = players_commands[1];
-    players_commands[1] = players_commands[2];
-    players_commands[2] = buffer_commands;
+//    players_commands[0] = players_commands[1];
+//    players_commands[1] = players_commands[2];
+//    players_commands[2] = buffer_commands;
+    
+    strcpy(players_commands[0], players_commands[1]);
+    strcpy(players_commands[1], players_commands[2]);
+    strcpy(players_commands[2], buffer_commands);
     
     current_players_order[0] = TURN_PLAYER_2;
     current_players_order[1] = TURN_PLAYER_3;
@@ -17092,9 +17103,13 @@ void sortOrderCommands(int start, char** players_commands,
   
   else /* if (start == TURN_PLAYER_3) */
   {
-    players_commands[0] = players_commands[2];
-    players_commands[2] = players_commands[1];
-    players_commands[1] = buffer_commands;
+//    players_commands[0] = players_commands[2];
+//    players_commands[2] = players_commands[1];
+//    players_commands[1] = buffer_commands;
+    
+    strcpy(players_commands[0], players_commands[2]);
+    strcpy(players_commands[2], players_commands[1]);
+    strcpy(players_commands[1], buffer_commands);
     
     current_players_order[0] = TURN_PLAYER_3;
     current_players_order[1] = TURN_PLAYER_1;
