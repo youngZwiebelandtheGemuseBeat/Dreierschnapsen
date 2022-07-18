@@ -205,7 +205,8 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
 int habSelbst(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
-Points modeRufer(Card** hands, int start, char* trump, Player* players, char** players_commands);
+Points modeRufer(Card** hands, int start, char* trump, Player* players,
+                 char** players_commands, int* initial_order);
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order);
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
@@ -13842,118 +13843,70 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
   //                     .. und nicht der Trumpf-rufende
 
 // determine next to call round
-// return value: int next .. will be received as start in game modes
 Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2)
 {
   Card cards_on_table[QUANTITY_PLAYERS] = {call, answer_1, answer_2}; // index corresponds to player[]
-  Points next = {0, 0, 0};
+  Points next = {player[0], 0, 0};
   
   printf("\n Trumps on the table: %d %d %d\n", cards_on_table[0].is_trump_,
          cards_on_table[1].is_trump_, cards_on_table[2].is_trump_);
   
-  // caller_mode calls (1)
-  if (player[0] == initial_order[0])        // tells us who called recent round
-  {
-//    printf("Player %d calls mode and round", player[0]);
-    
-    // caller_mode called round and wins
-    if (player[0] == highestCard(cards_on_table))
-    {
-//      printf(" and wins!\n");
-      
-      next.winner_ = initial_order[0]; // player[0];
-    }
-
-    // caller_mode called round and loses
-    else /* if () */
-    {
-//      printf(" and loses");
-
-      // opponent_1 (2) wins
-//      if (player[1] == highestCard(cards_on_table))
-      if (highestCard(cards_on_table) == TURN_PLAYER_2)
-      {
-//        printf(" against Player %d.\n", player[1]);
-        
-//        next.winner_ = initial_order[1]; // player[1];
-        next.winner_ = initial_order[1];
-      }
-
-      // opponent_2 (3) wins
-      else
-      {
-//        printf(" against Player %d.\n", player[2]);
-        
-        next.winner_ = initial_order[2]; // player[2];
-      }
-    }
-  }
+  // winner relative to current order
+  next.winner_ = highestCard(cards_on_table);
   
-  // TODO: opponent_1 (2) called round
-  else if (player[0] == initial_order[1])    // tells us who called recent round
+  switch (player[0])
   {
-//    printf("Player %d calls round", player[0]);
-    
-    // caller_round wins (= opponent_1 (2))
-    if (player[0] == highestCard(cards_on_table))
-    {
-//      printf(" and wins!\n");
+    case TURN_PLAYER_1:
+//      printf("call: %d - winner: player %d\n", player[0], next.winner_);
+      break;
       
-      next.winner_ = initial_order[0]; // player[0];
-    }
-    
-    else
-    {
-      // player 3
-      if (highestCard(cards_on_table) == TURN_PLAYER_3)
+    case TURN_PLAYER_2:
+      switch (next.winner_)
       {
-        next.winner_ = initial_order[0];
-      }
-      // player 1
-      else /* if (highestCard(cards_on_table) == TURN_PLAYER_2) */
-      {
-        next.winner_ = initial_order[2];
-      }
-    }
-  }
-  
-  // TODO: opponent_2 (3) called round
-  else /* if (player[0] == initial_order[2]) */
-  {
-//    printf("Player %d calls round", player[0]);
-    
-    // caller_round wins (= opponent_2 (3))
-    if (player[0] == highestCard(cards_on_table))
-    {
-//      printf(" and wins!\n");
-      
-//      next.winner_ = initial_order[0]; // player[0];
-      next.winner_ = player[2];
-    }
-    
-    else
-    {
-//      printf(" and loses against");
-      
-      // caller_mode wins (= initial_order[0]) (1)
-//      if (player[1] == highestCard(cards_on_table))
-      if (highestCard(cards_on_table) == TURN_PLAYER_2)
-      {
-//        printf(" the player who called mode (%d).", player[1]);
+        case TURN_PLAYER_1:
+          next.winner_ = TURN_PLAYER_2;
+          break;
         
-        next.winner_ = initial_order[0]; // player[1];
+        case TURN_PLAYER_2:
+          next.winner_ = TURN_PLAYER_3;
+          break;
+        
+        case TURN_PLAYER_3:
+          next.winner_ = TURN_PLAYER_1;
+          break;
+          
+        default:
+          break;
       }
       
-      // other opponent wins (= opponent_1 (2))
-      else /* if (highestCard(cards_on_table) == TURN_PLAYER_3) */
+//      printf("call: %d - winner: player %d\n", player[0], next.winner_);
+      break;
+      
+    case TURN_PLAYER_3:
+      switch (next.winner_)
       {
-//        printf(" Player %d.\n", player[2]);
+        case TURN_PLAYER_1:
+          next.winner_ = TURN_PLAYER_3;
+          break;
         
-//        next.winner_ = initial_order[1]; // player[2];
-        next.winner_ = player[1];
+        case TURN_PLAYER_2:
+          next.winner_ = TURN_PLAYER_1;
+          break;
+        
+        case TURN_PLAYER_3:
+          next.winner_ = TURN_PLAYER_2;
+          break;
+          
+        default:
+          break;
       }
-    }
+      
+//      printf("call: %d - winner: player %d\n", player[0], next.winner_);
+      break;
+      
+    default:
+      break;
   }
   
   // next to call always receives recent round's points
@@ -14974,12 +14927,16 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   strcpy(commands_3, commands);
   char* players_commands[3] = {commands_1, commands_2, commands_3};
   int current_players_order[3] = {TURN_PLAYER_1, TURN_PLAYER_2, TURN_PLAYER_3};
+  int initial_order[3] = {0, 0, 0};
   
   // who called mode - who is opponent
   
   // Player 1 called mode
   if (order[0] ADD_ONE == TURN_PLAYER_1)
   {
+    initial_order[0] = TURN_PLAYER_1;
+    initial_order[1] = TURN_PLAYER_2;
+    initial_order[2] = TURN_PLAYER_3;
     next_and_points.caller_ = TURN_PLAYER_1;
     initial_players[0] = players[0];
     initial_players[1] = players[1];
@@ -15004,7 +14961,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 //      printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
       
       next_and_points
-        = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
+        = modeRufer(hands, next_and_points.caller_, trump, players,
+                    players_commands, initial_order);
       
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
@@ -15044,7 +15002,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     
     // and here we will call the mode itself
     next_and_points
-      = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
+      = modeRufer(hands, next_and_points.caller_, trump, players,
+                  players_commands, initial_order);
     
     // caller wins
     if (next_and_points.winner_ == TURN_PLAYER_2)
@@ -15067,7 +15026,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     
     // and here we will call the mode itself
     next_and_points
-      = modeRufer(hands, next_and_points.caller_, trump, players, players_commands);
+      = modeRufer(hands, next_and_points.caller_, trump, players,
+                  players_commands, initial_order);
     
     // caller wins
     if (next_and_points.winner_ == TURN_PLAYER_3)
@@ -15088,7 +15048,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 
 // One turn only, so it has to be called in a loop. Maybe this way I can clean
 // it up a bit and finally make it work
-Points modeRufer(Card** hands, int start, char* trump, Player* players, char** players_commands)
+Points modeRufer(Card** hands, int start, char* trump, Player* players,
+                 char** players_commands, int* initial_order)
 {
   int player[3] = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
@@ -15128,7 +15089,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players, char** p
   buffer_start = start;
   char buffer_higher[6] = {'\0'};
   
-  const int initial_order[3] = {player[0], player[1], player[2]};
+//  int initial_order[3] = {player[0], player[1], player[2]};
 //  setInitialOrder(start, initial_order);
 //  setInitialOrder(start, player);
   
