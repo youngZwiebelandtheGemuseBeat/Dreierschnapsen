@@ -420,6 +420,21 @@ int main(int argc, char* argv[])
           // AFTER GAME
           // TODO: get points, count points (player, opponents), fleck/retour,
           //        Bummerl (>= 24), another Bummerl?
+          // but first adjust order
+          // back to "initial" order
+          
+          // ------------------------------------------------------------------
+          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
+                 players[order[2]].name_);
+          // this is the order of last round, so sort it right here
+          // back to initial order?
+          // sort everithing: player, players, maybe not commands
+          // TODO: here sort
+          // next output should look like the initial order
+          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
+                 players[order[2]].name_);
+          printf("---------------------------------------------------------------\n");
+          // ------------------------------------------------------------------
           
           if (bool_fleck == TRUE)
           {
