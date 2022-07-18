@@ -14941,7 +14941,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     initial_players[1] = players[1];
     initial_players[2] = players[2];
 
-    for (counter_hand = 0; counter_hand < HAND; counter_hand++)
+    for (counter_hand = 0; counter_hand < QUANTITY_PLAYERS; counter_hand++)
     {
       initial_hands[counter_hand] = hands[counter_hand];
     }
