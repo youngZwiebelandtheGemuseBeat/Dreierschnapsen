@@ -14984,6 +14984,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 
     // game points
     points_and_caller = distributePoints(points_caller, points_opponents);
+    points_and_caller.caller_ = TURN_PLAYER_1;
   }
 
   // Player 2 called mode - TODO: clone "Player 1 called mode"
