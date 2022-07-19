@@ -203,7 +203,7 @@ void switchMode(int* mode);
 int raiseMode(int* mode, int start);
 int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
-int habSelbst(int start, int* mode, char* player);
+int priority(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order);
@@ -233,7 +233,7 @@ void setTrump(Card* deck, int trump);
 void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
                    Card answer_2, int* points_call, int* points_opponents,
                    int* points_1, int* points_2, int* points_3, int* order);
-void setOrder(Card* deck, int test_case, int trump);
+void testingCheat(Card* deck, int test_case, int trump);
 void sortHands(Card** hands, char** suits);
 //void copyCard(Card* source, Card* target);
 void sort(int* positions, Card* hand, int quantity, int* position_hand,
@@ -431,10 +431,21 @@ int main(int argc, char* argv[])
           // back to initial order?
           // sort everithing: player, players, maybe not commands
           // TODO: here sort
-          sortOrderPlayers(order[0], players, initial_players);
+          sortOrderPlayers(order[0] ADD_ONE, players, initial_players);
           // next output should look like the initial order
           printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
                  players[order[2]].name_);
+          
+//          if (order[0] ADD_ONE < 3)
+//          {
+//            sortOrderPlayers(order[1], players, initial_players);
+//          }
+//
+//          else
+//          {
+//            sortOrderPlayers(TURN_PLAYER_3, players, initial_players);
+//          }
+          
           printf("---------------------------------------------------------------\n");
           // ------------------------------------------------------------------
           
@@ -502,25 +513,25 @@ int main(int argc, char* argv[])
           if (!(counter % 3))
           {
 //            printf("%s called trump.\n", players[counter_players].name_);
-            bummerl[0] = players[0].points_;
-            bummerl[1] = players[1].points_;
-            bummerl[2] = players[2].points_;
+            bummerl[0] += players[0].points_;
+            bummerl[1] += players[1].points_;
+            bummerl[2] += players[2].points_;
           }
           
           else if (!((counter MINUS_ONE) % 3))
           {
 //            printf("%s called trump.\n", players[counter_players].name_);
-            bummerl[0] = players[1].points_;
-            bummerl[1] = players[2].points_;
-            bummerl[2] = players[0].points_;
+            bummerl[0] += players[1].points_;
+            bummerl[1] += players[2].points_;
+            bummerl[2] += players[0].points_;
           }
           
           else
           {
 //            printf("%s called trump.\n", players[counter_players].name_);
-            bummerl[0] = players[2].points_;
-            bummerl[1] = players[0].points_;
-            bummerl[2] = players[1].points_;
+            bummerl[0] += players[2].points_;
+            bummerl[1] += players[0].points_;
+            bummerl[2] += players[1].points_;
           }
           
   //        printf("counter: %d\n", counter);
@@ -914,11 +925,11 @@ void startGame(Card* deck, Card* deck_dealer,
   setTrump(/*deck_player_3*/hands[order[2]], *trump);
   setTrump(deck_dealer, *trump);
   
-  //CHEAT to debug
-//  setOrder(deck_player_1, 40, *trump);
-//  setOrder(deck_player_2, 41, *trump);
-//  setOrder(deck_player_3, 42, *trump);
-//  setOrder(deck_dealer,   43, *trump);
+  // "CHEAT" to debug
+//  testingCheat(deck_player_1, 40, *trump);
+//  testingCheat(deck_player_2, 41, *trump);
+//  testingCheat(deck_player_3, 42, *trump);
+//  testingCheat(deck_dealer,   43, *trump);
   
   sortHands(hands, suits);
   printHand(/*deck_player_1*/hands[order[0]], HAND, /*TURN_PLAYER_1*/ order[0] ADD_ONE,
@@ -1107,7 +1118,7 @@ Points playGame(Card* deck, Card* deck_dealer,
       //               .. should have called it beforehand
     {
 //      if (start != TURN_PLAYER_1)
-      start = habSelbst(start, &mode, players[order[0]].name_);
+      start = priority(start, &mode, players[order[0]].name_);
       
       if (start == TURN_PLAYER_1)
       {
@@ -2197,7 +2208,7 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
   }
 }
 
-int habSelbst(int start, int* mode, char* player)
+int priority(int start, int* mode, char* player)
 {
   int buffer = 0;
   printf("---------------------------------------------------------------\n");
@@ -14474,7 +14485,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
   }
 }
 
-void setOrder(Card* deck, int test_case, int trump)
+void testingCheat(Card* deck, int test_case, int trump)
 {
 //  "♥", "♠", "♣", "♦"
   
@@ -14972,8 +14983,6 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       sortOrderPlayers(/* next_and_points.caller_ */ next_and_points.winner_, players, initial_players);
       sortOrderCommands(next_and_points.winner_, players_commands,
                         current_players_order);
-//      printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
-
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
                     players_commands, initial_order);
@@ -14994,6 +15003,9 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
         points_opponents += next_and_points.points_;
       }
 
+      printf("points caller: %d\n", points_caller);
+      printf("points opponents: %d\n", points_opponents);
+      
       counter++;
     } // end of while()
 
@@ -15005,49 +15017,133 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   // Player 2 called mode - TODO: clone "Player 1 called mode"
   else if (order[0] ADD_ONE == TURN_PLAYER_2)
   {
+    initial_order[0] = TURN_PLAYER_2;
+    initial_order[1] = TURN_PLAYER_3;
+    initial_order[2] = TURN_PLAYER_1;
     next_and_points.caller_ = TURN_PLAYER_2;
-    // start = TURN_PLAYER_2;
+    initial_players[0] = players[0];  // not quite sure
+    initial_players[1] = players[1];
+    initial_players[2] = players[2];
 
-    // and here we will call the mode itself
-    next_and_points
-      = modeRufer(hands, next_and_points.caller_, trump, players,
-                  players_commands, initial_order);
-
-    // caller wins
-    if (next_and_points.winner_ == TURN_PLAYER_2)
+    for (counter_hand = 0; counter_hand < QUANTITY_PLAYERS; counter_hand++)
     {
-
+      initial_hands[counter_hand] = hands[counter_hand];
     }
 
-    // opponents win
-    else
+    while (points_caller < MAXIMUM_POINTS
+           && points_opponents < MAXIMUM_POINTS
+           && counter < MAXIMUM_TURNS)
     {
+      printf("TURN: %d\n", counter + 1);
 
-    }
+      // sort hands prior calling modeRufer()
+      sortOrderHands(next_and_points.winner_, hands, initial_hands);
+      sortOrderPlayers(next_and_points.winner_, players, initial_players);
+      sortOrderCommands(next_and_points.winner_, players_commands,
+                        current_players_order);
+      next_and_points
+        = modeRufer(hands, next_and_points.caller_, trump, players,
+                    players_commands, initial_order);
+
+      // next to call
+      next_and_points.caller_ = next_and_points.winner_;
+
+      // handle points
+      // caller wins turn
+      if (next_and_points.winner_ == initial_order[0])
+      {
+        points_caller += next_and_points.points_;
+      }
+
+      // opponents win turn
+      else
+      {
+        points_opponents += next_and_points.points_;
+      }
+
+      printf("points caller: %d\n", points_caller);
+      printf("points opponents: %d\n", points_opponents);
+      
+      counter++;
+    } // end of while()
+
+    // game points
+    points_and_caller = distributePoints(points_caller, points_opponents);
+    points_and_caller.caller_ = TURN_PLAYER_1;
+    // ------------------------------------------------------------------------
+//    next_and_points.caller_ = TURN_PLAYER_2;
+//    // start = TURN_PLAYER_2;
+//
+//    // and here we will call the mode itself
+//    next_and_points
+//      = modeRufer(hands, next_and_points.caller_, trump, players,
+//                  players_commands, initial_order);
   }
 
   // Player 3 called mode - TODO: clone "Player 1 called mode"
   else /* if (order[0] ADD_ONE == TURN_PLAYER_3) */
   {
+    initial_order[0] = TURN_PLAYER_3;
+    initial_order[1] = TURN_PLAYER_1;
+    initial_order[2] = TURN_PLAYER_2;
     next_and_points.caller_ = TURN_PLAYER_3;
-    // start = TURN_PLAYER_3;
+    initial_players[0] = players[0];
+    initial_players[1] = players[1];
+    initial_players[2] = players[2];
 
-    // and here we will call the mode itself
-    next_and_points
-      = modeRufer(hands, next_and_points.caller_, trump, players,
-                  players_commands, initial_order);
-
-    // caller wins
-    if (next_and_points.winner_ == TURN_PLAYER_3)
+    for (counter_hand = 0; counter_hand < QUANTITY_PLAYERS; counter_hand++)
     {
-
+      initial_hands[counter_hand] = hands[counter_hand];
     }
 
-    // opponents win
-    else
+    while (points_caller < MAXIMUM_POINTS
+           && points_opponents < MAXIMUM_POINTS
+           && counter < MAXIMUM_TURNS)
     {
+      printf("TURN: %d\n", counter + 1);
 
-    }
+      // sort hands prior calling modeRufer()
+      sortOrderHands(next_and_points.winner_, hands, initial_hands);
+      sortOrderPlayers(next_and_points.winner_, players, initial_players);
+      sortOrderCommands(next_and_points.winner_, players_commands,
+                        current_players_order);
+      next_and_points
+        = modeRufer(hands, next_and_points.caller_, trump, players,
+                    players_commands, initial_order);
+
+      // next to call
+      next_and_points.caller_ = next_and_points.winner_;
+
+      // handle points
+      // caller wins turn
+      if (next_and_points.winner_ == initial_order[0])
+      {
+        points_caller += next_and_points.points_;
+      }
+
+      // opponents win turn
+      else
+      {
+        points_opponents += next_and_points.points_;
+      }
+
+      printf("points caller: %d\n", points_caller);
+      printf("points opponents: %d\n", points_opponents);
+      
+      counter++;
+    } // end of while()
+
+    // game points
+    points_and_caller = distributePoints(points_caller, points_opponents);
+    points_and_caller.caller_ = TURN_PLAYER_1;
+    // ------------------------------------------------------------------------
+//    next_and_points.caller_ = TURN_PLAYER_3;
+//    // start = TURN_PLAYER_3;
+//
+//    // and here we will call the mode itself
+//    next_and_points
+//      = modeRufer(hands, next_and_points.caller_, trump, players,
+//                  players_commands, initial_order);
   }
   
   return points_and_caller; // { winner_ = OPPONENTS_WIN || TURN_PLAYER_1
