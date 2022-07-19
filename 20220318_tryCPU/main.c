@@ -991,6 +991,7 @@ void printErrorMessage(int error_code, char* argument)
 unsigned int getSeed(char* argument)
 {
   unsigned int seed = 0;
+  unsigned int buffer = 0;
   
   // seed from command line
   if (argument != NULL)
@@ -1001,22 +1002,30 @@ unsigned int getSeed(char* argument)
   // fixed seed
   else
   {
-//    seed = 73;
-//    seed = (unsigned int)clock();
     printf("Please enter seed:\n>> ");
     do
     {
       system ("/bin/stty raw");
-      unsigned int buffer = 0;
       buffer = (unsigned int)getchar();
 //      scanf("%u", &buffer);
       printf("\r");
-      if (!(buffer > 0 && buffer < UINT_MAX))
+      if ((!(buffer > 0 && buffer < UINT_MAX)) || !('q'))
         printf("Invalid input!\n");
       else
         break;
     } while (1);
     system ("/bin/stty cooked");
+    
+    if (buffer == 'q')
+    {
+//    seed = 73;
+      seed = (unsigned int)clock();
+    }
+    
+    else
+    {
+      seed = buffer;
+    }
   }
   
   return seed;
