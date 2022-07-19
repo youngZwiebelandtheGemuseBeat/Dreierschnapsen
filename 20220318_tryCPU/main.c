@@ -314,6 +314,7 @@ int main(int argc, char* argv[])
   Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, TRUE},
                                       {"Hansi ", 0, TRUE},
                                       {"Franzi", 0, TRUE}};
+  Player initial_players[QUANTITY_PLAYERS] = {players[0], players[1], players[2]};
   int counter_players       = 0;
   int go_on                 = TRUE;
   int check_continue[QUANTITY_PLAYERS] = {0, 0, 0};
@@ -430,6 +431,7 @@ int main(int argc, char* argv[])
           // back to initial order?
           // sort everithing: player, players, maybe not commands
           // TODO: here sort
+          sortOrderPlayers(order[0], players, initial_players);
           // next output should look like the initial order
           printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
                  players[order[2]].name_);
@@ -13946,9 +13948,6 @@ int highestCard(Card* cards)
     }
   }
   
-//  printf("%d %d %d\n", cards[0].value_, cards[1].value_, cards[2].value_);
-//  printf("%d trumps on table.\n", count_trump);
-  
   // TODO: check highest card and do not forget about trump
   
   // no trump or all trump
@@ -15119,6 +15118,8 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
     // caller's input - may call arbitrary
     if (counter == 0)
     {
+      printf("possible commands: %s\n", players_commands[counter]);
+      
       do
       {
         system ("/bin/stty raw");
@@ -16545,7 +16546,9 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
       }
       
       // -----------
-
+      
+      printf("possible commands: %s\n", players_commands[counter]);
+      
       do
       {
         system ("/bin/stty raw");
@@ -17010,6 +17013,8 @@ void sortOrderCommands(int start, char** players_commands,
   char buffer_commands[7] = "\0\0\0\0\0\0\0";
   strcpy(buffer_commands, players_commands[0]);
   
+  printf("players\n%s\n%s\n%s\n", players_commands[0], players_commands[1], players_commands[2]);
+  
   // current order to default order
   if (current_players_order[0] == TURN_PLAYER_1)
   {
@@ -17040,6 +17045,8 @@ void sortOrderCommands(int start, char** players_commands,
     strcpy(players_commands[1], players_commands[2]);
     strcpy(players_commands[2], buffer_commands);
   }
+  
+  printf("players\n%s\n%s\n%s\n", players_commands[0], players_commands[1], players_commands[2]);
   
   // default order to next order
 //  for (counter = 0; counter < 7; counter++)
