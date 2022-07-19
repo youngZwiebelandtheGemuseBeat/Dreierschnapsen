@@ -425,16 +425,17 @@ int main(int argc, char* argv[])
           // back to "initial" order
           
           // ------------------------------------------------------------------
-          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
-                 players[order[2]].name_);
+//          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
+//                 players[order[2]].name_);
           // this is the order of last round, so sort it right here
           // back to initial order?
           // sort everithing: player, players, maybe not commands
           // TODO: here sort
-          sortOrderPlayers(order[0] ADD_ONE, players, initial_players);
+          // TODO: maybe not - it might influence all other the modes
+//          sortOrderPlayers(order[0] ADD_ONE, players, initial_players);
           // next output should look like the initial order
-          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
-                 players[order[2]].name_);
+//          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
+//                 players[order[2]].name_);
           
 //          if (order[0] ADD_ONE < 3)
 //          {
@@ -14942,6 +14943,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   Card* initial_hands[3]    = {};
   int counter_hand          = 0;
   Player initial_players[3] = {{"", 0, FALSE}};
+  Player base[3]            = {{"", 0, FALSE}};
 
   char commands[7] = "qweasd";
   char commands_1[7] = "\0";
@@ -14953,6 +14955,9 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   char* players_commands[3] = {commands_1, commands_2, commands_3};
   int current_players_order[3] = {TURN_PLAYER_1, TURN_PLAYER_2, TURN_PLAYER_3};
   int initial_order[3] = {0, 0, 0};
+  base[0] = players[0];;
+  base[1] = players[1];;
+  base[2] = players[2];;
 
   // who called mode - who is opponent
 
@@ -15066,18 +15071,10 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       
       counter++;
     } // end of while()
-
+    
     // game points
     points_and_caller = distributePoints(points_caller, points_opponents);
-    points_and_caller.caller_ = TURN_PLAYER_1;
-    // ------------------------------------------------------------------------
-//    next_and_points.caller_ = TURN_PLAYER_2;
-//    // start = TURN_PLAYER_2;
-//
-//    // and here we will call the mode itself
-//    next_and_points
-//      = modeRufer(hands, next_and_points.caller_, trump, players,
-//                  players_commands, initial_order);
+    points_and_caller.caller_ = initial_order[0];
   }
 
   // Player 3 called mode - TODO: clone "Player 1 called mode"
@@ -15135,23 +15132,26 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 
     // game points
     points_and_caller = distributePoints(points_caller, points_opponents);
-    points_and_caller.caller_ = TURN_PLAYER_1;
-    // ------------------------------------------------------------------------
-//    next_and_points.caller_ = TURN_PLAYER_3;
-//    // start = TURN_PLAYER_3;
-//
-//    // and here we will call the mode itself
-//    next_and_points
-//      = modeRufer(hands, next_and_points.caller_, trump, players,
-//                  players_commands, initial_order);
+    points_and_caller.caller_ = initial_order[0];
   }
+  
+  // sort
+  printf("Current order:\n");
+  printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
+         players[order[2]].name_);
+  // 1. default order
+  sortOrderPlayers(TURN_PLAYER_1, players, base);
+  printf("Default order:\n");
+  printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
+         players[order[2]].name_);
+  // 2. new order
   
   return points_and_caller; // { winner_ = OPPONENTS_WIN || TURN_PLAYER_1
                             //   points_ = 1, 2 or 3 }
 }
 
 // One turn only, so it has to be called in a loop. Maybe this way I can clean
-// it up a bit and finally make it work
+// it up a bit and finally make it work. And yes, I did.
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order)
 {
