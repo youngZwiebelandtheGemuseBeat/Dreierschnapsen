@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <limits.h>>
 
 //-----------------------------------------------------------------------------
 /// definition of various precompiler directives
@@ -1001,7 +1002,21 @@ unsigned int getSeed(char* argument)
   else
   {
 //    seed = 73;
-    seed = (unsigned int)clock();
+//    seed = (unsigned int)clock();
+    printf("Please enter seed:\n>> ");
+    do
+    {
+      system ("/bin/stty raw");
+      unsigned int buffer = 0;
+      buffer = (unsigned int)getchar();
+//      scanf("%u", &buffer);
+      printf("\r");
+      if (!(buffer > 0 && buffer < UINT_MAX))
+        printf("Invalid input!\n");
+      else
+        break;
+    } while (1);
+    system ("/bin/stty cooked");
   }
   
   return seed;
