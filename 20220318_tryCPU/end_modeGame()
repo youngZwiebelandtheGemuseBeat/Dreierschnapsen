@@ -21,9 +21,11 @@
     pairs = resetPairs(position_Q);
     resetHandlePairs(handle_pairs);
     points_pair = 0;
-    next_and_points.points_ = 0;
-    next_and_points.winner_ = 0;
-    next_and_points.caller_ = 0;
+    ((
+      next_and_points.points_ = 0;
+      next_and_points.winner_ = 0;
+      next_and_points.caller_ = 0;
+    ))
     // bool_trumped_already = FALSE;
     
     if (points_call >= 66)

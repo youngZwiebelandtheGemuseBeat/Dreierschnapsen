@@ -15068,7 +15068,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     points_and_caller.caller_ = TURN_PLAYER_1;
   }
 
-  // Player 2 called mode - TODO: clone "Player 1 called mode"
+  // Player 2 called mode
   else if (order[0] ADD_ONE == TURN_PLAYER_2)
   {
     initial_order[0] = TURN_PLAYER_2;
@@ -15126,7 +15126,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
     points_and_caller.caller_ = initial_order[0];
   }
 
-  // Player 3 called mode - TODO: clone "Player 1 called mode"
+  // Player 3 called mode
   else /* if (order[0] ADD_ONE == TURN_PLAYER_3) */
   {
     initial_order[0] = TURN_PLAYER_3;
@@ -15228,7 +15228,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
   int count_suit          = 0;   // right suit
   int count_trump         = 0;   // trump
   int count_permit        = 0;
-  Pair handle_pairs[3]    = {{0, FALSE}, {0, FALSE}, {0, FALSE}};
+//  Pair handle_pairs[3]    = {{0, FALSE}, {0, FALSE}, {0, FALSE}};
   buffer_start            = start;
   char buffer_higher[6]   = {'\0'};
   

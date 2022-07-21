@@ -792,7 +792,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "FB2F615A-14C9-4BE7-902D-23EFF9FDAE3E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "20220318_tryCPU/main.c"
@@ -2145,6 +2145,22 @@
             startingLineNumber = "1023"
             endingLineNumber = "1023"
             landmarkName = "getSeed(argument)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "ABC05938-1011-4C04-B28A-C165A10FDAB2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "20220318_tryCPU/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "16857"
+            endingLineNumber = "16857"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
