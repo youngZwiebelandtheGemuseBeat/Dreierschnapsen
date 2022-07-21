@@ -10,7 +10,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include <limits.h>>
+#include <limits.h>
+#include <unistd.h>
 
 //-----------------------------------------------------------------------------
 /// definition of various precompiler directives
@@ -85,6 +86,28 @@
 static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
 static const char COMMANDS_POLAR[2] = {'y', 'n'};
 static const char COMMANDS_TRUMP[5] = {0, 1, 2, 3, 4};
+
+//-----------------------------------------------------------------------------
+/// ADDITIONAL definitions of various colors and stuff for stdout
+//
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+#define WELCOME   "Wellcome to " ANSI_COLOR_MAGENTA "Dreierschnapsen\n" \
+                  ANSI_COLOR_RESET
+#define MAKER     "made in C by " ANSI_COLOR_MAGENTA "Luca Candussi\n\n" \
+                  ANSI_COLOR_RESET
+#define SEED_COLOR  "For testing porpuses please type in a " ANSI_COLOR_GREEN \
+                    "seed " ANSI_COLOR_RESET "and press " \
+                   "ENTER to get started.\n>> "
+#define SEED_PLAIN "For testing purposes please type in a seed and press " \
+                   "ENTER to get started.\n>> "
+#define STEPS_1 100000
+#define STEPS_2 10000
 
 //-----------------------------------------------------------------------------
 /// definition of the 'data type' Card
@@ -264,6 +287,9 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order);
 void sortOrderCommands(int start, char** players_commands,
                        int* current_players_order);
 void setInitialOrder(int start, int* initial_order);
+
+// additional fun stuff
+void greeting(unsigned int code);
 
 //-----------------------------------------------------------------------------
 ///
@@ -1002,19 +1028,18 @@ unsigned int getSeed(char* argument)
   // fixed seed
   else
   {
-    printf("Please enter seed:\n>> ");
+//    printf("Please enter seed:\n>> ");
+    greeting(4); // 1, 2, 3 or 4
+    
     do
     {
-      system ("/bin/stty raw");
-      buffer = (unsigned int)getchar();
-//      scanf("%u", &buffer);
-      printf("\r");
+      scanf("%u", &buffer);
+      fflush(stdin);
       if ((!(buffer > 0 && buffer < UINT_MAX)) || !('q'))
         printf("Invalid input!\n");
       else
         break;
     } while (1);
-    system ("/bin/stty cooked");
     
     if (buffer == 'q')
     {
@@ -15179,47 +15204,33 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order)
 {
-  int player[3] = {start, 0, 0};
+  int player[3]           = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
-  Points points_and_next = {start, 0, 0};
-  int counter = 0;
-  
-//  int counter_turns = 0;
-  int counter_cards = 0;
-  int counter_position = 0;
-  int counter_suit = 0;
-  int counter_trump = 0;
-  int counter_hand = 0;
-  int counter_command = 0;
-  const char commands[7] = "qweasd";
-  
-//  printf("1. %s\n2. %s\n3. %s\n", players_commands[0], players_commands[1], players_commands[2]);
-  
-//  int call      = player[0];
-//  int answer_1  = player[1];
-//  int answer_2  = player[2];
-//  int initial_order[3] = {call, answer_1, answer_2};   // initial order
-  int position[3]   = {0};
-  int position_Q[3] = {0};
-  int pairs         = 0;
-  int check = FALSE;
-  int buffer = 0;
-  int points_call = 0;
-  int points_opponents = 0;
-  int points_pair = 0;
-  int buffer_start = 0;
-  int count_bock    = 0;   // bock
-  int count_suit    = 0;   // right suit
-  int count_trump   = 0;   // trump
-  int count_permit  = 0;
-  Pair handle_pairs[3] = {0, 0, 0};
-//  getCall(start, &call, &answer_1, &answer_2);
-  buffer_start = start;
-  char buffer_higher[6] = {'\0'};
-  
-//  int initial_order[3] = {player[0], player[1], player[2]};
-//  setInitialOrder(start, initial_order);
-//  setInitialOrder(start, player);
+  Points points_and_next  = {start, 0, 0};
+  int counter             = 0;
+  int counter_cards       = 0;
+  int counter_position    = 0;
+  int counter_suit        = 0;
+  int counter_trump       = 0;
+  int counter_hand        = 0;
+  int counter_command     = 0;
+  const char commands[7]  = "qweasd";
+  int position[3]         = {0};
+  int position_Q[3]       = {0};
+  int pairs               = 0;
+  int check               = FALSE;
+  int buffer              = 0;
+  int points_call         = 0;
+  int points_opponents    = 0;
+  int points_pair         = 0;
+  int buffer_start        = 0;
+  int count_bock          = 0;   // bock
+  int count_suit          = 0;   // right suit
+  int count_trump         = 0;   // trump
+  int count_permit        = 0;
+  Pair handle_pairs[3]    = {{0, FALSE}, {0, FALSE}, {0, FALSE}};
+  buffer_start            = start;
+  char buffer_higher[6]   = {'\0'};
   
   for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
   {
@@ -15246,7 +15257,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
         system ("/bin/stty raw");
         buffer = getchar();
         printf("\r");
-        if (!(check = seekAndDestroy(buffer, players_commands[counter])))
+        if (!(check = (int)seekAndDestroy(buffer, players_commands[counter])))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
       system ("/bin/stty cooked");
@@ -16756,17 +16767,20 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
     }
   }
   
-  // ------------------
-  
   // --------------------------------------------------------------------------------
-//  if (i > 3) // exit condition: 20 or 40 shown only - enough & exit
-//  {
-//    printf("points caller: %d\n", points_call);
-//    printf("points opponents: %d\n", points_opponents);
-//    break;
-//  }
+  if (counter > 3) // exit condition: 20 or 40 shown only - enough & exit
+  {
+    printf(ANSI_COLOR_RED "G'NUA!!\n" ANSI_COLOR_RESET);
+    printf("points caller: %d\n", points_call);
+    printf("points opponents: %d\n", points_opponents);
+  }
+  
+  printf(ANSI_COLOR_RED "1. %d %d 2. %d %d 3. %d %d\n" ANSI_COLOR_RESET,
+         handle_pairs[0].points_, handle_pairs[0].bool_pair_,
+         handle_pairs[1].points_, handle_pairs[1].bool_pair_,
+         handle_pairs[2].points_, handle_pairs[2].bool_pair_);
 
-  // ------------------
+  // --------------------------------------------------------------------------------
   
   counter = 0;
   
@@ -17246,4 +17260,75 @@ void setInitialOrder(int start, int* initial_order)
     initial_order[1] = TURN_PLAYER_1;
     initial_order[2] = TURN_PLAYER_2;
   }
+}
+
+// greeting, just for fun with stdIO commands
+//
+// code:  1 = written and colored Wellcome text and seed
+//        2 = written and colored seed
+//        3 = written seed
+//        4 = static seed only
+void greeting(unsigned int code)
+{
+  int counter = 0;
+  
+  switch (code)
+  {
+    case 1:
+      for (counter = 0; counter < sizeof(WELCOME); counter++)
+      {
+        printf("%c", WELCOME[counter]);
+        fflush(stdout);
+        usleep(STEPS_1);
+      }
+      
+      for (counter = 0; counter < sizeof(MAKER); counter++)
+      {
+        printf("%c", MAKER[counter]);
+        fflush(stdout);
+        usleep(STEPS_1);
+      }
+      
+      for (counter = 0; counter < sizeof(MAKER); counter++)
+      {
+        printf(" \b\b");
+        fflush(stdout);
+        usleep(STEPS_2);
+      }
+      
+      for (counter = 0; counter < sizeof(SEED_COLOR); counter++)
+      {
+        printf("%c", SEED_COLOR[counter]);
+        fflush(stdout);
+        usleep(STEPS_1);
+      }
+      break;
+      
+    case 2:
+      for (counter = 0; counter < sizeof(SEED_COLOR); counter++)
+      {
+        printf("%c", SEED_COLOR[counter]);
+        fflush(stdout);
+        usleep(STEPS_1);
+      }
+      break;
+      
+    case 3:
+      for (counter = 0; counter < sizeof(SEED_PLAIN); counter++)
+      {
+        printf("%c", SEED_PLAIN[counter]);
+        fflush(stdout);
+        usleep(STEPS_1);
+      }
+      break;
+      
+    case 4:
+      printf(SEED_PLAIN);
+      break;
+      
+    default:
+      break;
+  }
+  
+  
 }
