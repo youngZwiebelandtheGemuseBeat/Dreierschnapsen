@@ -230,7 +230,8 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
 int priority(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
-                 char** players_commands, int* initial_order);
+                 char** players_commands, int* initial_order,
+                 Pair* handle_pairs);
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order);
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
@@ -15004,9 +15005,10 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   char* players_commands[3] = {commands_1, commands_2, commands_3};
   int current_players_order[3] = {TURN_PLAYER_1, TURN_PLAYER_2, TURN_PLAYER_3};
   int initial_order[3] = {0, 0, 0};
-  base[0] = players[0];;
-  base[1] = players[1];;
-  base[2] = players[2];;
+  base[0] = players[0];
+  base[1] = players[1];
+  base[2] = players[2];
+  Pair handle_pairs[3] = {{0, FALSE}, {0, FALSE}, {0, FALSE}};
 
   // who called mode - who is opponent
 
@@ -15039,8 +15041,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order);
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
-                    players_commands, initial_order);
+                    players_commands, initial_order, handle_pairs);
 
+      // TODO: handle 20 || 40
+      if (handle_pairs[0].bool_pair_ == TRUE)
+        printf("Player %d: %d angesagt!\n", current_players_order[0],
+                                            handle_pairs[0].points_);
+      
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
 
@@ -15097,8 +15104,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order);
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
-                    players_commands, initial_order);
+                    players_commands, initial_order, handle_pairs);
 
+      // TODO: handle 20 || 40
+      if (handle_pairs[0].bool_pair_ == TRUE)
+        printf("Player %d: %d angesagt!\n", current_players_order[0],
+                                            handle_pairs[0].points_);
+      
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
 
@@ -15155,8 +15167,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order);
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
-                    players_commands, initial_order);
+                    players_commands, initial_order, handle_pairs);
 
+      // TODO: handle 20 || 40
+      if (handle_pairs[0].bool_pair_ == TRUE)
+        printf("Player %d: %d angesagt!\n", current_players_order[0],
+                                            handle_pairs[0].points_);
+      
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
 
@@ -15202,7 +15219,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 // One turn only, so it has to be called in a loop. Maybe this way I can clean
 // it up a bit and finally make it work. And yes, I did.
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
-                 char** players_commands, int* initial_order)
+                 char** players_commands, int* initial_order,
+                 Pair* handle_pairs)
 {
   int player[3]           = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
