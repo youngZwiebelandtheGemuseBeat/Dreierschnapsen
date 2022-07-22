@@ -231,7 +231,7 @@ int priority(int start, int* mode, char* player);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order,
-                 Pair* handle_pairs);
+                 Pair* handle_pairs, int* points_caller, int* points_opponents);
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order);
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
@@ -14491,7 +14491,7 @@ int resetPairs(int* position)
 }
 
 int pairHandler(Pair* handle_pairs, int position, int points_to_add,
-                 int* counter, int* points_call, int* points_opponents,
+                 int* counter, int* points_caller, int* points_opponents,
                  Card* hand, int is_caller)
 {
 //  handle_pairs[i].points_ = points_to_add;
@@ -14508,9 +14508,9 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
     // exit condition   -   20 or 40 will only be shown; game ends
     if (is_caller == TRUE)    // trump caller plays 20 || 40
     {
-      if (*points_call + points_to_add >= 66)
+      if (*points_caller + points_to_add >= 66)
       {
-        *points_call += points_to_add;
+        *points_caller += points_to_add;
         printf("It is enough to show.\n"); //printf("Brauch I nit ausspielen!\n");
         *counter = ENOUGH;    // nenn'ma's a'foch 5
       }
@@ -15009,6 +15009,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
   base[1] = players[1];
   base[2] = players[2];
   Pair handle_pairs[3] = {{0, FALSE}, {0, FALSE}, {0, FALSE}};
+  int buffer_pair = 0;
 
   // who called mode - who is opponent
 
@@ -15041,12 +15042,48 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order);
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
-                    players_commands, initial_order, handle_pairs);
+                    players_commands, initial_order, handle_pairs,
+                    &points_caller, &points_opponents);
 
+      // -------------------------------------
+      
       // TODO: handle 20 || 40
       if (handle_pairs[0].bool_pair_ == TRUE)
+      {
         printf("Player %d: %d angesagt!\n", current_players_order[0],
                                             handle_pairs[0].points_);
+        
+        if (current_players_order[0] == TURN_PLAYER_1)
+        {
+          if (points_caller > 0)
+          {
+            // add 20 || 40 to next_and_points.points_
+            printf("Wird gleich gezählt.\n");
+            buffer_pair = handle_pairs[0].points_;
+          }
+          
+          else
+          {
+            // remember 20 || 40 until caller trumps the first time
+            printf("Wird noch nicht gezählt.\n");
+            buffer_pair = handle_pairs[0].points_;
+          }
+        }
+        
+        else /* opponents */
+        {
+          // add 20 || 40 to next_and_points.points_
+          // fact: caller always starts, so opponents must have trumped at least
+          // once at this point
+          next_and_points.points_ += handle_pairs[0].points_;
+        }
+        
+        // reset pairs
+//        handle_pairs = resetPairs(position_Q); - maybe add to modeRufer()
+        resetHandlePairs(handle_pairs);
+      }
+      
+      // -------------------------------------
       
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
@@ -15062,6 +15099,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       else
       {
         points_opponents += next_and_points.points_;
+      }
+      
+      // add buffered 20 || 40
+      if (points_caller > 0)
+      {
+        points_caller += buffer_pair;
+        buffer_pair = 0;
       }
 
       printf("points caller: %d\n", points_caller);
@@ -15104,7 +15148,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order);
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
-                    players_commands, initial_order, handle_pairs);
+                    players_commands, initial_order, handle_pairs,
+                    &points_caller, &points_opponents);
 
       // TODO: handle 20 || 40
       if (handle_pairs[0].bool_pair_ == TRUE)
@@ -15167,7 +15212,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                         current_players_order);
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
-                    players_commands, initial_order, handle_pairs);
+                    players_commands, initial_order, handle_pairs,
+                    &points_caller, &points_opponents);
 
       // TODO: handle 20 || 40
       if (handle_pairs[0].bool_pair_ == TRUE)
@@ -15220,7 +15266,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 // it up a bit and finally make it work. And yes, I did.
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order,
-                 Pair* handle_pairs)
+                 Pair* handle_pairs, int* points_caller, int* points_opponents)
 {
   int player[3]           = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
@@ -15238,8 +15284,8 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
   int pairs               = 0;
   int check               = FALSE;
   int buffer              = 0;
-  int points_call         = 0;
-  int points_opponents    = 0;
+//  int points_call         = 0;
+//  int points_opponents    = 0;
   int points_pair         = 0;
   int buffer_start        = 0;
   int count_bock          = 0;   // bock
@@ -15299,10 +15345,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[0] MINUS_ONE,
-                                                         points_pair, &counter, &points_call,
-                                                         &points_opponents,
+                                                         points_pair, &counter, points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 40?\n");
@@ -15323,10 +15369,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[0],
                                                          points_pair,
-                                                         &counter, &points_call,
-                                                         &points_opponents,
+                                                         &counter, points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 20?\n");
@@ -15372,10 +15418,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[player[counter] MINUS_ONE],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 40?\n");
@@ -15395,10 +15441,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 20?\n");
@@ -15424,10 +15470,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[0] MINUS_ONE,
                                                          points_pair, &counter,
-                                                         &points_call,
-                                                         &points_opponents,
+                                                         points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 40?\n");
@@ -15447,10 +15493,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[0],
                                                          points_pair,
-                                                         &counter, &points_call,
-                                                         &points_opponents,
+                                                         &counter, points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 20?\n");
@@ -15497,10 +15543,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 40?\n");
@@ -15521,10 +15567,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 20?\n");
@@ -15553,10 +15599,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[0] MINUS_ONE,
                                                          points_pair, &counter,
-                                                         &points_call,
-                                                         &points_opponents,
+                                                         points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 40?\n");
@@ -15578,10 +15624,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[1] MINUS_ONE,
                                                          points_pair, &counter,
-                                                         &points_call,
-                                                         &points_opponents,
+                                                         points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 40?\n");
@@ -15603,10 +15649,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[0],
                                                          points_pair,
-                                                         &counter, &points_call,
-                                                         &points_opponents,
+                                                         &counter, points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 20?\n");
@@ -15628,10 +15674,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                          position_Q[1],
                                                          points_pair,
-                                                         &counter, &points_call,
-                                                         &points_opponents,
+                                                         &counter, points_caller,
+                                                         points_opponents,
                                                          hands[counter],
-                                                         (player[0] == buffer_start));
+                                                         (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("K 20?\n");
@@ -15681,10 +15727,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 40?\n");
@@ -15705,10 +15751,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[1],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 40?\n");
@@ -15729,10 +15775,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 20?\n");
@@ -15753,10 +15799,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[1],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 20?\n");
@@ -15786,10 +15832,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[0] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 40?\n");
@@ -15811,10 +15857,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[0],
                                                            points_pair,
-                                                           &counter, &points_call,
-                                                           &points_opponents,
+                                                           &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 20?\n");
@@ -15839,10 +15885,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[1] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 40?\n");
@@ -15864,10 +15910,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[1],
                                                            points_pair,
-                                                           &counter, &points_call,
-                                                           &points_opponents,
+                                                           &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 20?\n");
@@ -15917,10 +15963,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 points_pair = 40;
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 40?\n");
@@ -15941,10 +15987,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[1],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 40?\n");
@@ -15965,10 +16011,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[0],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 20?\n");
@@ -15989,10 +16035,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 
                 handle_pairs[counter].bool_pair_
                   = pairHandler(handle_pairs, position_Q[1],
-                                points_pair, &counter, &points_call,
-                                &points_opponents,
+                                points_pair, &counter, points_caller,
+                                points_opponents,
                                 hands[counter],
-                                (player[0] == buffer_start));
+                                (player[0] == initial_order[0]));
                 if (handle_pairs[counter].bool_pair_ == TRUE)
                 {
 //                    printf("Q 20?\n");
@@ -16025,10 +16071,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[0] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 40?\n");
@@ -16049,10 +16095,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[0] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 20?\n");
@@ -16078,10 +16124,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[2] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 40?\n");
@@ -16102,10 +16148,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[2] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 20?\n");
@@ -16130,10 +16176,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[1] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 40?\n");
@@ -16153,10 +16199,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   points_pair = 20;
                   handle_pairs[counter].bool_pair_ = pairHandler(handle_pairs,
                                                            position_Q[1] MINUS_ONE,
-                                                           points_pair, &counter, &points_call,
-                                                           &points_opponents,
+                                                           points_pair, &counter, points_caller,
+                                                           points_opponents,
                                                            hands[counter],
-                                                           (player[0] == buffer_start));
+                                                           (player[0] == initial_order[0]));
                   if (handle_pairs[counter].bool_pair_ == TRUE)
                   {
 //                      printf("K 20?\n");
@@ -16216,10 +16262,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                     
                     handle_pairs[counter].bool_pair_
                       = pairHandler(handle_pairs, position_Q[j],
-                                    points_pair, &counter, &points_call,
-                                    &points_opponents,
+                                    points_pair, &counter, points_caller,
+                                    points_opponents,
                                     hands[counter],
-                                    (player[0] == buffer_start));
+                                    (player[0] == initial_order[0]));
                     if (handle_pairs[counter].bool_pair_ == TRUE)
                     {
 //                        printf("Q 40?\n");
@@ -16240,10 +16286,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                     
                     handle_pairs[counter].bool_pair_
                       = pairHandler(handle_pairs, position_Q[j],
-                                    points_pair, &counter, &points_call,
-                                    &points_opponents,
+                                    points_pair, &counter, points_caller,
+                                    points_opponents,
                                     hands[counter],
-                                    (player[0] == buffer_start));
+                                    (player[0] == initial_order[0]));
                     if (handle_pairs[counter].bool_pair_ == TRUE)
                     {
 //                        printf("Q 20?\n");
@@ -16789,8 +16835,8 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
   if (counter > 3) // exit condition: 20 or 40 shown only - enough & exit
   {
     printf(ANSI_COLOR_RED "G'NUA!!\n" ANSI_COLOR_RESET);
-    printf("points caller: %d\n", points_call);
-    printf("points opponents: %d\n", points_opponents);
+    printf("points caller: %d\n", *points_caller);
+    printf("points opponents: %d\n", *points_opponents);
   }
   
 //  printf(ANSI_COLOR_RED "1. %d %d 2. %d %d 3. %d %d\n" ANSI_COLOR_RESET,
