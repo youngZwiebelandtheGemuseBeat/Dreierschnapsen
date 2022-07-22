@@ -14491,7 +14491,7 @@ int resetPairs(int* position)
 }
 
 int pairHandler(Pair* handle_pairs, int position, int points_to_add,
-                 int* i, int* points_call, int* points_opponents,
+                 int* counter, int* points_call, int* points_opponents,
                  Card* hand, int is_caller)
 {
 //  handle_pairs[i].points_ = points_to_add;
@@ -14503,7 +14503,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       || (hand[position MINUS_ONE].value_ == 4 && hand[position].value_ != 0)
       || (hand[position].value_ == 4 && hand[position ADD_ONE].value_ != 0))
   {
-    handle_pairs[*i].points_ = points_to_add;
+    handle_pairs[*counter].points_ = points_to_add;
     
     // exit condition   -   20 or 40 will only be shown; game ends
     if (is_caller == TRUE)    // trump caller plays 20 || 40
@@ -14512,7 +14512,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       {
         *points_call += points_to_add;
         printf("It is enough to show.\n"); //printf("Brauch I nit ausspielen!\n");
-        *i = ENOUGH;    // nenn'ma's a'foch 5
+        *counter = ENOUGH;    // nenn'ma's a'foch 5
       }
     }
     
@@ -14522,7 +14522,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       {
         *points_opponents += points_to_add;
         printf("No need to go on.\n"); //printf("Brauch'ma nit ausspielen!\n");
-        *i = ENOUGH;    // nenn'ma's a'foch 5
+        *counter = ENOUGH;    // nenn'ma's a'foch 5
       }
     }
     
@@ -14531,7 +14531,7 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
   
   else
   {
-    handle_pairs[*i].points_ = 0;
+    handle_pairs[*counter].points_ = 0;
     return FALSE;
   }
 }
@@ -16793,10 +16793,10 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
     printf("points opponents: %d\n", points_opponents);
   }
   
-  printf(ANSI_COLOR_RED "1. %d %d 2. %d %d 3. %d %d\n" ANSI_COLOR_RESET,
-         handle_pairs[0].points_, handle_pairs[0].bool_pair_,
-         handle_pairs[1].points_, handle_pairs[1].bool_pair_,
-         handle_pairs[2].points_, handle_pairs[2].bool_pair_);
+//  printf(ANSI_COLOR_RED "1. %d %d 2. %d %d 3. %d %d\n" ANSI_COLOR_RESET,
+//         handle_pairs[0].points_, handle_pairs[0].bool_pair_,
+//         handle_pairs[1].points_, handle_pairs[1].bool_pair_,
+//         handle_pairs[2].points_, handle_pairs[2].bool_pair_);
 
   // --------------------------------------------------------------------------------
   
