@@ -413,7 +413,7 @@ int main(int argc, char* argv[])
           random_seed = getSeed(argv[1]);
           FisherYates(deck, CARD_QUANTITY * 4, random_seed);
           
-          // ist mir jetzt Wurscht, lös'ma's (derweil) halt billig -------------------
+          // okay, just leave it quick and easy for now -------------------
           if (counter_players == 1)
           {
             order[0] = counter_players;
@@ -447,33 +447,8 @@ int main(int argc, char* argv[])
                                        players[0].name_, players[1].name_, players[2].name_,
                                        players, order);
           // AFTER GAME
-          // TODO: get points, count points (player, opponents), fleck/retour,
-          //        Bummerl (>= 24), another Bummerl?
-          // but first adjust order
-          // back to "initial" order
           
-          // ------------------------------------------------------------------
-//          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
-//                 players[order[2]].name_);
-          // this is the order of last round, so sort it right here
-          // back to initial order?
-          // sort everithing: player, players, maybe not commands
-          // TODO: here sort
-          // TODO: maybe not - it might influence all other the modes
-//          sortOrderPlayers(order[0] ADD_ONE, players, initial_players);
-          // next output should look like the initial order
-//          printf("%s %s %s\n", players[order[0]].name_, players[order[1]].name_,
-//                 players[order[2]].name_);
-          
-//          if (order[0] ADD_ONE < 3)
-//          {
-//            sortOrderPlayers(order[1], players, initial_players);
-//          }
-//
-//          else
-//          {
-//            sortOrderPlayers(TURN_PLAYER_3, players, initial_players);
-//          }
+          // players[0] = Seppi, always
           
           printf("---------------------------------------------------------------\n");
           // ------------------------------------------------------------------
@@ -1093,7 +1068,7 @@ Points playGame(Card* deck, Card* deck_dealer,
   int mode_buffer_2 = GAME;
   int mode_buffer_3 = GAME;
   int start         = TURN_PLAYER_1;
-  int buffer_start  = start;
+//  int buffer_start  = start;
 //  int bool_fleck    = 0;
 //  int bool_trump    = TRUE;
   int talon         = GO_ON;
@@ -1293,6 +1268,12 @@ Points playGame(Card* deck, Card* deck_dealer,
 //                                   order);
       points_and_caller = switchRufer(hands, start, decodeSuit(*trump),
                                       players, order);
+      
+      printf("points_and_caller:\ncaller: %d\nwinner: %d\npoints: %d\n",
+             points_and_caller.caller_,
+             points_and_caller.winner_,
+             points_and_caller.points_);
+      
       return points_and_caller;
       break;
       
@@ -15053,13 +15034,14 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
         printf("Player %d: %d angesagt!\n", current_players_order[0],
                                             handle_pairs[0].points_);
         
-        if (current_players_order[0] == TURN_PLAYER_1)
+        if (current_players_order[0] == initial_order[0])
         {
           if (points_caller > 0)
           {
             // add 20 || 40 to next_and_points.points_
             printf("Wird gleich gezählt.\n");
             buffer_pair = handle_pairs[0].points_;
+//            next_and_points.points_ += handle_pairs[0].points_;
           }
           
           else
@@ -15150,11 +15132,46 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
         = modeRufer(hands, next_and_points.caller_, trump, players,
                     players_commands, initial_order, handle_pairs,
                     &points_caller, &points_opponents);
-
+      
+      // -------------------------------------
+      
       // TODO: handle 20 || 40
       if (handle_pairs[0].bool_pair_ == TRUE)
+      {
         printf("Player %d: %d angesagt!\n", current_players_order[0],
                                             handle_pairs[0].points_);
+        
+        if (current_players_order[0] == initial_order[0])
+        {
+          if (points_caller > 0)
+          {
+            // add 20 || 40 to next_and_points.points_
+            printf("Wird gleich gezählt.\n");
+            buffer_pair = handle_pairs[0].points_;
+          }
+          
+          else
+          {
+            // remember 20 || 40 until caller trumps the first time
+            printf("Wird noch nicht gezählt.\n");
+            buffer_pair = handle_pairs[0].points_;
+          }
+        }
+        
+        else /* opponents */
+        {
+          // add 20 || 40 to next_and_points.points_
+          // fact: caller always starts, so opponents must have trumped at least
+          // once at this point
+          next_and_points.points_ += handle_pairs[0].points_;
+        }
+        
+        // reset pairs
+//        handle_pairs = resetPairs(position_Q); - maybe add to modeRufer()
+        resetHandlePairs(handle_pairs);
+      }
+      
+      // -------------------------------------
       
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
@@ -15170,6 +15187,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       else
       {
         points_opponents += next_and_points.points_;
+      }
+      
+      // add buffered 20 || 40
+      if (points_caller > 0)
+      {
+        points_caller += buffer_pair;
+        buffer_pair = 0;
       }
 
       printf("points caller: %d\n", points_caller);
@@ -15215,10 +15239,45 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                     players_commands, initial_order, handle_pairs,
                     &points_caller, &points_opponents);
 
+      // -------------------------------------
+      
       // TODO: handle 20 || 40
       if (handle_pairs[0].bool_pair_ == TRUE)
+      {
         printf("Player %d: %d angesagt!\n", current_players_order[0],
                                             handle_pairs[0].points_);
+        
+        if (current_players_order[0] == initial_order[0])
+        {
+          if (points_caller > 0)
+          {
+            // add 20 || 40 to next_and_points.points_
+            printf("Wird gleich gezählt.\n");
+            buffer_pair = handle_pairs[0].points_;
+          }
+          
+          else
+          {
+            // remember 20 || 40 until caller trumps the first time
+            printf("Wird noch nicht gezählt.\n");
+            buffer_pair = handle_pairs[0].points_;
+          }
+        }
+        
+        else /* opponents */
+        {
+          // add 20 || 40 to next_and_points.points_
+          // fact: caller always starts, so opponents must have trumped at least
+          // once at this point
+          next_and_points.points_ += handle_pairs[0].points_;
+        }
+        
+        // reset pairs
+//        handle_pairs = resetPairs(position_Q); - maybe add to modeRufer()
+        resetHandlePairs(handle_pairs);
+      }
+      
+      // -------------------------------------
       
       // next to call
       next_and_points.caller_ = next_and_points.winner_;
@@ -15234,6 +15293,13 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       else
       {
         points_opponents += next_and_points.points_;
+      }
+      
+      // add buffered 20 || 40
+      if (points_caller > 0)
+      {
+        points_caller += buffer_pair;
+        buffer_pair = 0;
       }
 
       printf("points caller: %d\n", points_caller);
