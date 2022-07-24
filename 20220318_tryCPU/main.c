@@ -64,7 +64,7 @@
 #define HAND            6
 #define TALON           2
 #define QUANTITY_PLAYERS 3
-#define GAME            1
+#define RUFER            1
 #define SCHNAPSER       2
 #define LAND            3
 #define BAUERNSCHNAPSER 4
@@ -339,9 +339,9 @@ int main(int argc, char* argv[])
 //  int points_A              = 0;
 //  int points_B              = 0;
 //  int points_C              = 0;
-  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, TRUE},
-                                      {"Hansi ", 0, TRUE},
-                                      {"Franzi", 0, TRUE}};
+  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
+                                      {"Hansi ", 0, FALSE},
+                                      {"Franzi", 0, FALSE}};
   Player initial_players[QUANTITY_PLAYERS] = {players[0], players[1], players[2]};
   int counter_players       = 0;
   int go_on                 = TRUE;
@@ -1063,10 +1063,10 @@ Points playGame(Card* deck, Card* deck_dealer,
                 int* bool_retour, char* player_1, char* player_2, char* player_3,
                 Player* players, int* order)
 {
-  int mode          = GAME;
-  int mode_buffer_1 = GAME;
-  int mode_buffer_2 = GAME;
-  int mode_buffer_3 = GAME;
+  int mode          = RUFER;
+  int mode_buffer_1 = RUFER;
+  int mode_buffer_2 = RUFER;
+  int mode_buffer_3 = RUFER;
   int start         = TURN_PLAYER_1;
 //  int buffer_start  = start;
 //  int bool_fleck    = 0;
@@ -1262,7 +1262,7 @@ Points playGame(Card* deck, Card* deck_dealer,
   // then game - according to prior determined mode
   switch (mode)
   {
-    case GAME:
+    case RUFER:
       // 1 - 3 points
 //      points_and_caller = modeGame(hands, start, decodeSuit(*trump), players,
 //                                   order);
@@ -1429,7 +1429,7 @@ int callMode(int mode, int state, int* start, char* player)
     case TURN_PLAYER_1:
       printf("Player 1 (%s), call mode!\n-----------------------\n", player);
       
-      printf("1       GAME\n");
+      printf("1       RUFER\n");
       printf("2       SCHNAPSER\n");
       printf("3       LAND\n");
       printf("4       BAUERNSCHNAPSER\n");
@@ -1443,11 +1443,11 @@ int callMode(int mode, int state, int* start, char* player)
         mode = getchar();
         mode = mode CHAR_TO_INT;
         printf("\r");
-        if (mode != GAME && mode != SCHNAPSER && mode != LAND
+        if (mode != RUFER && mode != SCHNAPSER && mode != LAND
             && mode != BAUERNSCHNAPSER && mode != JODLER
             && mode != HERREN_JODLER)
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (mode != GAME && mode != SCHNAPSER && mode != LAND
+      } while (mode != RUFER && mode != SCHNAPSER && mode != LAND
                && mode != BAUERNSCHNAPSER && mode != JODLER
                && mode != HERREN_JODLER);
       system ("/bin/stty cooked");
@@ -1493,7 +1493,7 @@ int callMode(int mode, int state, int* start, char* player)
 
 int callRaise(int mode, /*int state,*/ int start, Player* players)
 {
-  if (mode > GAME && mode < HERREN_JODLER)
+  if (mode > RUFER && mode < HERREN_JODLER)
   {
     switch (start)
     {
@@ -1533,8 +1533,8 @@ void switchMode(int* mode)
   switch (*mode)
   {
     case 1:
-      printf("Mode: GAME(default)!\n");
-      *mode = GAME;
+      printf("Mode: RUFER(default)!\n");
+      *mode = RUFER;
       break;
       
     case 2:
@@ -1638,7 +1638,7 @@ int raiseMode(int* mode, int start)
   {
     switch (*mode)
     {
-      case GAME:
+      case RUFER:
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       SCHNAPSER\n");
@@ -1819,7 +1819,7 @@ int raiseMode(int* mode, int start)
   {
     switch (*mode)
     {
-      case GAME:
+      case RUFER:
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -1991,7 +1991,7 @@ int raiseMode(int* mode, int start)
   {
     switch (*mode)
     {
-      case GAME:
+      case RUFER:
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -2202,7 +2202,7 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
 {
 //  if ((value_2 == value_1 && value_1 < value_3)
 //      || (value_1 < value_2 && value_2 < value_3))
-  if (value_3 >= value_1 && value_3 >= value_2 && value_3 != GAME)
+  if (value_3 >= value_1 && value_3 >= value_2 && value_3 != RUFER)
   {
     printf("Player %d (%s) starts!\n", order[2] ADD_ONE, players[order[2]].name_);
     *mode = value_3;
@@ -2225,7 +2225,7 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
 //    return TURN_PLAYER_3;
 //  }
   
-  else if (value_1 == value_2 && value_1 == value_3 && value_1 == GAME)
+  else if (value_1 == value_2 && value_1 == value_3 && value_1 == RUFER)
   {
     printf("Player %d (%s) starts!\n", order[0] ADD_ONE, players[order[0]].name_);
     *mode = value_1;
@@ -16458,7 +16458,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
             count_suit++;
           }
         }
-      } // end: for()
+      } // end: for() - valid cards are determined
       
       for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
            counter_cards++)
@@ -16483,7 +16483,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
             count_bock++;
           }
         }
-      } // end: for()
+      } // end: for() - invalid cards are determined
       
       // .. and adjust ------------
       strcpy(players_commands[counter], "\0\0\0\0\0\0\0");
@@ -16539,7 +16539,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
           if ((hands)[counter][counter_hand].suit_ != NULL
               && hands[counter][counter_hand].is_trump_ == TRUE)
           {
-            players_commands[counter][counter_cards] = commands[counter_command]; // hier wird position[0] verändert, warum!? - nicht mehr (...) jetzt ein paar Zeilen weiter unten
+            players_commands[counter][counter_cards] = commands[counter_command];
             counter_command++;
             counter_cards++;
           }
@@ -16555,9 +16555,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
         // remove right
         for (counter_cards = count_trump; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
         {
-          players_commands[counter][counter_cards] = '\0';  // (...) position[0] wird nun hier verändert
-                                                            // anscheinend stehen players_commands[] und positions[]
-                                                            // beieinander im Speicher
+          players_commands[counter][counter_cards] = '\0';
         }
       } // end else if (must play trump)
       
@@ -16609,16 +16607,21 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
         // remove right
         for (counter_cards = count_suit; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
         {
+//          printf("\n << %c >>\n", players_commands[counter][counter_cards]);
           players_commands[counter][counter_cards] = '\0';
         }
       } // end else (must play suit)
       
-      // now that we have found valid cards, go on and only allow permitted cards
+      // now that we have determined valid cards, go on and only allow
+      // permitted cards
       // we do not have to mind case:     all bock
       // but                              trump (in case trump has been played)
       //                                  suit
       // what do we need? - (answer 1): called card's value
       //                    (answer 2): called card's value and answer 1's value
+      
+      printf("\n%s - %s - %s\n", players_commands[0], players_commands[1],
+             players_commands[2]);
       
       if (counter == 1)
       {
@@ -16697,8 +16700,8 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 while (players_commands[counter][counter_command] != '\0')
                 {
                   // has to trump answer 1 if possible
-                  if ((hands)[player[counter] MINUS_ONE][counter_cards].value_ >
-                      /* answer 1's card */ hands[player[counter - 1] MINUS_ONE][position[1/*0*/]].value_)
+                  if (hands[player[counter] MINUS_ONE][counter_cards].value_ >
+                      /* answer 1's card */ hands[1][position[1]].value_)
                   {
                     buffer_higher[counter_cards] = players_commands[counter][counter_cards];
                     buffer_higher[counter_cards ADD_ONE] = '\0';
@@ -16741,7 +16744,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                   while (players_commands[counter][counter_command] != '\0')
                   {
                     if (hands[counter][counter_cards].value_ >
-                        hands[player[1] MINUS_ONE][position[1]].value_)
+                        hands[/*player[1] MINUS_ONE*/ 1][position[1]].value_)
                     {
                       buffer_higher[counter_cards] = players_commands[counter][counter_cards];
                       buffer_higher[counter_cards ADD_ONE] = '\0';
@@ -16759,7 +16762,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 while (players_commands[counter][counter_command] != '\0')
                 {
                   if (hands[counter][counter_cards].value_ >
-                      hands[player[0] MINUS_ONE][position[0]].value_)
+                      hands[/*player[0] MINUS_ONE*/ 0][position[0]].value_)
                   {
                     buffer_higher[counter_cards] = players_commands[counter][counter_cards];
                     buffer_higher[counter_cards ADD_ONE] = '\0';
@@ -16779,7 +16782,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
                 while (players_commands[counter][counter_command] != '\0')
                 {
                   if (hands[counter][counter_cards].value_ >
-                      hands[player[1] MINUS_ONE][position[1]].value_)
+                      hands[/*player[1] MINUS_ONE*/ 1][position[1]].value_)
                   {
                     buffer_higher[counter_cards] = players_commands[counter][counter_cards];
                     buffer_higher[counter_cards ADD_ONE] = '\0';
@@ -16794,6 +16797,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
               {
                 // answer 2 must play trump
 //                printf("// answer 2 must play trump\n");
+                // should work already due to FARBZWANG
               }
             }
           }
