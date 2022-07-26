@@ -14,8 +14,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
+            startingLineNumber = "385"
+            endingLineNumber = "385"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "440"
-            endingLineNumber = "440"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -46,9 +46,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "890"
-            endingLineNumber = "890"
-            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands)"
+            startingLineNumber = "906"
+            endingLineNumber = "906"
+            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,9 +62,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1099"
-            endingLineNumber = "1099"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1118"
+            endingLineNumber = "1118"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -72,15 +72,15 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "7B4D0DF8-83CB-4EC6-A050-E8C50796671F"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1443"
-            endingLineNumber = "1443"
-            landmarkName = "callMode(mode, state, start, player)"
+            startingLineNumber = "1526"
+            endingLineNumber = "1526"
+            landmarkName = "callMode(mode, state, start, player, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -94,9 +94,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1112"
-            endingLineNumber = "1112"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1137"
+            endingLineNumber = "1137"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -110,9 +110,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1170"
-            endingLineNumber = "1170"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1209"
+            endingLineNumber = "1209"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -126,9 +126,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1193"
-            endingLineNumber = "1193"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1237"
+            endingLineNumber = "1237"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -142,9 +142,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1238"
-            endingLineNumber = "1238"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1294"
+            endingLineNumber = "1294"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -158,9 +158,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1217"
-            endingLineNumber = "1217"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1267"
+            endingLineNumber = "1267"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -174,9 +174,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1196"
-            endingLineNumber = "1196"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1240"
+            endingLineNumber = "1240"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -190,9 +190,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1263"
-            endingLineNumber = "1263"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1327"
+            endingLineNumber = "1327"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -206,8 +206,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2371"
-            endingLineNumber = "2371"
+            startingLineNumber = "2513"
+            endingLineNumber = "2513"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2384"
-            endingLineNumber = "2384"
+            startingLineNumber = "2526"
+            endingLineNumber = "2526"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -238,8 +238,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3753"
-            endingLineNumber = "3753"
+            startingLineNumber = "3895"
+            endingLineNumber = "3895"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -254,8 +254,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3766"
-            endingLineNumber = "3766"
+            startingLineNumber = "3908"
+            endingLineNumber = "3908"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -270,8 +270,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3725"
-            endingLineNumber = "3725"
+            startingLineNumber = "3867"
+            endingLineNumber = "3867"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -286,9 +286,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "903"
-            endingLineNumber = "903"
-            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands)"
+            startingLineNumber = "922"
+            endingLineNumber = "922"
+            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -302,8 +302,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3728"
-            endingLineNumber = "3728"
+            startingLineNumber = "3870"
+            endingLineNumber = "3870"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -318,8 +318,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13546"
-            endingLineNumber = "13546"
+            startingLineNumber = "13748"
+            endingLineNumber = "13748"
             landmarkName = "nextAndPoints(start, buffer_start, call, answer_1, answer_2, points_call, points_opponents, points_1, points_2, points_3, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -334,9 +334,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1267"
-            endingLineNumber = "1267"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1331"
+            endingLineNumber = "1331"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -350,8 +350,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2344"
-            endingLineNumber = "2344"
+            startingLineNumber = "2486"
+            endingLineNumber = "2486"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -366,9 +366,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "840"
-            endingLineNumber = "840"
-            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands)"
+            startingLineNumber = "854"
+            endingLineNumber = "854"
+            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -382,9 +382,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1130"
-            endingLineNumber = "1130"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1167"
+            endingLineNumber = "1167"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -398,8 +398,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
+            startingLineNumber = "408"
+            endingLineNumber = "408"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -414,9 +414,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "885"
-            endingLineNumber = "885"
-            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands)"
+            startingLineNumber = "899"
+            endingLineNumber = "899"
+            landmarkName = "startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, trump, players, order, suits, hands, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -430,8 +430,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "417"
-            endingLineNumber = "417"
+            startingLineNumber = "434"
+            endingLineNumber = "434"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -446,8 +446,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2355"
-            endingLineNumber = "2355"
+            startingLineNumber = "2497"
+            endingLineNumber = "2497"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -462,9 +462,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1141"
-            endingLineNumber = "1141"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1178"
+            endingLineNumber = "1178"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -478,8 +478,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563"
+            startingLineNumber = "577"
+            endingLineNumber = "577"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -494,8 +494,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13821"
-            endingLineNumber = "13821"
+            startingLineNumber = "14023"
+            endingLineNumber = "14023"
             landmarkName = "nextAndPoints(start, buffer_start, call, answer_1, answer_2, points_call, points_opponents, points_1, points_2, points_3, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -510,8 +510,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13628"
-            endingLineNumber = "13628"
+            startingLineNumber = "13830"
+            endingLineNumber = "13830"
             landmarkName = "nextAndPoints(start, buffer_start, call, answer_1, answer_2, points_call, points_opponents, points_1, points_2, points_3, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -526,9 +526,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1095"
-            endingLineNumber = "1095"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1114"
+            endingLineNumber = "1114"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -542,8 +542,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3972"
-            endingLineNumber = "3972"
+            startingLineNumber = "4114"
+            endingLineNumber = "4114"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -558,8 +558,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3899"
-            endingLineNumber = "3899"
+            startingLineNumber = "4041"
+            endingLineNumber = "4041"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -574,8 +574,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14002"
-            endingLineNumber = "14002"
+            startingLineNumber = "14204"
+            endingLineNumber = "14204"
             landmarkName = "highestCard(cards)"
             landmarkType = "9">
          </BreakpointContent>
@@ -590,8 +590,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14023"
-            endingLineNumber = "14023"
+            startingLineNumber = "14225"
+            endingLineNumber = "14225"
             landmarkName = "highestCard(cards)"
             landmarkType = "9">
          </BreakpointContent>
@@ -606,8 +606,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "4009"
-            endingLineNumber = "4009"
+            startingLineNumber = "4151"
+            endingLineNumber = "4151"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -622,8 +622,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3863"
-            endingLineNumber = "3863"
+            startingLineNumber = "4005"
+            endingLineNumber = "4005"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -638,8 +638,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3410"
-            endingLineNumber = "3410"
+            startingLineNumber = "3552"
+            endingLineNumber = "3552"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -654,8 +654,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3600"
-            endingLineNumber = "3600"
+            startingLineNumber = "3742"
+            endingLineNumber = "3742"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -670,8 +670,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3632"
-            endingLineNumber = "3632"
+            startingLineNumber = "3774"
+            endingLineNumber = "3774"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -686,8 +686,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3647"
-            endingLineNumber = "3647"
+            startingLineNumber = "3789"
+            endingLineNumber = "3789"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -702,8 +702,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3585"
-            endingLineNumber = "3585"
+            startingLineNumber = "3727"
+            endingLineNumber = "3727"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -718,8 +718,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3676"
-            endingLineNumber = "3676"
+            startingLineNumber = "3818"
+            endingLineNumber = "3818"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -734,8 +734,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13986"
-            endingLineNumber = "13986"
+            startingLineNumber = "14188"
+            endingLineNumber = "14188"
             landmarkName = "highestCard(cards)"
             landmarkType = "9">
          </BreakpointContent>
@@ -750,9 +750,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1269"
-            endingLineNumber = "1269"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1334"
+            endingLineNumber = "1334"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -766,9 +766,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15338"
-            endingLineNumber = "15338"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15544"
+            endingLineNumber = "15544"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -782,9 +782,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15100"
-            endingLineNumber = "15100"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15305"
+            endingLineNumber = "15305"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -798,8 +798,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16994"
-            endingLineNumber = "16994"
+            startingLineNumber = "17203"
+            endingLineNumber = "17203"
             landmarkName = "printBummerl(players)"
             landmarkType = "9">
          </BreakpointContent>
@@ -814,9 +814,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15017"
-            endingLineNumber = "15017"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15221"
+            endingLineNumber = "15221"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -830,9 +830,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15369"
-            endingLineNumber = "15369"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15575"
+            endingLineNumber = "15575"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -846,9 +846,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16428"
-            endingLineNumber = "16428"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16636"
+            endingLineNumber = "16636"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -862,9 +862,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16463"
-            endingLineNumber = "16463"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16671"
+            endingLineNumber = "16671"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -878,9 +878,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16489"
-            endingLineNumber = "16489"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16697"
+            endingLineNumber = "16697"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -894,9 +894,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16665"
-            endingLineNumber = "16665"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16873"
+            endingLineNumber = "16873"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -910,9 +910,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16589"
-            endingLineNumber = "16589"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16797"
+            endingLineNumber = "16797"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -926,9 +926,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16929"
-            endingLineNumber = "16929"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17138"
+            endingLineNumber = "17138"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -942,9 +942,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15365"
-            endingLineNumber = "15365"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15571"
+            endingLineNumber = "15571"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -958,9 +958,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14998"
-            endingLineNumber = "14998"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15202"
+            endingLineNumber = "15202"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -974,8 +974,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3650"
-            endingLineNumber = "3650"
+            startingLineNumber = "3792"
+            endingLineNumber = "3792"
             landmarkName = "modeGame(hands, start, trump, players, order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -990,9 +990,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16644"
-            endingLineNumber = "16644"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16852"
+            endingLineNumber = "16852"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1006,9 +1006,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16937"
-            endingLineNumber = "16937"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17146"
+            endingLineNumber = "17146"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1022,9 +1022,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1076"
-            endingLineNumber = "1076"
-            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order)"
+            startingLineNumber = "1095"
+            endingLineNumber = "1095"
+            landmarkName = "playGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3, turns, index_dealer, index_player_1, index_player_2, index_player_3, state, score_dealer, score_player_1, score_player_2, score_player_3, call, trump, suits, bool_fleck, bool_retour, player_1, player_2, player_3, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1038,9 +1038,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16385"
-            endingLineNumber = "16385"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16593"
+            endingLineNumber = "16593"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1054,9 +1054,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16297"
-            endingLineNumber = "16297"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16505"
+            endingLineNumber = "16505"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1070,9 +1070,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16008"
-            endingLineNumber = "16008"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16216"
+            endingLineNumber = "16216"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1086,9 +1086,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15771"
-            endingLineNumber = "15771"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15979"
+            endingLineNumber = "15979"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1102,9 +1102,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15589"
-            endingLineNumber = "15589"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15797"
+            endingLineNumber = "15797"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1118,9 +1118,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15464"
-            endingLineNumber = "15464"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15672"
+            endingLineNumber = "15672"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1134,9 +1134,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15020"
-            endingLineNumber = "15020"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15224"
+            endingLineNumber = "15224"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1150,9 +1150,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15021"
-            endingLineNumber = "15021"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15225"
+            endingLineNumber = "15225"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1166,9 +1166,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14986"
-            endingLineNumber = "14986"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15190"
+            endingLineNumber = "15190"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1182,9 +1182,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15390"
-            endingLineNumber = "15390"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15596"
+            endingLineNumber = "15596"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1198,9 +1198,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16509"
-            endingLineNumber = "16509"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16717"
+            endingLineNumber = "16717"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1214,9 +1214,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16542"
-            endingLineNumber = "16542"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16750"
+            endingLineNumber = "16750"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1230,9 +1230,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16558"
-            endingLineNumber = "16558"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16766"
+            endingLineNumber = "16766"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1246,9 +1246,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16579"
-            endingLineNumber = "16579"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16787"
+            endingLineNumber = "16787"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1262,9 +1262,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16595"
-            endingLineNumber = "16595"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16803"
+            endingLineNumber = "16803"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1278,9 +1278,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16611"
-            endingLineNumber = "16611"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16819"
+            endingLineNumber = "16819"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1294,9 +1294,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16639"
-            endingLineNumber = "16639"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16847"
+            endingLineNumber = "16847"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1310,9 +1310,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16648"
-            endingLineNumber = "16648"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16856"
+            endingLineNumber = "16856"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1326,9 +1326,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16658"
-            endingLineNumber = "16658"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16866"
+            endingLineNumber = "16866"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1342,9 +1342,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16659"
-            endingLineNumber = "16659"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16867"
+            endingLineNumber = "16867"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1358,9 +1358,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16807"
-            endingLineNumber = "16807"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17015"
+            endingLineNumber = "17015"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1374,9 +1374,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16808"
-            endingLineNumber = "16808"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17016"
+            endingLineNumber = "17016"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1390,9 +1390,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16818"
-            endingLineNumber = "16818"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17026"
+            endingLineNumber = "17026"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1406,9 +1406,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16952"
-            endingLineNumber = "16952"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17161"
+            endingLineNumber = "17161"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1422,9 +1422,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16957"
-            endingLineNumber = "16957"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17166"
+            endingLineNumber = "17166"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1438,9 +1438,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16967"
-            endingLineNumber = "16967"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17176"
+            endingLineNumber = "17176"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1454,9 +1454,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16972"
-            endingLineNumber = "16972"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17181"
+            endingLineNumber = "17181"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1470,9 +1470,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16982"
-            endingLineNumber = "16982"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17191"
+            endingLineNumber = "17191"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1486,9 +1486,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16989"
-            endingLineNumber = "16989"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17198"
+            endingLineNumber = "17198"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1502,9 +1502,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15333"
-            endingLineNumber = "15333"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15538"
+            endingLineNumber = "15538"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1518,8 +1518,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17261"
-            endingLineNumber = "17261"
+            startingLineNumber = "17470"
+            endingLineNumber = "17470"
             landmarkName = "sortOrderPlayers(start, players, initial_order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1534,9 +1534,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16945"
-            endingLineNumber = "16945"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17154"
+            endingLineNumber = "17154"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1550,9 +1550,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16939"
-            endingLineNumber = "16939"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17148"
+            endingLineNumber = "17148"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1566,8 +1566,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17287"
-            endingLineNumber = "17287"
+            startingLineNumber = "17496"
+            endingLineNumber = "17496"
             landmarkName = "sortOrderCommands(start, players_commands, current_players_order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1582,9 +1582,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15327"
-            endingLineNumber = "15327"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15532"
+            endingLineNumber = "15532"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1598,9 +1598,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16676"
-            endingLineNumber = "16676"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16884"
+            endingLineNumber = "16884"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1614,9 +1614,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16719"
-            endingLineNumber = "16719"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16927"
+            endingLineNumber = "16927"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1630,9 +1630,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16919"
-            endingLineNumber = "16919"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17128"
+            endingLineNumber = "17128"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1646,8 +1646,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17326"
-            endingLineNumber = "17326"
+            startingLineNumber = "17535"
+            endingLineNumber = "17535"
             landmarkName = "sortOrderCommands(start, players_commands, current_players_order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1662,9 +1662,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16535"
-            endingLineNumber = "16535"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16743"
+            endingLineNumber = "16743"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1678,9 +1678,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16538"
-            endingLineNumber = "16538"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16746"
+            endingLineNumber = "16746"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1694,9 +1694,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16626"
-            endingLineNumber = "16626"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16834"
+            endingLineNumber = "16834"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1710,9 +1710,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15022"
-            endingLineNumber = "15022"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15226"
+            endingLineNumber = "15226"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1726,9 +1726,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15032"
-            endingLineNumber = "15032"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15237"
+            endingLineNumber = "15237"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1742,9 +1742,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15337"
-            endingLineNumber = "15337"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15543"
+            endingLineNumber = "15543"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1758,8 +1758,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13909"
-            endingLineNumber = "13909"
+            startingLineNumber = "14111"
+            endingLineNumber = "14111"
             landmarkName = "next(initial_order, player, call, answer_1, answer_2)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1774,8 +1774,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14000"
-            endingLineNumber = "14000"
+            startingLineNumber = "14202"
+            endingLineNumber = "14202"
             landmarkName = "highestCard(cards)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1790,8 +1790,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13918"
-            endingLineNumber = "13918"
+            startingLineNumber = "14120"
+            endingLineNumber = "14120"
             landmarkName = "next(initial_order, player, call, answer_1, answer_2)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1806,9 +1806,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15071"
-            endingLineNumber = "15071"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15276"
+            endingLineNumber = "15276"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1822,9 +1822,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14987"
-            endingLineNumber = "14987"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15191"
+            endingLineNumber = "15191"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1838,8 +1838,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17372"
-            endingLineNumber = "17372"
+            startingLineNumber = "17581"
+            endingLineNumber = "17581"
             landmarkName = "sortOrderCommands(start, players_commands, current_players_order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1854,8 +1854,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13402"
-            endingLineNumber = "13402"
+            startingLineNumber = "13604"
+            endingLineNumber = "13604"
             landmarkName = "seekAndDestroy(find, list)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1870,9 +1870,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15385"
-            endingLineNumber = "15385"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15591"
+            endingLineNumber = "15591"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1886,8 +1886,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "456"
-            endingLineNumber = "456"
+            startingLineNumber = "470"
+            endingLineNumber = "470"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1902,8 +1902,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "346"
-            endingLineNumber = "346"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1918,9 +1918,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16934"
-            endingLineNumber = "16934"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17143"
+            endingLineNumber = "17143"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1934,8 +1934,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13916"
-            endingLineNumber = "13916"
+            startingLineNumber = "14118"
+            endingLineNumber = "14118"
             landmarkName = "next(initial_order, player, call, answer_1, answer_2)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1950,8 +1950,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17307"
-            endingLineNumber = "17307"
+            startingLineNumber = "17516"
+            endingLineNumber = "17516"
             landmarkName = "sortOrderCommands(start, players_commands, current_players_order)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1966,8 +1966,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17234"
-            endingLineNumber = "17234"
+            startingLineNumber = "17443"
+            endingLineNumber = "17443"
             landmarkName = "sortOrderHands(start, hands, initial_hands)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1982,8 +1982,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13443"
-            endingLineNumber = "13443"
+            startingLineNumber = "13645"
+            endingLineNumber = "13645"
             landmarkName = "seekAndDestroy(find, list)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1998,9 +1998,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16430"
-            endingLineNumber = "16430"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16638"
+            endingLineNumber = "16638"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2014,9 +2014,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15111"
-            endingLineNumber = "15111"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15316"
+            endingLineNumber = "15316"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2030,9 +2030,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15217"
-            endingLineNumber = "15217"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15422"
+            endingLineNumber = "15422"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2046,9 +2046,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15181"
-            endingLineNumber = "15181"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15386"
+            endingLineNumber = "15386"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2062,9 +2062,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15317"
-            endingLineNumber = "15317"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15522"
+            endingLineNumber = "15522"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2078,9 +2078,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15395"
-            endingLineNumber = "15395"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15603"
+            endingLineNumber = "15603"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2094,8 +2094,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14483"
-            endingLineNumber = "14483"
+            startingLineNumber = "14685"
+            endingLineNumber = "14685"
             landmarkName = "pairHandler(handle_pairs, position, points_to_add, counter, points_caller, points_opponents, hand, is_caller)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2110,8 +2110,8 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "999"
-            endingLineNumber = "999"
+            startingLineNumber = "1018"
+            endingLineNumber = "1018"
             landmarkName = "getSeed(argument)"
             landmarkType = "9">
          </BreakpointContent>
@@ -2126,9 +2126,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16991"
-            endingLineNumber = "16991"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "17200"
+            endingLineNumber = "17200"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2142,9 +2142,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15412"
-            endingLineNumber = "15412"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "15620"
+            endingLineNumber = "15620"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2158,9 +2158,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15025"
-            endingLineNumber = "15025"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15229"
+            endingLineNumber = "15229"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2174,9 +2174,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15144"
-            endingLineNumber = "15144"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15349"
+            endingLineNumber = "15349"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2190,9 +2190,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15250"
-            endingLineNumber = "15250"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15455"
+            endingLineNumber = "15455"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2206,9 +2206,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15193"
-            endingLineNumber = "15193"
-            landmarkName = "switchRufer(hands, start, trump, players, order)"
+            startingLineNumber = "15398"
+            endingLineNumber = "15398"
+            landmarkName = "switchRufer(hands, start, trump, players, order, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2222,9 +2222,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16687"
-            endingLineNumber = "16687"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16895"
+            endingLineNumber = "16895"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2238,9 +2238,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16703"
-            endingLineNumber = "16703"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16911"
+            endingLineNumber = "16911"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2254,9 +2254,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16668"
-            endingLineNumber = "16668"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16876"
+            endingLineNumber = "16876"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2270,9 +2270,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16450"
-            endingLineNumber = "16450"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16658"
+            endingLineNumber = "16658"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2286,9 +2286,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16479"
-            endingLineNumber = "16479"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16687"
+            endingLineNumber = "16687"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2302,9 +2302,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16591"
-            endingLineNumber = "16591"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16799"
+            endingLineNumber = "16799"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2318,9 +2318,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16706"
-            endingLineNumber = "16706"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16914"
+            endingLineNumber = "16914"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2334,9 +2334,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16722"
-            endingLineNumber = "16722"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16930"
+            endingLineNumber = "16930"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2350,9 +2350,9 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16747"
-            endingLineNumber = "16747"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16955"
+            endingLineNumber = "16955"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2366,9 +2366,41 @@
             filePath = "20220318_tryCPU/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16785"
-            endingLineNumber = "16785"
-            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents)"
+            startingLineNumber = "16993"
+            endingLineNumber = "16993"
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3D335566-6032-48CE-82A3-B5AC3EE9E12B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "20220318_tryCPU/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "383"
+            endingLineNumber = "383"
+            landmarkName = "main(argc, argv)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "714AC9EE-539E-4856-8286-E2EC5F68084E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "20220318_tryCPU/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "381"
+            endingLineNumber = "381"
+            landmarkName = "main(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

@@ -52,6 +52,7 @@
 /// definition of various error and return values
 //
 #define SUCCESS                   0
+#define ERROR                     1
 #define ERROR_CODE_WRONG_USAGE    -1
 #define ERROR_CODE_OUT_OF_MEMORY  -2
 #define ERROR_CODE_INVALID_FILES  -3
@@ -198,7 +199,7 @@ void startGame(Card* deck, Card* deck_dealer,
                int* turns, int* index_dealer,
                int* index_player_1, int* index_player_2, int* index_player_3,
                int* trump, Player* players, int* order, char** suits,
-               Card** hands);
+               Card** hands, FILE* file_pointer);
 void printErrorMessage(int error_code, char* argument);
 //void turnPlayer(int* call, int* state, int* turns, int* index, Card* deck,
 //                Card* hand, int* score);
@@ -218,31 +219,37 @@ Points playGame(Card* deck, Card* deck_dealer,
                 int* score_player_1, int* score_player_2, int* score_player_3,
                 int* call, int* trump, char** suits, int* bool_fleck,
                 int* bool_retour, char* player_1, char* player_2, char* player_3,
-                Player* players, int* order);
-int callTrump(Card auf);
-int callMode(int mode, int state, int* start, char* player);
-int fleck(int player);
-int fleckBack(int player);
+                Player* players, int* order, FILE* file_pointer);
+int callTrump(Card auf, FILE* file_pointer);
+int callMode(int mode, int state, int* start, char* player, FILE* file_pointer);
+int fleck(int player, FILE* file_pointer);
+int fleckBack(int player, FILE* file_pointer);
 void switchMode(int* mode);
-int raiseMode(int* mode, int start);
+int raiseMode(int* mode, int start, FILE* file_pointer);
 int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
-int priority(int start, int* mode, char* player);
+int priority(int start, int* mode, char* player, FILE* file_pointer);
 Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order,
-                 Pair* handle_pairs, int* points_caller, int* points_opponents);
+                 Pair* handle_pairs, int* points_caller, int* points_opponents,
+                 FILE* file_pointer);
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
-                  int* order);
-Points modeSchnapser(Card** hands, int start, char* trump, Player* players);
-Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players);
-Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trump,
-                         Player* players);
-Points modeJodler(Card** hands, int start, char* suit, Player* players);
-Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players);
-int callRaise(int mode, /*int state,*/ int start, Player* players);
+                  int* order, FILE* file_pointer);
+Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
+                     FILE* file_pointer);
+Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
+                FILE* file_pointer);
+Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start,
+                           int trump, Player* players, FILE* file_pointer);
+Points modeJodler(Card** hands, int start, char* suit, Player* players,
+                  FILE* file_pointer);
+Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
+                        FILE* file_pointer);
+int callRaise(int mode, /*int state,*/ int start, Player* players,
+              FILE* file_pointer);
 int buy(int start, Card** hands, Card* deck_dealer, int* done_1, int* done_2,
-        Player* players, int* order);
+        Player* players, int* order, FILE* file_pointer);
 void switchCards(Card* a, Card* b);
 int highest(int bool_trump, int start, Card call, Card answer_1, Card answer_2);
 //void countPoints(int bool_trump, int start, Card call, Card answer_1,
@@ -253,7 +260,7 @@ void playCard(Card* card);
 void getCall(int start, int* call, int* answer_1, int* answer_2);
 void removeCard(Card* card);
 char* decodeSuit(int trump);
-int callSuit(int start);
+int callSuit(int start, FILE* file_pointer);
 void setTrump(Card* deck, int trump);
 void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
                    Card answer_2, int* points_call, int* points_opponents,
@@ -269,7 +276,7 @@ void resetHandlePairs(Pair* handle_pairs);
 int pairHandler(Pair* handle_pairs, int position, int points_to_add,
                  int* i, int* points_call, int* points_opponents,
                  Card* hand, int is_caller);
-int checkContinue(char* player);
+int checkContinue(char* player, FILE* file_pointer);
 void swapOrder(Player* players);
 int decomposeQWEASD (char character);
 void printTable(Player players);
@@ -288,9 +295,12 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order);
 void sortOrderCommands(int start, char** players_commands,
                        int* current_players_order);
 void setInitialOrder(int start, int* initial_order);
-
 // additional fun stuff
 void greeting(unsigned int code);
+// log function
+int blackBox(FILE* file_pointer, char* input);
+int callBlackBox(FILE* file_pointer, char* input);
+void getTime(char* string_time);
 
 //-----------------------------------------------------------------------------
 ///
@@ -351,6 +361,9 @@ int main(int argc, char* argv[])
   int bummerl[QUANTITY_PLAYERS] = {0, 0, 0};
   int order[3] = {0, 1, 2};
   
+  char string_time[20] = "\0";
+  FILE *file_pointer = NULL;
+  
   // TODO:
   // CHECK USAGE:
 //  if (argc < 2 || argc > 3)
@@ -365,6 +378,10 @@ int main(int argc, char* argv[])
   // EXECUTE PROGRAM:
   else
   {
+    getTime(string_time);
+    callBlackBox(file_pointer, "log: ");
+    callBlackBox(file_pointer, string_time);
+    callBlackBox(file_pointer, "\nPlayers' input:\n");
     initializeDummyDeck(dummy_deck);
     createFullDeck(deck, dummy_deck, suits);
     
@@ -445,11 +462,8 @@ int main(int argc, char* argv[])
                                        &players[0].points_, &players[1].points_, &players[2].points_,
                                        &call, &trump, suits, &bool_fleck, &bool_retour,
                                        players[0].name_, players[1].name_, players[2].name_,
-                                       players, order);
-          // AFTER GAME
-          
-          // players[0] = Seppi, always
-          
+                                       players, order, file_pointer);
+          callBlackBox(file_pointer, "\n");
           printf("---------------------------------------------------------------\n");
           // ------------------------------------------------------------------
           
@@ -568,7 +582,7 @@ int main(int argc, char* argv[])
               check_continue[counter_players] = FALSE/*TRUE*/;
             else
               check_continue[counter_players]
-                = checkContinue(players[counter_players].name_);
+                = checkContinue(players[counter_players].name_, file_pointer);
           }
           // all three
           if (check_continue[0] == TRUE
@@ -832,7 +846,7 @@ void startGame(Card* deck, Card* deck_dealer,
                int* index_dealer,
                int* index_player_1, int* index_player_2, int* index_player_3,
                int* trump, Player* players, int* order, char** suits,
-               Card** hands)
+               Card** hands, FILE* file_pointer)
 {
   int counter = 0;
   
@@ -887,7 +901,12 @@ void startGame(Card* deck, Card* deck_dealer,
   printf("---------------------------------------------------------------\n");
   // check: human or CPU
   if (players[order[0]].CPU_bool_ == FALSE)
-    *trump = callTrump(deck[ANE_AUF]);
+  {
+    callBlackBox(file_pointer, "Trump: ");
+    *trump = callTrump(deck[ANE_AUF], file_pointer);
+    callBlackBox(file_pointer, "\n");
+  }
+  
   else
   {
     *trump = (rand() % (4 - 1 + 1)) + 1;
@@ -1061,7 +1080,7 @@ Points playGame(Card* deck, Card* deck_dealer,
                 int* score_player_1, int* score_player_2, int* score_player_3,
                 int* call, int* trump, char** suits, int* bool_fleck,
                 int* bool_retour, char* player_1, char* player_2, char* player_3,
-                Player* players, int* order)
+                Player* players, int* order, FILE* file_pointer)
 {
   int mode          = RUFER;
   int mode_buffer_1 = RUFER;
@@ -1089,7 +1108,7 @@ Points playGame(Card* deck, Card* deck_dealer,
   startGame(deck, deck_dealer, deck_player_1, deck_player_2, deck_player_3,
             turns, index_dealer,
             index_player_1, index_player_2, index_player_3, trump, players,
-            order, suits, hands);
+            order, suits, hands, file_pointer);
 
   // player 1 to call mode
   *state = TURN_PLAYER_1;
@@ -1097,7 +1116,13 @@ Points playGame(Card* deck, Card* deck_dealer,
   
   // check: human or CPU
   if (players[order[0]].CPU_bool_ == FALSE)
-    mode = callMode(mode, *state, &start, /*player_1*/ players[order[0]].name_);
+  {
+    callBlackBox(file_pointer, "callMode(): ");
+    mode = callMode(mode, *state, &start, /*player_1*/ players[order[0]].name_,
+                    file_pointer);
+    callBlackBox(file_pointer, "\n");
+  }
+  
   else
     mode = 1;
   
@@ -1110,12 +1135,19 @@ Points playGame(Card* deck, Card* deck_dealer,
 //    *state = order[1] ADD_ONE;
     // check: human or CPU
     if (players[order[1]].CPU_bool_ == FALSE)
-      mode = callMode(mode, *state, &start, players[order[1]].name_);
+    {
+      callBlackBox(file_pointer, "callMode(): ");
+      mode = callMode(mode, *state, &start, players[order[1]].name_,
+                      file_pointer);
+      callBlackBox(file_pointer, "\n");
+    }
+    
     else
     {
       printf("Player %d (%s(CPU)) does not raise.\n",
              order[*state MINUS_ONE] ADD_ONE, players[order[1]].name_);
     }
+    
     if (start == TURN_PLAYER_2)
       mode_buffer_2 = mode;
 
@@ -1124,7 +1156,12 @@ Points playGame(Card* deck, Card* deck_dealer,
 //    *state = order[2] ADD_ONE;
     // check: human or CPU
     if (players[order[2]].CPU_bool_ == FALSE)
-      mode = callMode(mode, *state, &start, players[order[2]].name_);
+    {
+      callBlackBox(file_pointer, "callMode(): ");
+      mode = callMode(mode, *state, &start, players[order[2]].name_,
+                      file_pointer);
+      callBlackBox(file_pointer, "\n");
+    }
     else
     {
       printf("Player %d (%s(CPU)) does not raise.\n",
@@ -1144,7 +1181,9 @@ Points playGame(Card* deck, Card* deck_dealer,
       //               .. should have called it beforehand
     {
 //      if (start != TURN_PLAYER_1)
-      start = priority(start, &mode, players[order[0]].name_);
+      callBlackBox(file_pointer, "priority: ");
+      start = priority(start, &mode, players[order[0]].name_, file_pointer);
+      callBlackBox(file_pointer, "\n");
       
       if (start == TURN_PLAYER_1)
       {
@@ -1175,7 +1214,10 @@ Points playGame(Card* deck, Card* deck_dealer,
     while (talon != BREAK && counter_talon < 2)  // maximum two exchanges
   //  while (talon != BREAK)  // so you may exchange and decide until you end with 0
     {
-      talon = buy(start, hands, deck_dealer, &done_1, &done_2, players, order);
+      callBlackBox(file_pointer, "buy(): ");
+      talon = buy(start, hands, deck_dealer, &done_1, &done_2, players, order,
+                  file_pointer);
+      callBlackBox(file_pointer, "\n");
       
       // sort again hand after each exchange
       // so far I do not care about the fact that all three hands will be sorted again
@@ -1185,7 +1227,9 @@ Points playGame(Card* deck, Card* deck_dealer,
       counter_talon++;
     }
     
-    mode = callRaise(mode, /**state,*/ start, players);
+    callBlackBox(file_pointer, "callRaise(): ");
+    mode = callRaise(mode, /**state,*/ start, players, file_pointer);
+    callBlackBox(file_pointer, "\n");
   }
   
   // Fleck and or Reh? - später interessant für Punkte
@@ -1197,13 +1241,19 @@ Points playGame(Card* deck, Card* deck_dealer,
         break;
       else
       {
-        if (fleck(TURN_PLAYER_2) && fleck(TURN_PLAYER_3))
+        callBlackBox(file_pointer, "fleck(): ");
+        
+        if (fleck(TURN_PLAYER_2, file_pointer)
+            && fleck(TURN_PLAYER_3, file_pointer))
           {
             *bool_fleck = TRUE;
             printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
                    players[order[start MINUS_ONE]].name_);
             
-            *bool_retour = fleckBack(TURN_PLAYER_1);
+            callBlackBox(file_pointer, "\n");
+            callBlackBox(file_pointer, "fleckBack(): ");
+            *bool_retour = fleckBack(TURN_PLAYER_1, file_pointer);
+            callBlackBox(file_pointer, "\n");
           }
         else
         {
@@ -1218,13 +1268,19 @@ Points playGame(Card* deck, Card* deck_dealer,
         break;
       else
       {
-        if (fleck(TURN_PLAYER_1) && fleck(TURN_PLAYER_3))
+        callBlackBox(file_pointer, "fleck(): ");
+        
+        if (fleck(TURN_PLAYER_1, file_pointer)
+            && fleck(TURN_PLAYER_3, file_pointer))
           {
             *bool_fleck = TRUE;
             printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
                    players[order[start MINUS_ONE]].name_);
             
-            *bool_retour = fleckBack(TURN_PLAYER_1);
+            callBlackBox(file_pointer, "\n");
+            callBlackBox(file_pointer, "fleckBack(): ");
+            *bool_retour = fleckBack(TURN_PLAYER_1, file_pointer);
+            callBlackBox(file_pointer, "\n");
           }
         else
         {
@@ -1239,13 +1295,19 @@ Points playGame(Card* deck, Card* deck_dealer,
         break;
       else
       {
-        if (fleck(TURN_PLAYER_1) && fleck(TURN_PLAYER_2))
+        callBlackBox(file_pointer, "fleck(): ");
+        
+        if (fleck(TURN_PLAYER_1, file_pointer)
+            && fleck(TURN_PLAYER_2, file_pointer))
           {
             *bool_fleck = TRUE;
             printf("Player %d (%s) is g'fleckt!    (points x2)\n", start,
                    players[order[start MINUS_ONE]].name_);
             
-            *bool_retour = fleckBack(TURN_PLAYER_1);
+            callBlackBox(file_pointer, "\n");
+            callBlackBox(file_pointer, "fleckBack(): ");
+            *bool_retour = fleckBack(TURN_PLAYER_1, file_pointer);
+            callBlackBox(file_pointer, "\n");
           }
         else
         {
@@ -1259,6 +1321,8 @@ Points playGame(Card* deck, Card* deck_dealer,
       break;
   }
   
+  callBlackBox(file_pointer, "\n");
+  
   // then game - according to prior determined mode
   switch (mode)
   {
@@ -1266,8 +1330,9 @@ Points playGame(Card* deck, Card* deck_dealer,
       // 1 - 3 points
 //      points_and_caller = modeGame(hands, start, decodeSuit(*trump), players,
 //                                   order);
+      callBlackBox(file_pointer, "RUFER:\n");
       points_and_caller = switchRufer(hands, start, decodeSuit(*trump),
-                                      players, order);
+                                      players, order, file_pointer);
       
       printf("points_and_caller:\ncaller: %d\nwinner: %d\npoints: %d\n",
              points_and_caller.caller_,
@@ -1279,33 +1344,44 @@ Points playGame(Card* deck, Card* deck_dealer,
       
     case SCHNAPSER:
       // 6 points || CONTRA: 12 points
-      points_and_caller = modeSchnapser(hands, start, decodeSuit(*trump), players);
+      callBlackBox(file_pointer, "SCHNAPSER:\n");
+      points_and_caller = modeSchnapser(hands, start, decodeSuit(*trump),
+                                        players, file_pointer);
       return points_and_caller;
       break;
       
     case LAND:
       // 9 points
-      points_and_caller = modeLand(/*FALSE,*/ hands, start, players);
+      callBlackBox(file_pointer, "LAND:\n");
+      points_and_caller = modeLand(/*FALSE,*/ hands, start, players,
+                                   file_pointer);
       return points_and_caller;
       break;
       
     case BAUERNSCHNAPSER:
       // 12 points || CONTRA: 24 points
-      points_and_caller = modeBauernschnapser(/*TRUE,*/ hands, start, *trump, players);
+      callBlackBox(file_pointer, "BAUERNSCHNAPSER:\n");
+      points_and_caller = modeBauernschnapser(/*TRUE,*/ hands, start, *trump,
+                                              players, file_pointer);
       return points_and_caller;
       break;
       
     case JODLER:
       // 18 points
+      callBlackBox(file_pointer, "JODLER:\n");
       printf("With which suit would you like to play the JODLER, Player %d?\n",
              start);
-      points_and_caller = modeJodler(hands, start, decodeSuit(callSuit(start)), players);
+      points_and_caller = modeJodler(hands, start,
+                                     decodeSuit(callSuit(start, file_pointer)),
+                                     players, file_pointer);
       return points_and_caller;
       break;
       
     case HERREN_JODLER:
       // 24 points
-      /*points_and_caller =*/ modeHerrenJodler(hands, start, decodeSuit(*trump), players);
+      callBlackBox(file_pointer, "HERREN_JODLER:\n");
+      /*points_and_caller =*/ modeHerrenJodler(hands, start, decodeSuit(*trump),
+                                               players, file_pointer);
       return points_and_caller;
       break;
       
@@ -1318,7 +1394,7 @@ Points playGame(Card* deck, Card* deck_dealer,
   }
 }
 
-int callTrump(Card auf)
+int callTrump(Card auf, FILE* file_pointer)
 {
   int trump = 0;
 //  printf("Player 1, call trump!\n-----------------------\n");
@@ -1342,6 +1418,9 @@ int callTrump(Card auf)
   } while (trump != '1' && trump != '2' && trump != '3' && trump != '4'
            && trump != '0');
   system ("/bin/stty cooked");
+  
+  // log onto black box
+  callBlackBox(file_pointer, (char[2]) {(char)trump, '\0'});  // fun cast
   
   switch (trump)
   {
@@ -1395,7 +1474,7 @@ int callTrump(Card auf)
   return (int) trump - '0';
 }
 
-int callSuit(int start)
+int callSuit(int start, FILE* file_pointer)
 {
   int suit = 0;
   printf("Player %d, call trump!\n-----------------------\n", start);
@@ -1415,12 +1494,16 @@ int callSuit(int start)
   } while (suit != '1' && suit != '2' && suit != '3' && suit != '4');
   system ("/bin/stty cooked");
   
+  callBlackBox(file_pointer, "callSuit()");
+  callBlackBox(file_pointer, (char[2]) {(char)suit, '\0'});
+  callBlackBox(file_pointer, "\n");
+  
   printf("---------------------------------------------------------------\n");
 //  printf("%d\n", (int)suit-'0');
   return (int) suit - '0';
 }
 
-int callMode(int mode, int state, int* start, char* player)
+int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
 {
   int buffer_mode = mode;
   
@@ -1442,6 +1525,7 @@ int callMode(int mode, int state, int* start, char* player)
         system ("/bin/stty raw");
         mode = getchar();
         mode = mode CHAR_TO_INT;
+        
         printf("\r");
         if (mode != RUFER && mode != SCHNAPSER && mode != LAND
             && mode != BAUERNSCHNAPSER && mode != JODLER
@@ -1451,6 +1535,9 @@ int callMode(int mode, int state, int* start, char* player)
                && mode != BAUERNSCHNAPSER && mode != JODLER
                && mode != HERREN_JODLER);
       system ("/bin/stty cooked");
+      
+      // log onto black box
+      callBlackBox(file_pointer, (char[2]) {(char)mode, '\0'});
       
       switchMode(&mode);
       
@@ -1463,7 +1550,7 @@ int callMode(int mode, int state, int* start, char* player)
       {
         printf("Player 2 (%s), would you want to raise the mode?", player);
         printf("\n-----------------------\n");
-        *start = raiseMode(&mode, TURN_PLAYER_2);
+        *start = raiseMode(&mode, TURN_PLAYER_2, file_pointer);
         
         if (mode >= buffer_mode && mode == BAUERNSCHNAPSER
             && !(*start == TURN_PLAYER_1))
@@ -1477,7 +1564,7 @@ int callMode(int mode, int state, int* start, char* player)
       {
         printf("Player 3 (%s), would you want to raise the mode?", player);
         printf("\n-----------------------\n");
-        *start = raiseMode(&mode, TURN_PLAYER_3);
+        *start = raiseMode(&mode, TURN_PLAYER_3, file_pointer);
         
         if (/* mode >= buffer_mode && */
             mode == BAUERNSCHNAPSER && *start == TURN_PLAYER_3)
@@ -1491,7 +1578,8 @@ int callMode(int mode, int state, int* start, char* player)
   return mode;
 }
 
-int callRaise(int mode, /*int state,*/ int start, Player* players)
+int callRaise(int mode, /*int state,*/ int start, Player* players,
+              FILE* file_pointer)
 {
   if (mode > RUFER && mode < HERREN_JODLER)
   {
@@ -1501,21 +1589,21 @@ int callRaise(int mode, /*int state,*/ int start, Player* players)
         printf("Player 1 (%s), would you want to raise the mode?",
                players[0].name_);
         printf("\n-----------------------\n");
-        raiseMode(&mode, start);
+        raiseMode(&mode, start, file_pointer);
         break;
         
       case TURN_PLAYER_2:
         printf("Player 2 (%s), would you want to raise the mode?",
                players[1].name_);
         printf("\n-----------------------\n");
-        raiseMode(&mode, start);
+        raiseMode(&mode, start, file_pointer);
         break;
         
       case TURN_PLAYER_3:
         printf("Player 3 (%s), would you want to raise the mode?",
                players[2].name_);
         printf("\n-----------------------\n");
-        raiseMode(&mode, start);
+        raiseMode(&mode, start, file_pointer);
         break;
         
       default:
@@ -1570,7 +1658,7 @@ void switchMode(int* mode)
   }
 }
 
-int fleck(int player)
+int fleck(int player, FILE* file_pointer)
 {
   int buffer = 0;
   printf("---------------------------------------------------------------\n");
@@ -1589,6 +1677,9 @@ int fleck(int player)
   } while (buffer != 'y' && buffer != 'n');
   system ("/bin/stty cooked");
   
+  // log onto black box
+  callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+  
   if (buffer == 'y')
   {
     return TRUE;
@@ -1598,7 +1689,7 @@ int fleck(int player)
     return FALSE;
 }
 
-int fleckBack(int player)
+int fleckBack(int player, FILE* file_pointer)
 {
   int buffer = 0;
   printf("---------------------------------------------------------------\n");
@@ -1617,6 +1708,9 @@ int fleckBack(int player)
   } while (buffer != 'y' && buffer != 'n');
   system ("/bin/stty cooked");
   
+  // log onto black box
+  callBlackBox(file_pointer, (char[2]) {buffer, '\0'});
+  
   if (buffer == 'y')
   {
     printf("Z'ruckg'fleckt!         (points x4)\n");
@@ -1629,7 +1723,7 @@ int fleckBack(int player)
   }
 }
 
-int raiseMode(int* mode, int start)
+int raiseMode(int* mode, int start, FILE* file_pointer)
 {
 //  *mode = *mode CHAR_TO_INT;
   int mode_buffer = *mode;
@@ -1653,6 +1747,7 @@ int raiseMode(int* mode, int start)
           system ("/bin/stty raw");
           *mode = getchar();
           *mode = *mode CHAR_TO_INT;
+          
           printf("\r");
           if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
               && *mode != BAUERNSCHNAPSER && *mode != JODLER
@@ -1662,6 +1757,9 @@ int raiseMode(int* mode, int start)
                  && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
+        
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
           *mode = mode_buffer;
@@ -1722,6 +1820,9 @@ int raiseMode(int* mode, int start)
           } while (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
                    && *mode != JODLER && *mode != HERREN_JODLER);
           system ("/bin/stty cooked");
+        
+          // log onto black box
+          callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
           
           if (*mode == WEITER)
             *mode = mode_buffer;
@@ -1751,6 +1852,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
           *mode = mode_buffer;
         
@@ -1775,6 +1879,9 @@ int raiseMode(int* mode, int start)
         } while (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
           *mode = mode_buffer;
         
@@ -1797,6 +1904,9 @@ int raiseMode(int* mode, int start)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
+        
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
           *mode = mode_buffer;
@@ -1844,6 +1954,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           *mode = mode_buffer;
@@ -1878,6 +1991,9 @@ int raiseMode(int* mode, int start)
                  && *mode != JODLER && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           *mode = mode_buffer;
@@ -1911,6 +2027,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           *mode = mode_buffer;
@@ -1941,6 +2060,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           *mode = mode_buffer;
@@ -1966,6 +2088,9 @@ int raiseMode(int* mode, int start)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
+        
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
         {
@@ -2016,6 +2141,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           if (start == TURN_PLAYER_1)
@@ -2054,6 +2182,9 @@ int raiseMode(int* mode, int start)
         } while (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
                  && *mode != JODLER && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
+        
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
         {
@@ -2096,6 +2227,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           if (start == TURN_PLAYER_1)
@@ -2134,6 +2268,9 @@ int raiseMode(int* mode, int start)
                  && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
         
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
         if (*mode == WEITER)
         {
           if (start == TURN_PLAYER_1)
@@ -2167,6 +2304,9 @@ int raiseMode(int* mode, int start)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != HERREN_JODLER);
         system ("/bin/stty cooked");
+        
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
         {
@@ -2240,7 +2380,7 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
   }
 }
 
-int priority(int start, int* mode, char* player)
+int priority(int start, int* mode, char* player, FILE* file_pointer)
 {
   int buffer = 0;
   printf("---------------------------------------------------------------\n");
@@ -2253,12 +2393,14 @@ int priority(int start, int* mode, char* player)
   {
     system ("/bin/stty raw");
     buffer = getchar();
-//    *mode = *mode CHAR_TO_INT;
     printf("\r");
     if (buffer != 'y' && buffer != 'n')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != 'y' && buffer != 'n');
   system ("/bin/stty cooked");
+  
+  // log onto black box
+  callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
   {
@@ -4070,7 +4212,8 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
   }
 }
 
-Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
+Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
+                     FILE* file_pointer)
 {
   // with trump
   // with 20 and 40
@@ -4211,6 +4354,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
               printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
           } while (!check);
           system ("/bin/stty cooked");
+          
+          callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
           switch (buffer)     // copied from modeGame(first to call)
                               // extract as function in post_production
@@ -5564,6 +5709,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
           } while (!check);
           system ("/bin/stty cooked");
           
+          callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+          
           switch (buffer)       // stays the same, since it is answers only
           {
             case 'q':
@@ -5891,7 +6038,9 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
         } while (!check);
         system ("/bin/stty cooked");
         
-        switch (buffer)   // should be fine
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+        
+        switch (buffer)
         {
           case 'q':
 //            position[i] = 0;
@@ -7162,6 +7311,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
         } while (!check);
         system ("/bin/stty cooked");
         
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+        
         switch (buffer)   // does not need to be changed, since it is an answer
         {
           case 'q':
@@ -7517,6 +7668,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
         system ("/bin/stty cooked");
+        
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)     // hm .. don't knwo why I check 20 or 40 here,
                             // since pair will always be 0 at this point
@@ -8067,6 +8220,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
                 printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
             } while (!check);
             system ("/bin/stty cooked");
+            
+            callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
             switch (buffer)
             {
@@ -9404,6 +9559,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
             } while (!check);
             system ("/bin/stty cooked");
             
+            callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+            
             switch (buffer)     // no need to be changed, since it is an answer
             {
               case 'q':
@@ -9634,7 +9791,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players)
   } // end of else (= KontraSchnapser)
 }
 
-Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players)
+Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
+                FILE* file_pointer)
 {
   int counter = 0;
   int counter_turns = 0;
@@ -9642,7 +9800,7 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players)
   int counter_cards = 0;
   int buffer_start = 0;
   buffer_start = start;
-  char buffer = 0;
+  int buffer = 0;
   int counter_commands = 0;
   
   char commands[7] = "qweasd";
@@ -9688,12 +9846,13 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players)
     {
       system ("/bin/stty raw");
       buffer = getchar();
-//      position = &buffer;
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_1)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
     system ("/bin/stty cooked");
+    
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
     {
@@ -9849,6 +10008,8 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players)
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
     system ("/bin/stty cooked");
+    
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
     {
@@ -10042,6 +10203,8 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players)
     } while (!check);
     system ("/bin/stty cooked");
     
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+    
     switch (buffer)
     {
       case 'q':
@@ -10160,7 +10323,7 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players)
 }
 
 Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trump,
-                         Player* players)
+                         Player* players, FILE* file_pointer)
 {
   int counter = 0;
   int counter_turns = 0;
@@ -10172,7 +10335,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   int counter_trump = 0;
   int buffer_start = 0;
   buffer_start = start;
-  char buffer = 0;
+//  char buffer = 0;
+  int buffer = 0;
   
   char commands[7] = "qweasd";
 //  long length_commands = strlen(commands);
@@ -10226,12 +10390,13 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       {
         system ("/bin/stty raw");
         buffer = getchar();
-  //      position = &buffer;
         printf("\r");
         if (!(check = seekAndDestroy(buffer, commands_1)))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
       system ("/bin/stty cooked");
+      
+      callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
       {
@@ -10445,6 +10610,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
       system ("/bin/stty cooked");
+      
+      callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
       {
@@ -10690,6 +10857,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       } while (!check);
       system ("/bin/stty cooked");
       
+      callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+      
       switch (buffer)
       {
         case 'q':
@@ -10799,12 +10968,13 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         {
           system ("/bin/stty raw");
           buffer = getchar();
-    //      position = &buffer;
           printf("\r");
           if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_1 MINUS_ONE])))
             printf("Gibt's nicht!\n");
         } while (!check);
         system ("/bin/stty cooked");
+        
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
         switch (buffer)
         {
@@ -11025,6 +11195,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
         system ("/bin/stty cooked");
+        
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
         switch (buffer)
         {
@@ -11228,6 +11400,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
         system ("/bin/stty cooked");
+        
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
         switch (buffer)
         {
@@ -11357,12 +11531,13 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         {
           system ("/bin/stty raw");
           buffer = getchar();
-    //      position = &buffer;
           printf("\r");
           if (!(check = seekAndDestroy(buffer, /*commands_1*/ commands_players[0])))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
         system ("/bin/stty cooked");
+        
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)
         {
@@ -11577,6 +11752,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
         system ("/bin/stty cooked");
+        
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)
         {
@@ -11824,6 +12001,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         } while (!check);
         system ("/bin/stty cooked");
         
+        callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+        
         switch (buffer)
         {
           case 'q':
@@ -11902,7 +12081,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   }
 }
 
-Points modeJodler(Card** hands, int start, char* suit, Player* players)
+Points modeJodler(Card** hands, int start, char* suit, Player* players,
+                  FILE* file_pointer)
 {
   // all cards of trump
 //  printf("%s\n", suit);
@@ -11915,7 +12095,8 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players)
   int counter_commands = 0;
   int buffer_start = 0;
   buffer_start = start;
-  char buffer = 0;
+//  char buffer = 0;
+  int buffer = 0;
   
   char commands[7] = "qweasd";
   char commands_1[7] = "0";
@@ -11975,12 +12156,13 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players)
     {
       system ("/bin/stty raw");
       buffer = getchar();
-//      position = &buffer;
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_1)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
     system ("/bin/stty cooked");
+    
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
     {
@@ -12141,6 +12323,8 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players)
     } while (!check);
     system ("/bin/stty cooked");
     
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+    
     switch (buffer)
     {
       case 'q':
@@ -12298,6 +12482,8 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players)
     } while (!check);
     system ("/bin/stty cooked");
     
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+    
     switch (buffer)
     {
       case 'q':
@@ -12388,7 +12574,8 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players)
 /// might not even need STUCHZWANG, since at the end there will only be one card left for each player
 ///
 //
-Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players)
+Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
+                        FILE* file_pointer)
 {
   // all cards of trump
   
@@ -12399,7 +12586,8 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players)
   int counter_trump = 0;
   int buffer_start = 0;
   buffer_start = start;
-  char buffer = 0;
+//  char buffer = 0;
+  int buffer = 0;
   
   char commands[7] = "qweasd";
   char commands_1[7] = "0";
@@ -12458,12 +12646,13 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players)
     {
       system ("/bin/stty raw");
       buffer = getchar();
-//      position = &buffer;
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_1)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
     system ("/bin/stty cooked");
+    
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
     {
@@ -12598,6 +12787,8 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players)
     } while (!check);
     system ("/bin/stty cooked");
     
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+    
     switch (buffer)
     {
       case 'q':
@@ -12727,6 +12918,8 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players)
     } while (!check);
     system ("/bin/stty cooked");
     
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+    
     switch (buffer)
     {
       case 'q':
@@ -12814,7 +13007,7 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players)
 }
 
 int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
-        int* done_2, Player* players, int* order)
+        int* done_2, Player* players, int* order, FILE* file_pointer)
 {
   int buffer = 0;
   
@@ -12878,6 +13071,9 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
   } while (buffer != '1' && buffer != '2' && buffer != '0');
   system ("/bin/stty cooked");
   
+  // log onto black box
+  callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
+  
   if (buffer == '0' /*|| (*done_1 == TRUE && *done_2 == TRUE)*/)
   {
     return BREAK;
@@ -12933,6 +13129,9 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
              && buffer != 's' && buffer != 'd');
     system ("/bin/stty cooked");
+    
+    // log onto black box
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
     {
@@ -13027,6 +13226,9 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
              && buffer != 's' && buffer != 'd');
     system ("/bin/stty cooked");
+    
+    // log onto black box
+    callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
     {
@@ -14814,7 +15016,7 @@ void resetHandlePairs(Pair* handle_pairs)
   }
 }
 
-int checkContinue(char* player)
+int checkContinue(char* player, FILE* file_pointer)
 {
   int buffer = 0;
   printf("---------------------------------------------------------------\n");
@@ -14832,6 +15034,8 @@ int checkContinue(char* player)
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != 'y' && buffer != 'n');
   system ("/bin/stty cooked");
+  
+  callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
   {
@@ -14964,7 +15168,7 @@ void printTable(Player players)
 //                  = switchRufer(hands, start, decodeSuit(*trump), players, order)
 //
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
-                  int* order)
+                  int* order, FILE* file_pointer)
 {
   Points next_and_points    = {start, 0, start};
   Points points_and_caller  = {start, 0, start};
@@ -15024,7 +15228,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
                     players_commands, initial_order, handle_pairs,
-                    &points_caller, &points_opponents);
+                    &points_caller, &points_opponents, file_pointer);
+      callBlackBox(file_pointer, "\n");
 
       // -------------------------------------
       
@@ -15131,7 +15336,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
                     players_commands, initial_order, handle_pairs,
-                    &points_caller, &points_opponents);
+                    &points_caller, &points_opponents, file_pointer);
       
       // -------------------------------------
       
@@ -15237,7 +15442,7 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
       next_and_points
         = modeRufer(hands, next_and_points.caller_, trump, players,
                     players_commands, initial_order, handle_pairs,
-                    &points_caller, &points_opponents);
+                    &points_caller, &points_opponents, file_pointer);
 
       // -------------------------------------
       
@@ -15332,7 +15537,8 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
 // it up a bit and finally make it work. And yes, I did.
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order,
-                 Pair* handle_pairs, int* points_caller, int* points_opponents)
+                 Pair* handle_pairs, int* points_caller, int* points_opponents,
+                 FILE* file_pointer)
 {
   int player[3]           = {start, 0, 0};
   getCall(start, &player[0], &player[1], &player[2]);
@@ -15391,6 +15597,8 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
       system ("/bin/stty cooked");
+      
+      callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
       {
@@ -16819,13 +17027,14 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
       {
         system ("/bin/stty raw");
         buffer = getchar();
+      
         printf("\r");
         if (!(check = seekAndDestroy(buffer, players_commands[counter])))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
       system ("/bin/stty cooked");
       
-//      printf("left commands: %s\n", players_commands[counter]);
+      callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
       {
@@ -17398,7 +17607,7 @@ void setInitialOrder(int start, int* initial_order)
 
 // greeting, just for fun with stdIO commands
 //
-// code:  1 = written and colored Wellcome text and seed
+// code:  1 = written and colored Welcome text and seed
 //        2 = written and colored seed
 //        3 = written seed
 //        4 = static seed only
@@ -17463,6 +17672,51 @@ void greeting(unsigned int code)
     default:
       break;
   }
+}
+
+int blackBox(FILE* file_pointer, char* input)
+{
+  int error_code = SUCCESS;
   
+  if (file_pointer == NULL)
+  {
+    printf("Something is wrong.\n");
+    error_code = ERROR;
+  }
   
+  fprintf(file_pointer, "%s", input);
+  error_code = SUCCESS;
+  
+  return error_code;
+}
+
+int callBlackBox(FILE* file_pointer, char* input)
+{
+  int error_code = SUCCESS;
+  
+  file_pointer = fopen("Dreierschnapsen.log", "a+");
+  
+  if (!blackBox(file_pointer, input))
+  {
+    error_code = SUCCESS;
+  }
+  
+  else
+  {
+    printf("ERROR!\n");
+    error_code = ERROR;
+  }
+  
+  fclose(file_pointer);
+  return error_code;
+}
+
+void getTime(char* string_time)
+{
+  struct tm *local_time;
+  time_t current_time;
+  current_time = time(NULL);
+  local_time = localtime(&current_time);
+  
+  strftime(string_time, 20, "%Y-%m-%d %H:%M:%S", local_time);
 }
