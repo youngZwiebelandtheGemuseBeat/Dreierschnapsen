@@ -208,7 +208,7 @@ void turnDealer(int* turns, int* state, int* call, int* score_dealer,
                 Card* deck, Card* deck_dealer);
 int checkPlayerBlackjack(int* score_player, int* score_dealer, int* state,
                          Card* deck_dealer);
-unsigned int getSeed(char* argument);
+unsigned int getSeed(char* argument, FILE* file_pointer);
 // hier ließen sich wahrscheinlich einige Parameter streichen. Beispielsweise
 // score_player_1, player_2, ...
 Points playGame(Card* deck, Card* deck_dealer,
@@ -335,7 +335,7 @@ int main(int argc, char* argv[])
   int counter               = 0;
   int trump                 = 0;
   // die gehören eigentlich alle "sauberer"/eleganter initialisiert -----------
-  Card dummy_deck[CARD_QUANTITY]    = {{NULL}, {0}, "", ' '};
+  Card dummy_deck[CARD_QUANTITY]    = {{NULL}, {0}, {"", ' '}};
   Card deck[CARD_QUANTITY * 4]      = {{NULL}, {0}, "", ' '};
   Card deck_dealer[2]       = {{NULL}, {0}, "", ' '};
   Card deck_player_1[HAND]  = {{NULL}, {0}, "", ' '};
@@ -381,7 +381,7 @@ int main(int argc, char* argv[])
     getTime(string_time);
     callBlackBox(file_pointer, "log: ");
     callBlackBox(file_pointer, string_time);
-    callBlackBox(file_pointer, "\nPlayers' input:\n");
+    callBlackBox(file_pointer, "\nseed: ");
     initializeDummyDeck(dummy_deck);
     createFullDeck(deck, dummy_deck, suits);
     
@@ -427,8 +427,10 @@ int main(int argc, char* argv[])
 //          }
           
           // GAME
-          random_seed = getSeed(argv[1]);
+          random_seed = getSeed(argv[1], file_pointer);
           FisherYates(deck, CARD_QUANTITY * 4, random_seed);
+          callBlackBox(file_pointer, "\n");
+          callBlackBox(file_pointer, "Players' input:\n");
           
           // okay, just leave it quick and easy for now -------------------
           if (counter_players == 1)
@@ -698,8 +700,9 @@ void printHand(Card* deck, int number, int player, char* name)
 void createFullDeck(Card* deck, Card* dummy_deck, char** suits)
 {
 //  int suits   = 4;
-//  char* suits[SUITS]  = {"hearts", "spades", "clubs", "diamonds"};
-  char* signs[SUITS]   = {"♥", "♠", "♣", "♦"};
+//  char* suits[SUITS]  = {"hearts  ", "spades  ", "clubs   ", "diamonds"};
+//  char* signs[SUITS]  = {"♥", "♠", "♣", "♦"};
+  char* signs[SUITS]  = {"HEARTS  ", "SPADES  ", "CLUBS   ", "DIAMONDS"};
   int counter         = 0;
   int counter_suits   = 0;
   
@@ -1009,10 +1012,11 @@ void printErrorMessage(int error_code, char* argument)
 ///
 /// @return seed
 //
-unsigned int getSeed(char* argument)
+unsigned int getSeed(char* argument, FILE* file_pointer)
 {
   unsigned int seed = 0;
   unsigned int buffer = 0;
+  char buffer_string[10] = "\0";
   
   // seed from command line
   if (argument != NULL)
@@ -1035,6 +1039,9 @@ unsigned int getSeed(char* argument)
       else
         break;
     } while (1);
+    
+    sprintf(buffer_string, "%d", buffer);
+    callBlackBox(file_pointer, buffer_string);
     
     if (buffer == 'q')
     {
@@ -1409,15 +1416,16 @@ int callTrump(Card auf, FILE* file_pointer)
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");
     trump = getchar();
+    fflush(stdin);
     printf("\r");
     if (trump != '1' && trump != '2' && trump != '3' && trump != '4'
         && trump != '0')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (trump != '1' && trump != '2' && trump != '3' && trump != '4'
            && trump != '0');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)trump, '\0'});  // fun cast
@@ -1486,13 +1494,14 @@ int callSuit(int start, FILE* file_pointer)
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");     // does not work like this on windows
     suit = getchar();
+    fflush(stdin);
     printf("\r");
     if (suit != '1' && suit != '2' && suit != '3' && suit != '4')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (suit != '1' && suit != '2' && suit != '3' && suit != '4');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");    // does not work like this on windows
   
   callBlackBox(file_pointer, "callSuit()");
   callBlackBox(file_pointer, (char[2]) {(char)suit, '\0'});
@@ -1522,8 +1531,9 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       
       do
       {
-        system ("/bin/stty raw");
+//        system ("/bin/stty raw");
         mode = getchar();
+        fflush(stdin);
         mode = mode CHAR_TO_INT;
         
         printf("\r");
@@ -1534,7 +1544,7 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       } while (mode != RUFER && mode != SCHNAPSER && mode != LAND
                && mode != BAUERNSCHNAPSER && mode != JODLER
                && mode != HERREN_JODLER);
-      system ("/bin/stty cooked");
+//      system ("/bin/stty cooked");
       
       // log onto black box
       callBlackBox(file_pointer, (char[2]) {(char)mode, '\0'});
@@ -1669,13 +1679,14 @@ int fleck(int player, FILE* file_pointer)
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");
     buffer = getchar();
+    fflush(stdin);
     printf("\r");
     if (buffer != 'y' && buffer != 'n')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != 'y' && buffer != 'n');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -1700,13 +1711,14 @@ int fleckBack(int player, FILE* file_pointer)
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");
     buffer = getchar();
+    fflush(stdin);
     printf("\r");
     if (buffer != 'y' && buffer != 'n')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != 'y' && buffer != 'n');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {buffer, '\0'});
@@ -1744,8 +1756,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           
           printf("\r");
@@ -1756,7 +1769,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
                  && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1810,8 +1823,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
           
           do
           {
-            system ("/bin/stty raw");
+//            system ("/bin/stty raw");
             *mode = getchar();
+            fflush(stdin);
             *mode = *mode CHAR_TO_INT;
             printf("\r");
             if (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
@@ -1819,7 +1833,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
               printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
           } while (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
                    && *mode != JODLER && *mode != HERREN_JODLER);
-          system ("/bin/stty cooked");
+//          system ("/bin/stty cooked");
         
           // log onto black box
           callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1841,8 +1855,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
@@ -1850,7 +1865,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1870,14 +1885,15 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1896,14 +1912,15 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != HERREN_JODLER)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1941,8 +1958,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
@@ -1952,7 +1970,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
                  && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1978,8 +1996,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != SCHNAPSER
@@ -1989,7 +2008,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         } while (*mode != WEITER && *mode != SCHNAPSER
                  && *mode != LAND && *mode != BAUERNSCHNAPSER
                  && *mode != JODLER && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2014,8 +2033,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != SCHNAPSER
@@ -2025,7 +2045,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         } while (*mode != WEITER && *mode != SCHNAPSER
                  && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2049,8 +2069,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
@@ -2058,7 +2079,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2080,14 +2101,15 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != HERREN_JODLER)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2128,8 +2150,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
@@ -2139,7 +2162,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
                  && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2172,8 +2195,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
@@ -2181,7 +2205,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
                  && *mode != JODLER && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2214,8 +2238,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != SCHNAPSER
@@ -2225,7 +2250,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         } while (*mode != WEITER && *mode != SCHNAPSER
                  && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2257,8 +2282,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
@@ -2266,7 +2292,7 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
                  && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2296,14 +2322,15 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           *mode = getchar();
+          fflush(stdin);
           *mode = *mode CHAR_TO_INT;
           printf("\r");
           if (*mode != WEITER && *mode != HERREN_JODLER)
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (*mode != WEITER && *mode != HERREN_JODLER);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2391,13 +2418,14 @@ int priority(int start, int* mode, char* player, FILE* file_pointer)
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");
     buffer = getchar();
+    fflush(stdin);
     printf("\r");
     if (buffer != 'y' && buffer != 'n')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != 'y' && buffer != 'n');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -2514,13 +2542,14 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
         {
           do
           {
-            system ("/bin/stty raw");
+//            system ("/bin/stty raw");
             buffer = getchar();
+            fflush(stdin);
             printf("\r");
             if (!(check = seekAndDestroy(buffer, players_commands[i])))
               printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
           } while (!check);
-          system ("/bin/stty cooked");
+//          system ("/bin/stty cooked");
         }
         
         else
@@ -3896,13 +3925,14 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
         {
           do
           {
-            system ("/bin/stty raw");
+//            system ("/bin/stty raw");
             buffer = getchar();
+            fflush(stdin);
             printf("\r");
             if (!(check = seekAndDestroy(buffer, players_commands[i])))
               printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
           } while (!check);
-          system ("/bin/stty cooked");
+//          system ("/bin/stty cooked");
         }
         
         else
@@ -4335,7 +4365,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         {
           pairs = highlight(hands[player[i] MINUS_ONE], player[i], position_Q);
         
-          printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
+//          printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
         }
         // and reset, after having worked with it
 //        pairs = resetPairs(position_Q);
@@ -4347,13 +4377,14 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         {
           do
           {
-            system ("/bin/stty raw");
+//            system ("/bin/stty raw");
             buffer = getchar();
+            fflush(stdin);
             printf("\r");
             if (!(check = seekAndDestroy(buffer, players_commands[i])))
               printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
           } while (!check);
-          system ("/bin/stty cooked");
+//          system ("/bin/stty cooked");
           
           callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
@@ -5701,13 +5732,14 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
           
           do
           {
-            system ("/bin/stty raw");
+//            system ("/bin/stty raw");
             buffer = getchar();
+            fflush(stdin);
             printf("\r");
             if (!(check = seekAndDestroy(buffer, players_commands[i])))
               printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
           } while (!check);
-          system ("/bin/stty cooked");
+//          system ("/bin/stty cooked");
           
           callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
@@ -6030,13 +6062,14 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_1 - 1])))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -7296,20 +7329,21 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         {
 //          highlight(hands[player[i] MINUS_ONE], player[i]);
           pairs = highlight(hands[TURN_PLAYER_2 MINUS_ONE], TURN_PLAYER_2, position_Q);
-          printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
+//          printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
         }
         
         printf("---------------------------------------------------------------\n");
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_2 - 1])))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -7654,20 +7688,21 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         if (i == 0)
         {
           pairs = highlight(hands[TURN_PLAYER_3 MINUS_ONE], TURN_PLAYER_3, position_Q);
-          printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
+//          printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
         }
         
         printf("---------------------------------------------------------------\n");
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_3 - 1])))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -8202,7 +8237,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
             pairs = highlight(hands[player[i] MINUS_ONE],
                               player[i] /* vielleicht doch turn[i] */, position_Q);
           
-            printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
+//            printf("TEST: %d pairs with first Queen @ %d\n", pairs, position_Q[0]);
           }
 //          pairs = resetPairs(position_Q);
           
@@ -8213,13 +8248,14 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
           {
             do
             {
-              system ("/bin/stty raw");
+//              system ("/bin/stty raw");
               buffer = getchar();
+              fflush(stdin);
               printf("\r");
               if (!(check = seekAndDestroy(buffer, players_commands[i])))
                 printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
             } while (!check);
-            system ("/bin/stty cooked");
+//            system ("/bin/stty cooked");
             
             callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
@@ -9551,13 +9587,14 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
             
             do
             {
-              system ("/bin/stty raw");
+//              system ("/bin/stty raw");
               buffer = getchar();
+              fflush(stdin);
               printf("\r");
               if (!(check = seekAndDestroy(buffer, players_commands[i])))
                 printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
             } while (!check);
-            system ("/bin/stty cooked");
+//            system ("/bin/stty cooked");
             
             callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
@@ -9844,13 +9881,14 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_1)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10001,13 +10039,14 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_2)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10195,13 +10234,14 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_3)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10388,13 +10428,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       
       do
       {
-        system ("/bin/stty raw");
+//        system ("/bin/stty raw");
         buffer = getchar();
+        fflush(stdin);
         printf("\r");
         if (!(check = seekAndDestroy(buffer, commands_1)))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
-      system ("/bin/stty cooked");
+//      system ("/bin/stty cooked");
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -10603,13 +10644,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       
       do
       {
-        system ("/bin/stty raw");
+//        system ("/bin/stty raw");
         buffer = getchar();
+        fflush(stdin);
         printf("\r");
         if (!(check = seekAndDestroy(buffer, commands_2)))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
-      system ("/bin/stty cooked");
+//      system ("/bin/stty cooked");
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -10849,13 +10891,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       
       do
       {
-        system ("/bin/stty raw");
+//        system ("/bin/stty raw");
         buffer = getchar();
+        fflush(stdin);
         printf("\r");
         if (!(check = seekAndDestroy(buffer, commands_3)))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
-      system ("/bin/stty cooked");
+//      system ("/bin/stty cooked");
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -10966,13 +11009,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
 
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_1 MINUS_ONE])))
             printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -11188,13 +11232,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
 
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_2 MINUS_ONE])))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -11393,13 +11438,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
 
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, commands_3)))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -11529,13 +11575,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, /*commands_1*/ commands_players[0])))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -11745,13 +11792,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, commands_2)))
             printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -11993,13 +12041,14 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         
         do
         {
-          system ("/bin/stty raw");
+//          system ("/bin/stty raw");
           buffer = getchar();
+          fflush(stdin);
           printf("\r");
           if (!(check = seekAndDestroy(buffer, commands_3)))
             printf ("Invalid input!\n");// printf("Gibt's nicht!\n");
         } while (!check);
-        system ("/bin/stty cooked");
+//        system ("/bin/stty cooked");
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -12154,13 +12203,14 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_1)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12315,13 +12365,14 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_2)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12474,13 +12525,14 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_3)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12644,13 +12696,14 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_1)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12779,13 +12832,14 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_2)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12910,13 +12964,14 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (!(check = seekAndDestroy(buffer, commands_3)))
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (!check);
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -13061,15 +13116,16 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");
     buffer = getchar();
+    fflush(stdin);
     printf("\r");
     if ((buffer != '1' && buffer != '2' && buffer != '0')
         || (buffer == '1' && *done_1 == TRUE)
         || (buffer == '2' && *done_2 == TRUE))
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != '1' && buffer != '2' && buffer != '0');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -13120,15 +13176,16 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
           && buffer != 's' && buffer != 'd')
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
              && buffer != 's' && buffer != 'd');
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     // log onto black box
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -13217,15 +13274,16 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     
     do
     {
-      system ("/bin/stty raw");
+//      system ("/bin/stty raw");
       buffer = getchar();
+      fflush(stdin);
       printf("\r");
       if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
           && buffer != 's' && buffer != 'd')
         printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
     } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
              && buffer != 's' && buffer != 'd');
-    system ("/bin/stty cooked");
+//    system ("/bin/stty cooked");
     
     // log onto black box
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -15027,13 +15085,14 @@ int checkContinue(char* player, FILE* file_pointer)
   
   do
   {
-    system ("/bin/stty raw");
+//    system ("/bin/stty raw");
     buffer = getchar();
+    fflush(stdin);
     printf("\r");
     if (buffer != 'y' && buffer != 'n')
       printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
   } while (buffer != 'y' && buffer != 'n');
-  system ("/bin/stty cooked");
+//  system ("/bin/stty cooked");
   
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
@@ -15590,13 +15649,14 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
       
       do
       {
-        system ("/bin/stty raw");
+//        system ("/bin/stty raw");
         buffer = getchar();
+        fflush(stdin);
         printf("\r");
         if (!(check = (int)seekAndDestroy(buffer, players_commands[counter])))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
-      system ("/bin/stty cooked");
+//      system ("/bin/stty cooked");
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -17025,14 +17085,14 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
       
       do
       {
-        system ("/bin/stty raw");
+//        system ("/bin/stty raw");
         buffer = getchar();
-      
+        fflush(stdin);
         printf("\r");
         if (!(check = seekAndDestroy(buffer, players_commands[counter])))
           printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
       } while (!check);
-      system ("/bin/stty cooked");
+//      system ("/bin/stty cooked");
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -17694,7 +17754,7 @@ int callBlackBox(FILE* file_pointer, char* input)
 {
   int error_code = SUCCESS;
   
-  file_pointer = fopen("Dreierschnapsen.log", "a+");
+  file_pointer = fopen("DreierschnapsenBlackBox.log", "a+");
   
   if (!blackBox(file_pointer, input))
   {
