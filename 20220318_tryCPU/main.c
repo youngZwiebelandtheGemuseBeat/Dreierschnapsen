@@ -86,7 +86,7 @@
 #define ENOUGH          5
 static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
 static const char COMMANDS_POLAR[2] = {'y', 'n'};
-static const char COMMANDS_TRUMP[5] = {0, 1, 2, 3, 4};
+static const char COMMANDS_TRUMP[5] = {'0', '1', '2', '3', '4'};
 
 //-----------------------------------------------------------------------------
 /// ADDITIONAL definitions of various colors and stuff for stdout
@@ -302,6 +302,8 @@ int blackBox(FILE* file_pointer, char* input);
 int callBlackBox(FILE* file_pointer, char* input);
 void getTime(char* string_time);
 // further extractions - post production
+char getInput(const char* permitted);
+unsigned int in(const char* list, char wanted);
 
 //-----------------------------------------------------------------------------
 ///
@@ -1415,18 +1417,22 @@ int callTrump(Card auf, FILE* file_pointer)
   printf("0       \"Hit me!\"\n");
   printf("---------------------------------------------------------------\n");
   
-  do
-  {
+//  do
+//  {
 //    system ("/bin/stty raw");
-    trump = getchar();
-    fflush(stdin);
-    printf("\r");
-    if (trump != '1' && trump != '2' && trump != '3' && trump != '4'
-        && trump != '0')
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  } while (trump != '1' && trump != '2' && trump != '3' && trump != '4'
-           && trump != '0');
+//    trump = getchar();
+//    fflush(stdin);
+//    printf("\r");
+//    if (trump != '1' && trump != '2' && trump != '3' && trump != '4'
+//        && trump != '0')
+//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//  } while (trump != '1' && trump != '2' && trump != '3' && trump != '4'
+//           && trump != '0');
 //  system ("/bin/stty cooked");
+  
+  // ------------- new 20220728 -------------
+  trump = getInput(COMMANDS_TRUMP);
+  // ------------- new 20220728 -------------
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)trump, '\0'});  // fun cast
@@ -4061,8 +4067,6 @@ Points modeGame(Card** hands, int start, char* trump, Player* players, int* orde
     // ...
     
     start = next_and_points.winner_;
-    
-    // TODO: irgendwas passt nicht, wenn in weiterer Folge wer anderes Rufer ist
     
     if (start == initial_order[0])
       points_call += next_and_points.points_;
@@ -11079,7 +11083,6 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         positions[TURN_PLAYER_1 MINUS_ONE] = position_1;
       } // player 1 calls first should be fine
 
-      // answer 1 - TODO: checking valid cards does not work properly
       /* else */ if (counter_turns == 0 && counter_1 == 1)
       {
         counter_2 = 0;
@@ -13173,8 +13176,6 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
         break;
     }
     
-    // TODO: switch
-    
     do
     {
 //      system ("/bin/stty raw");
@@ -14252,8 +14253,6 @@ int highestCard(Card* cards)
       count_trump++;
     }
   }
-  
-  // TODO: check highest card and do not forget about trump
   
   // no trump or all trump
 //  if (!(cards[0].is_trump_ && cards[1].is_trump_ && cards[3].is_trump_)
@@ -17780,4 +17779,42 @@ void getTime(char* string_time)
   local_time = localtime(&current_time);
   
   strftime(string_time, 20, "%Y-%m-%d %H:%M:%S", local_time);
+}
+
+unsigned int in(const char* list, char wanted)
+{
+  unsigned long size = sizeof(list);
+  unsigned int is_valid = FALSE;
+  int counter = 0;
+  
+  for (counter = 0; counter < size; counter++)
+  {
+    if (list[counter] == wanted)
+    {
+      is_valid = TRUE;
+      break;
+    }
+  }
+  
+  return is_valid;
+}
+
+char getInput(const char* permitted)
+{
+  char valid_input = '\0';
+  
+//  system ("/bin/stty raw");
+  
+  do
+  {
+    valid_input = (char)getchar();
+    fflush(stdin);
+    // printf("\r");
+    if (!in(permitted, valid_input))
+      printf("Invalid input!\n");
+  } while (!in(permitted, valid_input));
+  
+//  system ("/bin/stty cooked");
+  
+  return valid_input;
 }
