@@ -47,6 +47,7 @@
 #define GO_ON           0
 #define BREAK           1
 #define ANE_AUF         11
+#define MODES           7
 
 //-----------------------------------------------------------------------------
 /// definition of various error and return values
@@ -87,6 +88,9 @@
 static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
 static const char COMMANDS_POLAR[2] = {'y', 'n'};
 static const char COMMANDS_TRUMP[5] = {'0', '1', '2', '3', '4'};
+static const char COMMANDS_SUIT[4] = {'1', '2', '3', '4'};
+static const char COMMANDS_MODE[6] = {'1', '2', '3', '4', '5', '6'};
+static const char COMMANDS_RAISE[7] = {'0', '1', '2', '3', '4', '5', '6'};
 
 //-----------------------------------------------------------------------------
 /// ADDITIONAL definitions of various colors and stuff for stdout
@@ -225,7 +229,7 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer);
 int fleck(int player, FILE* file_pointer);
 int fleckBack(int player, FILE* file_pointer);
 void switchMode(int* mode);
-int raiseMode(int* mode, int start, FILE* file_pointer);
+int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer);
 int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
 int priority(int start, int* mode, char* player, FILE* file_pointer);
@@ -304,6 +308,7 @@ void getTime(char* string_time);
 // further extractions - post production
 char getInput(const char* permitted);
 unsigned int in(const char* list, char wanted);
+void raiseCommands(char* permitted, char* invalid);
 
 //-----------------------------------------------------------------------------
 ///
@@ -1499,16 +1504,20 @@ int callSuit(int start, FILE* file_pointer)
   printf("4       DIAMONDS (♦)\n");
   printf("---------------------------------------------------------------\n");
   
-  do
-  {
-//    system ("/bin/stty raw");     // does not work like this on windows
-    suit = getchar();
-    fflush(stdin);
-    printf("\r");
-    if (suit != '1' && suit != '2' && suit != '3' && suit != '4')
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  } while (suit != '1' && suit != '2' && suit != '3' && suit != '4');
-//  system ("/bin/stty cooked");    // does not work like this on windows
+//  do
+//  {
+////    system ("/bin/stty raw");     // does not work like this on windows
+//    suit = getchar();
+//    fflush(stdin);
+//    printf("\r");
+//    if (suit != '1' && suit != '2' && suit != '3' && suit != '4')
+//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//  } while (suit != '1' && suit != '2' && suit != '3' && suit != '4');
+////  system ("/bin/stty cooked");    // does not work like this on windows
+  
+  // ------------- new 20220728 -------------
+  suit = getInput(COMMANDS_SUIT);
+  // ------------- new 20220728 -------------
   
   callBlackBox(file_pointer, "callSuit()");
   callBlackBox(file_pointer, (char[2]) {(char)suit, '\0'});
@@ -1522,6 +1531,7 @@ int callSuit(int start, FILE* file_pointer)
 int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
 {
   int buffer_mode = mode;
+  int bool_contra = FALSE;
   
   switch (state)
   {
@@ -1536,22 +1546,26 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       printf("6       HERRENJODLER\n");
       printf("---------------------------------------------------------------\n");
       
-      do
-      {
-//        system ("/bin/stty raw");
-        mode = getchar();
-        fflush(stdin);
-        mode = mode CHAR_TO_INT;
-        
-        printf("\r");
-        if (mode != RUFER && mode != SCHNAPSER && mode != LAND
-            && mode != BAUERNSCHNAPSER && mode != JODLER
-            && mode != HERREN_JODLER)
-          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (mode != RUFER && mode != SCHNAPSER && mode != LAND
-               && mode != BAUERNSCHNAPSER && mode != JODLER
-               && mode != HERREN_JODLER);
-//      system ("/bin/stty cooked");
+//      do
+//      {
+////        system ("/bin/stty raw");
+//        mode = getchar();
+//        fflush(stdin);
+//        mode = mode CHAR_TO_INT;
+//
+//        printf("\r");
+//        if (mode != RUFER && mode != SCHNAPSER && mode != LAND
+//            && mode != BAUERNSCHNAPSER && mode != JODLER
+//            && mode != HERREN_JODLER)
+//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//      } while (mode != RUFER && mode != SCHNAPSER && mode != LAND
+//               && mode != BAUERNSCHNAPSER && mode != JODLER
+//               && mode != HERREN_JODLER);
+////      system ("/bin/stty cooked");
+      
+      // ------------- new 20220728 -------------
+      mode = getInput(COMMANDS_MODE) CHAR_TO_INT;
+      // ------------- new 20220728 -------------
       
       // log onto black box
       callBlackBox(file_pointer, (char[2]) {(char)mode, '\0'});
@@ -1567,7 +1581,7 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       {
         printf("Player 2 (%s), would you want to raise the mode?", player);
         printf("\n-----------------------\n");
-        *start = raiseMode(&mode, TURN_PLAYER_2, file_pointer);
+        *start = raiseMode(&mode, TURN_PLAYER_2, &bool_contra, file_pointer);
         
         if (mode >= buffer_mode && mode == BAUERNSCHNAPSER
             && !(*start == TURN_PLAYER_1))
@@ -1581,7 +1595,7 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       {
         printf("Player 3 (%s), would you want to raise the mode?", player);
         printf("\n-----------------------\n");
-        *start = raiseMode(&mode, TURN_PLAYER_3, file_pointer);
+        *start = raiseMode(&mode, TURN_PLAYER_3, &bool_contra, file_pointer);
         
         if (/* mode >= buffer_mode && */
             mode == BAUERNSCHNAPSER && *start == TURN_PLAYER_3)
@@ -1606,21 +1620,21 @@ int callRaise(int mode, /*int state,*/ int start, Player* players,
         printf("Player 1 (%s), would you want to raise the mode?",
                players[0].name_);
         printf("\n-----------------------\n");
-        raiseMode(&mode, start, file_pointer);
+        raiseMode(&mode, start, 1, file_pointer);
         break;
         
       case TURN_PLAYER_2:
         printf("Player 2 (%s), would you want to raise the mode?",
                players[1].name_);
         printf("\n-----------------------\n");
-        raiseMode(&mode, start, file_pointer);
+        raiseMode(&mode, start, 1, file_pointer);
         break;
         
       case TURN_PLAYER_3:
         printf("Player 3 (%s), would you want to raise the mode?",
                players[2].name_);
         printf("\n-----------------------\n");
-        raiseMode(&mode, start, file_pointer);
+        raiseMode(&mode, start, 1, file_pointer);
         break;
         
       default:
@@ -1632,8 +1646,9 @@ int callRaise(int mode, /*int state,*/ int start, Player* players,
 
 void switchMode(int* mode)
 {
-//  if (*mode == 3)
-//    printf("Mit was sagst'n du a Land an!?\n");
+  // "automated smack talk"
+  //  if (*mode == 3)
+  //    printf("Mit was sagst'n du a Land an!?\n");
   
   switch (*mode)
   {
@@ -1684,16 +1699,20 @@ int fleck(int player, FILE* file_pointer)
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
   
-  do
-  {
-//    system ("/bin/stty raw");
-    buffer = getchar();
-    fflush(stdin);
-    printf("\r");
-    if (buffer != 'y' && buffer != 'n')
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  } while (buffer != 'y' && buffer != 'n');
-//  system ("/bin/stty cooked");
+//  do
+//  {
+////    system ("/bin/stty raw");
+//    buffer = getchar();
+//    fflush(stdin);
+//    printf("\r");
+//    if (buffer != 'y' && buffer != 'n')
+//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//  } while (buffer != 'y' && buffer != 'n');
+////  system ("/bin/stty cooked");
+  
+  // ------------- new 20220728 -------------
+  buffer = getInput(COMMANDS_POLAR);
+  // ------------- new 20220728 -------------
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -1716,19 +1735,23 @@ int fleckBack(int player, FILE* file_pointer)
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
   
-  do
-  {
-//    system ("/bin/stty raw");
-    buffer = getchar();
-    fflush(stdin);
-    printf("\r");
-    if (buffer != 'y' && buffer != 'n')
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  } while (buffer != 'y' && buffer != 'n');
-//  system ("/bin/stty cooked");
+//  do
+//  {
+////    system ("/bin/stty raw");
+//    buffer = getchar();
+//    fflush(stdin);
+//    printf("\r");
+//    if (buffer != 'y' && buffer != 'n')
+//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//  } while (buffer != 'y' && buffer != 'n');
+////  system ("/bin/stty cooked");
+  
+  // ------------- new 20220728 -------------
+  buffer = getInput(COMMANDS_POLAR);
+  // ------------- new 20220728 -------------
   
   // log onto black box
-  callBlackBox(file_pointer, (char[2]) {buffer, '\0'});
+  callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
   {
@@ -1742,16 +1765,20 @@ int fleckBack(int player, FILE* file_pointer)
   }
 }
 
-int raiseMode(int* mode, int start, FILE* file_pointer)
+int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 {
 //  *mode = *mode CHAR_TO_INT;
   int mode_buffer = *mode;
+  char permitted[6] = "\0\0\0\0\0\0";
   
   if (start == TURN_PLAYER_1)
   {
     switch (*mode)
     {
       case RUFER:
+        
+        raiseCommands(permitted, "1");  // hard coded '1' - TODO: change later!
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       SCHNAPSER\n");
@@ -1761,22 +1788,29 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          
-          printf("\r");
-          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//
+//          printf("\r");
+//          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
+//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
+//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1788,71 +1822,51 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case SCHNAPSER:
-//        if (start != TURN_PLAYER_1)                           // kann I mir wahrscheinlich sparen
-//        {
-//          printf("0       NO\n");
-//          printf("---------------------------------------------------------------\n");
-//  //        printf("3       LAND\n");
-//          printf("4       BAUERNSCHNAPSER\n");
-//          printf("5       JODLER\n");
-//          printf("6       HERRENJODLER\n");
-//          printf("---------------------------------------------------------------\n");
-//
-//          do
-//          {
-//            system ("/bin/stty raw");
-//            *mode = getchar();
-//            *mode = *mode CHAR_TO_INT;
-//            printf("\r");
-//            if (*mode != WEITER && *mode != BAUERNSCHNAPSER
-//                && *mode != JODLER && *mode != HERREN_JODLER)
-//              printf("Gibt's nicht!\n");
-//          } while (*mode != WEITER && *mode != BAUERNSCHNAPSER
-//                   && *mode != JODLER && *mode != HERREN_JODLER);
-//          system ("/bin/stty cooked");
-//
-//          if (*mode == WEITER)
-//            *mode = mode_buffer;
-//
-//          switchMode(mode);
-//          break;
-//        }
-//
-//        else
-//        {
-          printf("0       NO\n");
-          printf("---------------------------------------------------------------\n");
-          printf("3       LAND\n");
-          printf("4       BAUERNSCHNAPSER\n");
-          printf("5       JODLER\n");
-          printf("6       HERRENJODLER\n");
-          printf("---------------------------------------------------------------\n");
-          
-          do
-          {
-//            system ("/bin/stty raw");
-            *mode = getchar();
-            fflush(stdin);
-            *mode = *mode CHAR_TO_INT;
-            printf("\r");
-            if (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
-                && *mode != JODLER && *mode != HERREN_JODLER)
-              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-          } while (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
-                   && *mode != JODLER && *mode != HERREN_JODLER);
-//          system ("/bin/stty cooked");
         
-          // log onto black box
-          callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
-          
-          if (*mode == WEITER)
-            *mode = mode_buffer;
-          
-          switchMode(mode);
-          break;
-//        }
+        raiseCommands(permitted, "12");
+      
+        printf("0       NO\n");
+        printf("---------------------------------------------------------------\n");
+        printf("3       LAND\n");
+        printf("4       BAUERNSCHNAPSER\n");
+        printf("5       JODLER\n");
+        printf("6       HERRENJODLER\n");
+        printf("---------------------------------------------------------------\n");
+        
+//        do
+//        {
+////            system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
+//              && *mode != JODLER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
+//                 && *mode != JODLER && *mode != HERREN_JODLER);
+////          system ("/bin/stty cooked");
+      
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
+        
+        // log onto black box
+        callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
+        
+        if (*mode == WEITER)
+          *mode = mode_buffer;
+        
+        switchMode(mode);
+        break;
         
       case LAND:
+        
+        raiseCommands(permitted, "123");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("4       BAUERNSCHNAPSER\n");
@@ -1860,19 +1874,26 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1884,23 +1905,33 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case BAUERNSCHNAPSER:
+        
+        raiseCommands(permitted, "1234");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1912,22 +1943,32 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case JODLER:
+        
+        raiseCommands(permitted, "12345");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1954,6 +1995,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
     switch (*mode)
     {
       case RUFER:
+        
+        raiseCommands(permitted, "1");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -1963,21 +2007,28 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
+//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
+//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");  // not perfect
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -1992,6 +2043,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case SCHNAPSER:
+        
+        raiseCommands(permitted, "1");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -2001,21 +2055,28 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != SCHNAPSER
-              && *mode != LAND && *mode != BAUERNSCHNAPSER
-              && *mode != JODLER && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != SCHNAPSER
-                 && *mode != LAND && *mode != BAUERNSCHNAPSER
-                 && *mode != JODLER && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != SCHNAPSER
+//              && *mode != LAND && *mode != BAUERNSCHNAPSER
+//              && *mode != JODLER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != SCHNAPSER
+//                 && *mode != LAND && *mode != BAUERNSCHNAPSER
+//                 && *mode != JODLER && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2030,6 +2091,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case LAND:
+        
+        raiseCommands(permitted, "13");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -2038,21 +2102,28 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != SCHNAPSER
-              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != SCHNAPSER
-                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != SCHNAPSER
+//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != SCHNAPSER
+//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2067,6 +2138,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case BAUERNSCHNAPSER:
+        
+        raiseCommands(permitted, "123");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("4       KONTRA-BAUERNSCHNAPSER\n");
@@ -2074,19 +2148,26 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2101,22 +2182,32 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case JODLER:
+        
+        raiseCommands(permitted, "12345");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2146,6 +2237,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
     switch (*mode)
     {
       case RUFER:
+        
+        raiseCommands(permitted, "1");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -2155,21 +2249,28 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
+//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
+//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2192,6 +2293,19 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case SCHNAPSER:
+        
+        if (*bool_contra == TRUE)
+        {
+          
+        }
+        
+        else
+        {
+          
+        }
+        
+        raiseCommands(permitted, "123");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         //printf("3       LAND\n");
@@ -2200,19 +2314,26 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
-              && *mode != JODLER && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
-                 && *mode != JODLER && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
+//              && *mode != JODLER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
+//                 && *mode != JODLER && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2235,6 +2356,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case LAND:
+        
+        raiseCommands(permitted, "13");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("2       KONTRA-SCHNAPSER\n");
@@ -2243,21 +2367,28 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != SCHNAPSER
-              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != SCHNAPSER
-                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != SCHNAPSER
+//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != SCHNAPSER
+//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2280,6 +2411,9 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case BAUERNSCHNAPSER:
+        
+        raiseCommands(permitted, "123");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("4       KONTRA-BAUERNSCHNAPSER\n");
@@ -2287,19 +2421,27 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-              && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-                 && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//              && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
+//                 && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -2322,22 +2464,32 @@ int raiseMode(int* mode, int start, FILE* file_pointer)
         break;
         
       case JODLER:
+        
+        raiseCommands(permitted, "12345");
+        
         printf("0       NO\n");
         printf("---------------------------------------------------------------\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          *mode = getchar();
-          fflush(stdin);
-          *mode = *mode CHAR_TO_INT;
-          printf("\r");
-          if (*mode != WEITER && *mode != HERREN_JODLER)
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (*mode != WEITER && *mode != HERREN_JODLER);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          *mode = getchar();
+//          fflush(stdin);
+//          *mode = *mode CHAR_TO_INT;
+//          printf("\r");
+//          if (*mode != WEITER && *mode != HERREN_JODLER)
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (*mode != WEITER && *mode != HERREN_JODLER);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        *mode = getInput(permitted) CHAR_TO_INT;
+        
+        // reset permitted
+        strcpy(permitted, "\0\0\0\0\0\0");
+        // ------------- new 20220728 -------------
         
         // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
@@ -17802,6 +17954,7 @@ unsigned int in(const char* list, char wanted)
 char getInput(const char* permitted)
 {
   char valid_input = '\0';
+  unsigned int check = FALSE;
   
 //  system ("/bin/stty raw");
   
@@ -17810,11 +17963,40 @@ char getInput(const char* permitted)
     valid_input = (char)getchar();
     fflush(stdin);
     // printf("\r");
-    if (!in(permitted, valid_input))
+    check = in(permitted, valid_input);
+    if (!check)
       printf("Invalid input!\n");
-  } while (!in(permitted, valid_input));
+  } while (!check);
   
 //  system ("/bin/stty cooked");
   
   return valid_input;
+}
+
+// only add valid members - in this case modes - from pre const list(s)
+// one possible issue could be, that loop runs only once - invalid = "251"
+// would nit work properly, but due to it just being a small helper function
+// and its usage is implemented properly in those few cases in which it is
+// used, let us just neglect that
+//
+void raiseCommands(char* permitted, char* invalid)
+{
+  int counter = 0;
+  int counter_invalid = 0;
+  int counter_permitted = 0;
+  
+  for (counter = 0; counter < MODES; counter++)
+  {
+    if (COMMANDS_RAISE[counter] == invalid[counter_invalid])
+    {
+      counter_invalid++;
+    }
+    
+    else
+    {
+      permitted[counter_permitted] = COMMANDS_RAISE[counter];
+      counter_permitted++;
+    }
+  }
+  printf("permitted: %s\n", permitted);
 }
