@@ -301,6 +301,7 @@ void greeting(unsigned int code);
 int blackBox(FILE* file_pointer, char* input);
 int callBlackBox(FILE* file_pointer, char* input);
 void getTime(char* string_time);
+// further extractions - post production
 
 //-----------------------------------------------------------------------------
 ///
