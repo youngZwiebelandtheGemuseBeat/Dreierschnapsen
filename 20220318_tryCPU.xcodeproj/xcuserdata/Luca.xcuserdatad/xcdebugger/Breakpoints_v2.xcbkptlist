@@ -1520,8 +1520,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "16179"
             endingLineNumber = "16179"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "sortOrderCommands(start, players_commands, current_players_order)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1808,8 +1808,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "15798"
             endingLineNumber = "15798"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "modeRufer(hands, start, trump, players, players_commands, initial_order, handle_pairs, points_caller, points_opponents, file_pointer)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2625,6 +2625,38 @@
             startingLineNumber = "11710"
             endingLineNumber = "11710"
             landmarkName = "buy(start, hands, deck_dealer, done_1, done_2, players, order, file_pointer)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A350471E-01F6-4EC3-9B35-EE503234BBEE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "20220318_tryCPU/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "9479"
+            endingLineNumber = "9479"
+            landmarkName = "modeBauernschnapser(hands, start, trump, players, file_pointer)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F3442E9A-A2F7-4883-8C03-C590DC7EF213"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "20220318_tryCPU/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "9507"
+            endingLineNumber = "9507"
+            landmarkName = "modeBauernschnapser(hands, start, trump, players, file_pointer)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

@@ -9504,7 +9504,7 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           case 'q':
             position_1 = 0;
             playCard(&(hands)[TURN_PLAYER_1 MINUS_ONE][/*positions[TURN_PLAYER_1 MINUS_ONE]*/position_1]);
-            printHand(hands[TURN_PLAYER_1 MINUS_ONE], 6, TURN_PLAYER_1 MINUS_ONE,
+            printHand(hands[TURN_PLAYER_1 MINUS_ONE], 6, TURN_PLAYER_1,
                       players[TURN_PLAYER_1 MINUS_ONE].name_);
             printf("---------------------------------------------------------------\n");
             break;
@@ -11637,7 +11637,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
   // the following loop may remain as it is
   do
   {
-//    system ("/bin/stty raw");
+    system ("/bin/stty raw");
     buffer = getchar();
     fflush(stdin);
     printf("\r");
@@ -11646,7 +11646,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
         || (buffer == '2' && *done_2 == TRUE))
       printf("Invalid input!\n");
   } while (buffer != '1' && buffer != '2' && buffer != '0');
-//  system ("/bin/stty cooked");
+  system ("/bin/stty cooked");
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -16344,7 +16344,7 @@ char getInput(char* permitted, unsigned int flag)
   
   printf("possible input: %s\n", permitted);
   
-//  system ("/bin/stty raw");
+  system ("/bin/stty raw");
 
   do
   {
@@ -16359,7 +16359,7 @@ char getInput(char* permitted, unsigned int flag)
       printf("Invalid input!\n");
   } while (!check);
   
-//  system ("/bin/stty cooked");
+  system ("/bin/stty cooked");
   
   return valid_input;
 }
