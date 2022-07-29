@@ -85,12 +85,20 @@
 #define RETRY           'R'
 #define MAXIMUM_POINTS  66
 #define ENOUGH          5
-static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
-static const char COMMANDS_POLAR[2] = {'y', 'n'};
-static const char COMMANDS_TRUMP[5] = {'0', '1', '2', '3', '4'};
-static const char COMMANDS_SUIT[4] = {'1', '2', '3', '4'};
-static const char COMMANDS_MODE[6] = {'1', '2', '3', '4', '5', '6'};
-static const char COMMANDS_RAISE[7] = {'0', '1', '2', '3', '4', '5', '6'};
+//static const char COMMANDS_CARDS[6] = {'q', 'w', 'e', 'a', 's', 'd'};
+//static const char COMMANDS_POLAR[2] = {'y', 'n'};
+//static const char COMMANDS_TRUMP[5] = {'0', '1', '2', '3', '4'};
+//static const char COMMANDS_SUIT[4] = {'1', '2', '3', '4'};
+//static const char COMMANDS_MODE[6] = {'1', '2', '3', '4', '5', '6'};
+//static const char COMMANDS_RAISE[7] = {'0', '1', '2', '3', '4', '5', '6'};
+#define COMMANDS_TRUMP  "01234"
+#define COMMANDS_CARDS  "qweasd"
+#define COMMANDS_POLAR  "yn"
+#define COMMANDS_SUIT   "1234"
+#define COMMANDS_MODE   "123456"
+#define COMMANDS_RAISE  "0123456"
+#define IN_MODE         1
+#define PRIOR           0
 
 //-----------------------------------------------------------------------------
 /// ADDITIONAL definitions of various colors and stuff for stdout
@@ -233,7 +241,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer);
 int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order);
 int priority(int start, int* mode, char* player, FILE* file_pointer);
-Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
+//Points modeGame(Card** hands, int start, char* trump, Player* players, int* order);
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order,
                  Pair* handle_pairs, int* points_caller, int* points_opponents,
@@ -306,8 +314,8 @@ int blackBox(FILE* file_pointer, char* input);
 int callBlackBox(FILE* file_pointer, char* input);
 void getTime(char* string_time);
 // further extractions - post production
-char getInput(const char* permitted);
-unsigned int in(const char* list, char wanted);
+char getInput(char* permitted, unsigned int flag);
+int in(char* list, char wanted);
 void raiseCommands(char* permitted, char* invalid);
 
 //-----------------------------------------------------------------------------
@@ -1343,8 +1351,6 @@ Points playGame(Card* deck, Card* deck_dealer,
   {
     case RUFER:
       // 1 - 3 points
-//      points_and_caller = modeGame(hands, start, decodeSuit(*trump), players,
-//                                   order);
       callBlackBox(file_pointer, "RUFER:\n");
       points_and_caller = switchRufer(hands, start, decodeSuit(*trump),
                                       players, order, file_pointer);
@@ -1436,7 +1442,7 @@ int callTrump(Card auf, FILE* file_pointer)
 //  system ("/bin/stty cooked");
   
   // ------------- new 20220728 -------------
-  trump = getInput(COMMANDS_TRUMP);
+  trump = getInput(COMMANDS_TRUMP, PRIOR);
   // ------------- new 20220728 -------------
   
   // log onto black box
@@ -1516,7 +1522,7 @@ int callSuit(int start, FILE* file_pointer)
 ////  system ("/bin/stty cooked");    // does not work like this on windows
   
   // ------------- new 20220728 -------------
-  suit = getInput(COMMANDS_SUIT);
+  suit = getInput(COMMANDS_SUIT, PRIOR);
   // ------------- new 20220728 -------------
   
   callBlackBox(file_pointer, "callSuit()");
@@ -1564,7 +1570,7 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
 ////      system ("/bin/stty cooked");
       
       // ------------- new 20220728 -------------
-      mode = getInput(COMMANDS_MODE) CHAR_TO_INT;
+      mode = getInput(COMMANDS_MODE, PRIOR) CHAR_TO_INT;                  // CHAR_TO_INT ???
       // ------------- new 20220728 -------------
       
       // log onto black box
@@ -1713,7 +1719,7 @@ int fleck(int player, FILE* file_pointer)
 ////  system ("/bin/stty cooked");
   
   // ------------- new 20220728 -------------
-  buffer = getInput(COMMANDS_POLAR);
+  buffer = getInput(COMMANDS_POLAR, PRIOR);
   // ------------- new 20220728 -------------
   
   // log onto black box
@@ -1749,7 +1755,7 @@ int fleckBack(int player, FILE* file_pointer)
 ////  system ("/bin/stty cooked");
   
   // ------------- new 20220728 -------------
-  buffer = getInput(COMMANDS_POLAR);
+  buffer = getInput(COMMANDS_POLAR, PRIOR);
   // ------------- new 20220728 -------------
   
   // log onto black box
@@ -1808,7 +1814,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;                     // char-to-int???
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -1850,7 +1856,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////          system ("/bin/stty cooked");
       
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -1891,7 +1897,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -1929,7 +1935,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -1966,7 +1972,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2026,7 +2032,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");  // not perfect
@@ -2074,7 +2080,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2127,7 +2133,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2171,7 +2177,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2211,7 +2217,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2274,7 +2280,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2329,7 +2335,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
   ////        system ("/bin/stty cooked");
           
           // ------------- new 20220728 -------------
-          *mode = getInput(permitted) CHAR_TO_INT;
+          *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
           
           // reset permitted
           strcpy(permitted, "\0\0\0\0\0\0");
@@ -2383,7 +2389,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
   ////        system ("/bin/stty cooked");
           
           // ------------- new 20220728 -------------
-          *mode = getInput(permitted) CHAR_TO_INT;
+          *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
           
           // reset permitted
           strcpy(permitted, "\0\0\0\0\0\0");
@@ -2439,7 +2445,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2491,7 +2497,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         
         // reset permitted
@@ -2540,7 +2546,7 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 ////        system ("/bin/stty cooked");
         
         // ------------- new 20220728 -------------
-        *mode = getInput(permitted) CHAR_TO_INT;
+        *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
@@ -2630,16 +2636,20 @@ int priority(int start, int* mode, char* player, FILE* file_pointer)
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
   
-  do
-  {
-//    system ("/bin/stty raw");
-    buffer = getchar();
-    fflush(stdin);
-    printf("\r");
-    if (buffer != 'y' && buffer != 'n')
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  } while (buffer != 'y' && buffer != 'n');
-//  system ("/bin/stty cooked");
+//  do
+//  {
+////    system ("/bin/stty raw");
+//    buffer = getchar();
+//    fflush(stdin);
+//    printf("\r");
+//    if (buffer != 'y' && buffer != 'n')
+//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//  } while (buffer != 'y' && buffer != 'n');
+////  system ("/bin/stty cooked");
+  
+  // ------------- new 20220728 -------------
+  buffer = getInput(COMMANDS_POLAR, PRIOR) CHAR_TO_INT;
+  // ------------- new 20220728 -------------
   
   // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -2653,1805 +2663,6 @@ int priority(int start, int* mode, char* player, FILE* file_pointer)
   
   else
     return start;
-}
-
-Points modeGame(Card** hands, int start, char* trump, Player* players, int* order)
-{
-  // with trump
-  // with 20 and 40
-  // all 6 rounds
-  // win with 66 points
-
-  // TODO: check "call" und "start"
-  //       can't we abandone call?
-  
-  int counter_turns = 0;
-  int counter_cards = 0;
-  int counter_position = 0;
-  int counter_suit = 0;
-  int counter_trump = 0;
-  int counter_hand = 0;
-  int counter_command = 0;
-  char commands[7] = "qweasd";
-  unsigned long length_commands = strlen(commands);
-  char commands_1[7] = "\0";
-  char commands_2[7] = "\0";
-  char commands_3[7] = "\0";
-  strcpy(commands_1, commands);
-  strcpy(commands_2, commands);
-  strcpy(commands_3, commands);
-  
-  // default
-//  int call      = TURN_PLAYER_1;
-//  int answer_1  = TURN_PLAYER_2;
-//  int answer_2  = TURN_PLAYER_3;
-  int call      = order[0] ADD_ONE;
-  int answer_1  = order[1] ADD_ONE;
-  int answer_2  = order[2] ADD_ONE;
-  int initial_order[3] = {call, answer_1, answer_2};   // initial order
-  
-  int player[3] = {call, answer_1, answer_2};
-  char* players_commands[3] = {commands_1, commands_2, commands_3};
-  
-  int position[3]   = {0};
-  int position_Q[3] = {0};
-  int pairs         = 0;
-  
-  int check = FALSE;
-  int buffer = 0;
-  int i = 0;
-  int counter_Q = 0;
-  int points_call = 0;
-  int points_opponents = 0;
-  int points_pair = 0;
-  int buffer_start = 0;
-  int bool_trump = TRUE;
-  
-  int points_1 = 0;
-  int points_2 = 0;
-  int points_3 = 0;
-  int points[3] = {points_1, points_2, points_3};
-  int count_bock    = 0;   // bock
-  int count_suit    = 0;   // right suit
-  int count_trump   = 0;   // trump
-  int count_permit  = 0;
-  int count_valid   = 0;
-  
-  Pair handle_pairs[3] = {0, 0, 0};
-  
-  Turn buffer_turn[3] = {{{NULL}, {0}, "", ' '}, ' ', 0};
-  getCall(start, &call, &answer_1, &answer_2);
-  buffer_start = start;
-  Points points_and_caller = {0, 0, 0};
-  char buffer_higher[6] = {'\0'};
-  
-  char input_CPU = '\0';
-  
-  Points next_and_points = {0, 0, 0};
-  int bool_trumped_already = FALSE;
-  
-  for (counter_turns = 0; counter_turns < MAXIMUM_TURNS; counter_turns++)
-  {
-    // call
-    printf("TURN: %d\n", counter_turns + 1);
-    
-    // 3 cards each round
-    for (i = 0; i < 3; i++)
-    {
-      printHand(hands[player[i] MINUS_ONE], HAND, player[i], players[player[/*order[i]*/ i] MINUS_ONE].name_);
-      printf("                         ^     ^     ^     ^     ^     ^  \n");
-      printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
-      
-      // highlight 20 & 40
-      if (i == 0)
-        pairs = highlight(hands[player[i] MINUS_ONE], player[i], position_Q);
-      
-      printf("---------------------------------------------------------------\n");
-      
-      // first to call
-      if (i == 0)
-      {
-        // check: human or CPU
-        if (players[player[i] MINUS_ONE].CPU_bool_ == FALSE)
-        {
-          do
-          {
-//            system ("/bin/stty raw");
-            buffer = getchar();
-            fflush(stdin);
-            printf("\r");
-            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-          } while (!check);
-//          system ("/bin/stty cooked");
-        }
-        
-        else
-        {
-          input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-          
-          while (input_CPU == RETRY)
-          {
-            input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-          }
-          
-          buffer = input_CPU;
-        }
-        
-        switch (buffer)
-        {
-          case 'q':
-            position[i] = 0;
-            
-            // check for 20 or 40
-            if (pairs > 0)
-            {
-              // at this position we will only find a KING
-              if (position[i] == position_Q[0] MINUS_ONE
-                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[0] MINUS_ONE,
-                                                           points_pair, &i, &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 40?\n");
-                    pairs--;
-                    // sollte ich hier nun auch theoretische positions_Q
-                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-                    //
-                    // Ja sicher!
-                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-                    position_Q[1] = position_Q[2];                            // oba viel besseres
-                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-                  }
-                }
-                // 20
-                else /* is_trump == FALSE */
-                {
-                  points_pair = 20;
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[0],
-                                                           points_pair,
-                                                           &i, &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 20?\n");
-                    pairs--;
-                    // sollte ich hier nun auch theoretische positions_Q
-                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                }
-              }
-            }
-            
-            if (i == ENOUGH)
-            {
-              break;
-            }
-            
-            else
-            {
-              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                        players[turn[i] MINUS_ONE].name_);
-              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                        players[player[i] MINUS_ONE].name_);
-              printf("---------------------------------------------------------------\n");
-              break;
-            }
-            
-          case 'w':
-            position[i] = 1;
-            
-            // check for 20 or 40
-            if (pairs > 0)
-            {
-              // second card = QUEEN
-              if (position[i] == position_Q[0]
-                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-//                  printf("check Q 40?\n");
-                }
-                // 20
-                else /* is_trump == FALSE */
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 20?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-//                  printf("check Q 20?\n");
-                }
-              }
-              // second card = KING
-              else if (position[i] == position_Q[0] MINUS_ONE
-                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[0] MINUS_ONE,
-                                                           points_pair, &i,
-                                                           &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-                    position_Q[1] = position_Q[2];                            // oba viel besseres
-                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-                  }
-//                  printf("check K 40?\n");
-                }
-                // 20
-                else /* is_trump == FALSE */
-                {
-                  points_pair = 20;
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[0],
-                                                           points_pair,
-                                                           &i, &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 20?\n");
-                    pairs--;
-                    // sollte ich hier nun auch theoretische positions_Q
-                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-//                  printf("check K 20?\n");
-                }
-              }
-            }
-            
-            if (i == ENOUGH)
-            {
-              break;
-            }
-            
-            else
-            {
-              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                        players[turn[i] MINUS_ONE].name_);
-              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                        players[player[i] MINUS_ONE].name_);
-              printf("---------------------------------------------------------------\n");
-              break;
-            }
-            
-          case 'e':
-            position[i] = 2;
-            
-            // check for 20 or 40
-            if (pairs > 0)
-            {
-              // third card = QUEEN
-              if (position[i] == position_Q[0]
-                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 40?\n");
-                }
-                // 20
-                else /* is_trump == FALSE */
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 20?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 20?\n");
-                }
-              }
-              // third card = KING
-              else if ((position[i] == position_Q[0] MINUS_ONE
-                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-                       || (position[i] == position_Q[1] MINUS_ONE
-                           && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN))
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[0] MINUS_ONE,
-                                                           points_pair, &i,
-                                                           &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-                    position_Q[1] = position_Q[2];                            // oba viel besseres
-                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-                  }
-                  
-//                  printf("check K 40?\n");
-                }
-                // 40
-                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[1] MINUS_ONE,
-                                                           points_pair, &i,
-                                                           &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];                            // naja, hardcoded
-                    position_Q[1] = position_Q[2];                            // oba viel besseres
-                    position_Q[2] = 0;                                        // fällt mir hier nit ein
-                  }
-                  
-//                  printf("check K 40?\n");
-                }
-                // 20
-                else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[0],
-                                                           points_pair,
-                                                           &i, &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 20?\n");
-                    pairs--;
-                    // sollte ich hier nun auch theoretische positions_Q
-                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check K 20?\n");
-                }
-                // 20
-                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                           position_Q[1],
-                                                           points_pair,
-                                                           &i, &points_call,
-                                                           &points_opponents,
-                                                           hands[player[i] MINUS_ONE],
-                                                           (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("K 20?\n");
-                    pairs--;
-                    // sollte ich hier nun auch theoretische positions_Q
-                    // "hochrutschen"? - 1 auf 0, 2 auf 1
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check K 20?\n");
-                }
-              }
-            }
-            
-            if (i == ENOUGH)
-            {
-              break;
-            }
-            
-            else
-            {
-              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                        players[turn[i] MINUS_ONE].name_);
-              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                        players[player[i] MINUS_ONE].name_);
-              printf("---------------------------------------------------------------\n");
-              break;
-            }
-            
-          case 'a':
-            position[i] = 3;
-            
-            // check for 20 or 40
-            if (pairs > 0)
-            {
-              // fourth card = QUEEN
-              if ((position[i] == position_Q[0]
-                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-                  || ((position[i] == position_Q[1]
-                       && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)))
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 40?\n");
-                }
-                // 40
-                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[1],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 40?\n");
-                }
-                // 20
-                else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 20?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 20?\n");
-                }
-                // 20
-                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[1],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 20?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 20?\n");
-                }
-              }
-              // fourth card = KING
-              else if ((position[i] == position_Q[0] MINUS_ONE
-                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-                       || (position[i] == position_Q[1] MINUS_ONE
-                           && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN))
-              {
-                if (position_Q[0] > position[0])  // first 20 or 40
-                {
-                  // 40
-                  if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                  {
-                    points_pair = 40;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[0] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 40?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 40?\n");
-                  }
-                  // 20
-                  else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-                  {
-                    points_pair = 20;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[0],
-                                                             points_pair,
-                                                             &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 20?\n");
-                      pairs--;
-                      // sollte ich hier nun auch theoretische positions_Q
-                      // "hochrutschen"? - 1 auf 0, 2 auf 1
-                      position_Q[0] = position_Q[1];
-                      position_Q[1] = position_Q[2];
-                      position_Q[2] = 0;
-                    }
-                    
-//                    printf("check K 20?\n");
-                  }
-                }
-                
-                else /* if (position_Q[0] < position[0]) */ // second 20 or 40
-                {
-                  // 40
-                  if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-                  {
-                    points_pair = 40;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[1] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 40?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 40?\n");
-                  }
-                  // 20
-                  else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-                  {
-                    points_pair = 20;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[1],
-                                                             points_pair,
-                                                             &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 20?\n");
-                      pairs--;
-                      // sollte ich hier nun auch theoretische positions_Q
-                      // "hochrutschen"? - 1 auf 0, 2 auf 1
-                      position_Q[0] = position_Q[1];
-                      position_Q[1] = position_Q[2];
-                      position_Q[2] = 0;
-                    }
-                    
-//                    printf("check K 20?\n");
-                  }
-                }
-              }
-            }
-            
-            if (i == ENOUGH)
-            {
-              break;
-            }
-            
-            else
-            {
-              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                        players[turn[i] MINUS_ONE].name_);
-              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                        players[player[i] MINUS_ONE].name_);
-              printf("---------------------------------------------------------------\n");
-              break;
-            }
-            
-          case 's':
-            position[i] = 4;
-            
-            // check for 20 or 40
-            if (pairs > 0)
-            {
-              // fifth card = QUEEN
-              if ((position[i] == position_Q[0]
-                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-                  || ((position[i] == position_Q[1]
-                       && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)))
-              {
-                // 40
-                if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 40?\n");
-                }
-                // 40
-                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-                {
-                  points_pair = 40;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[1],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 40?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 40?\n");
-                }
-                // 20
-                else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[0],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 20?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 20?\n");
-                }
-                // 20
-                else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-                {
-                  points_pair = 20;
-                  
-                  handle_pairs[i].bool_pair_
-                    = pairHandler(handle_pairs, position_Q[1],
-                                  points_pair, &i, &points_call,
-                                  &points_opponents,
-                                  hands[player[i] MINUS_ONE],
-                                  (player[0] == buffer_start));
-                  if (handle_pairs[i].bool_pair_ == TRUE)
-                  {
-//                    printf("Q 20?\n");
-                    
-                    pairs--;
-                    
-                    position_Q[0] = position_Q[1];
-                    position_Q[1] = position_Q[2];
-                    position_Q[2] = 0;
-                  }
-                  
-//                  printf("check Q 20?\n");
-                }
-              }
-              // fifth card = KING
-              else if ((position[i] == position_Q[0] MINUS_ONE
-                       && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-                       || (position[i] == position_Q[1] MINUS_ONE
-                           && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)
-                       || (position[i] == position_Q[2] MINUS_ONE
-                           && hands[player[i] MINUS_ONE][position_Q[2]].value_ == QUEEN))
-              {
-                // first 20 or 40
-                if (position_Q[0] > position[0])
-                {
-                  // 40
-                  if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ == TRUE)
-                  {
-                    points_pair = 40;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[0] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 40?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 40?\n");
-                  }
-                  // 20
-                  else if (hands[player[i] MINUS_ONE][position_Q[0]].is_trump_ != TRUE)
-                  {
-                    points_pair = 20;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[0] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 20?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 20?\n");
-                  }
-                }
-                // third 20 or 40
-                else if (position_Q[2] MINUS_ONE == 4)      // only possible
-                                                            // on position 4
-                {
-                  // 40
-                  if (hands[player[i] MINUS_ONE][position_Q[2]].is_trump_ == TRUE)
-                  {
-                    points_pair = 40;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[2] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 40?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 40?\n");
-                  }
-                  // 20
-                  else if (hands[player[i] MINUS_ONE][position_Q[2]].is_trump_ != TRUE)
-                  {
-                    points_pair = 20;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[2] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 20?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 20?\n");
-                  }
-                }
-                // second 20 or 40
-                else /* best work around yet :D */
-                {
-                  // 40
-                  if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ == TRUE)
-                  {
-                    points_pair = 40;
-                    
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[1] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 40?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 40?\n");
-                  }
-                  // 20
-                  else if (hands[player[i] MINUS_ONE][position_Q[1]].is_trump_ != TRUE)
-                  {
-                    points_pair = 20;
-                    handle_pairs[i].bool_pair_ = pairHandler(handle_pairs,
-                                                             position_Q[1] MINUS_ONE,
-                                                             points_pair, &i, &points_call,
-                                                             &points_opponents,
-                                                             hands[player[i] MINUS_ONE],
-                                                             (player[0] == buffer_start));
-                    if (handle_pairs[i].bool_pair_ == TRUE)
-                    {
-//                      printf("K 20?\n");
-                      
-                      pairs--;
-                      
-                      position_Q[0] = position_Q[1];                            // naja, hardcoded
-                      position_Q[1] = position_Q[2];                            // oba viel besseres
-                      position_Q[2] = 0;                                        // fällt mir hier nit ein
-                    }
-                    
-//                    printf("check K 20?\n");
-                  }
-                }
-              }
-            }
-            
-            if (i == ENOUGH)
-            {
-              break;
-            }
-            
-            else
-            {
-              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                        players[turn[i] MINUS_ONE].name_);
-              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                        players[player[i] MINUS_ONE].name_);
-              printf("---------------------------------------------------------------\n");
-              break;
-            }
-            
-          case 'd':
-            position[i] = 5;
-            
-            // check for 20 or 40
-            if (pairs > 0)
-            {
-              // at this position we will only find a QUEEN
-              if ((position[i] == position_Q[0]
-                   && hands[player[i] MINUS_ONE][position_Q[0]].value_ == QUEEN)
-                  || (position[i] == position_Q[1]
-                      && hands[player[i] MINUS_ONE][position_Q[1]].value_ == QUEEN)
-                  || (position[i] == position_Q[2]
-                      && hands[player[i] MINUS_ONE][position_Q[2]].value_ == QUEEN))
-                
-                /* QUICK AND DIRTY FIX .. IMPROVE IN "POST PRODUCTION" (; */
-                
-              {
-                for (int j = 0; j < 3; j++)                       // sowas tu'I normalerwiese NIE
-                {
-                  if (position_Q[j] == position[i] /* 5 */)
-                  {
-                    // 40
-                    if (hands[player[i] MINUS_ONE][position_Q[j]].is_trump_ == TRUE)
-                    {
-                      points_pair = 40;
-                      
-                      handle_pairs[i].bool_pair_
-                        = pairHandler(handle_pairs, position_Q[j],
-                                      points_pair, &i, &points_call,
-                                      &points_opponents,
-                                      hands[player[i] MINUS_ONE],
-                                      (player[0] == buffer_start));
-                      if (handle_pairs[i].bool_pair_ == TRUE)
-                      {
-//                        printf("Q 40?\n");
-                        
-                        pairs--;
-                        
-                        position_Q[0] = position_Q[1];
-                        position_Q[1] = position_Q[2];
-                        position_Q[2] = 0;
-                      }
-                      
-//                      printf("check Q 40?\n");
-                    }
-                    // 20
-                    else /* is_trump == FALSE */
-                    {
-                      points_pair = 20;
-                      
-                      handle_pairs[i].bool_pair_
-                        = pairHandler(handle_pairs, position_Q[j],
-                                      points_pair, &i, &points_call,
-                                      &points_opponents,
-                                      hands[player[i] MINUS_ONE],
-                                      (player[0] == buffer_start));
-                      if (handle_pairs[i].bool_pair_ == TRUE)
-                      {
-//                        printf("Q 20?\n");
-                        
-                        pairs--;
-                        
-                        position_Q[0] = position_Q[1];
-                        position_Q[1] = position_Q[2];
-                        position_Q[2] = 0;
-                      }
-                      
-//                      printf("check Q 20?\n");
-                    }
-                  }
-                }
-              }
-            }
-            
-            if (i == ENOUGH)
-            {
-              break;
-            }
-            
-            else
-            {
-              playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-//              printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                        players[turn[i] MINUS_ONE].name_);
-              printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                        players[player[i] MINUS_ONE].name_);
-              printf("---------------------------------------------------------------\n");
-              break;
-            }
-            
-          default:
-            break;
-        }
-      }
-      
-      // further playing
-      else if (i != 0 && i < 3)
-      {
-        // -----------
-        
-        // rewind bock
-        if (hands[player[i] MINUS_ONE][0].is_bock_ == TRUE) // hard coded 0 sollte passen
-                                                            // zumal: ein bock: alle bock
-        {
-          for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-          {
-            hands[player[i] MINUS_ONE][counter_cards].is_bock_ = FALSE;
-          }
-        }
-
-        // check position(s) of valid cards for this round
-        // do not allow any other card
-        // delete non valid characters from commands
-        count_bock    = 0;   // bock
-        count_suit    = 0;   // right suit
-        count_trump   = 0;   // trump
-        
-        // seek
-        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
-             counter_cards++)
-        {
-          // have trump
-          if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
-          {
-//            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_)
-            count_trump++;
-          }
-        }
-        
-        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
-             counter_cards++)
-        {
-          // right suit
-          if (i == 1)
-          {
-            if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
-                == (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
-            {
-              // rigtht suit is trump (: trump has been played )
-              if (hands[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
-              {
-                count_trump--;
-              }
-              count_suit++;
-            }
-          }
-          
-          else /* if (i == 2) */
-          {
-            if ((hands)[player[i] MINUS_ONE][counter_cards].suit_
-                == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
-            {
-              // rigtht suit is trump (: trump has been played )
-              if (hands[player[i] MINUS_ONE][counter_cards].is_trump_ == TRUE)
-              {
-                count_trump--;
-              }
-              count_suit++;
-            }
-          }
-        }
-        
-        for (counter_cards = 0; counter_cards < (HAND/* - counter_turns*/);
-             counter_cards++)
-        {
-          // no trump && no suit = all bock
-          if (i == 1)
-          {
-            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
-                && (hands)[player[i] MINUS_ONE][counter_cards].suit_
-                != (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
-            {
-              count_bock++;
-            }
-          }
-          
-          else /* if (i == 2) */
-          {
-            if ((hands)[player[i] MINUS_ONE][counter_cards].is_trump_ == FALSE
-                && (hands)[player[i] MINUS_ONE][counter_cards].suit_
-                != (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
-            {
-              count_bock++;
-            }
-          }
-        }
-        
-        // .. and adjust ------------
-        strcpy(players_commands[i], "000000");    // maybe there is a better
-                                                  // more professinal way
-        
-        counter_trump   = 0;
-        counter_suit    = 0;
-        counter_cards   = 0;
-        counter_hand    = 0;
-        counter_command = 0;
-        
-        // all bock - no matter which answer
-        if ((count_suit == 0 && count_trump == 0))
-        {
-          // according to turn, -1
-//          printf("Alles Bock!\n");
-          while (counter_hand < (HAND))
-          {
-            if ((hands)[player[i] MINUS_ONE][counter_hand].suit_ != NULL)
-            {
-              players_commands[i][counter_cards] = commands[counter_command];
-              counter_command++;
-              counter_cards++;
-            }
-            
-            else
-            {
-              counter_command++;
-            }
-            
-            counter_hand++;
-          }
-        }
-        
-        // no valid suit but at least one trump
-        else if (count_suit == 0 && count_trump > 0)
-        {
-          counter_trump   = 0;
-          counter_suit    = 0;
-          counter_cards   = 0;
-          counter_hand    = 0;
-          counter_command = 0;
-          // must hold trump
-          // allow trump(s)
-//          printf("Muaßt an Trumpf spiel'n!\n");
-
-          while (counter_hand < (HAND/* - counter_turns*/)/* eben nicht strlen(players_commands[i])*/)
-          {
-            // differenciate between answer 1 and answer 2
-            // answer 1 must trump call & answer 2 must trump either
-            if ((hands)[player[i] MINUS_ONE][counter_hand].suit_ != NULL
-                && hands[player[i] MINUS_ONE][counter_hand].is_trump_ == TRUE)
-            {
-              players_commands[i][counter_cards] = commands[counter_command];
-              counter_command++;
-              counter_cards++;
-            }
-            
-            else
-            {
-              counter_command++;
-            }
-            
-            counter_hand++;
-          }
-          
-          // remove right
-          for (counter_cards = count_trump; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
-          {
-            players_commands[i][counter_cards] = '\0';
-          }
-        } // end else if (must play trump)
-        
-        else /* must hold suit, at leas one */
-        {
-//          printf("Muaßt Farb' spielen!\n");
-          counter_cards = 0;
-          counter_command = 0;
-          
-          // remove left
-          for (counter_hand = 0; counter_hand < (HAND/* - counter_turns*/); counter_hand++)
-          {
-            // suit found
-            if (i == 1)   // first to answer
-            {
-              if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
-                  == (hands)[player[i - 1] MINUS_ONE][position[i - 1]].suit_)
-              {
-//                printf("gleiche Farbe @ %d\n", counter_hand);
-//                printf("%c = %c\n", players_commands[i][counter_hand], commands[counter_command]);
-                players_commands[i][counter_cards] = commands[counter_command];
-                counter_command++;
-                counter_cards++;
-              }
-              else
-              {
-                counter_command++;
-              }
-            }
-            
-            else /* (i == 1) */   // second to answer
-            {
-              if ((hands)[player[i] MINUS_ONE][counter_hand].suit_
-                  == (hands)[player[i - 2] MINUS_ONE][position[i - 2]].suit_)
-              {
-//                printf("gleiche Farbe @ %d\n", counter_hand);
-                players_commands[i][counter_cards] = commands[counter_command];
-                counter_command++;
-                counter_cards++;
-              }
-              else
-              {
-//                players_commands[i][counter_hand] = commands[counter_command];
-                counter_command++;
-              }
-            }
-          }
-          
-          // remove right
-          for (counter_cards = count_suit; counter_cards < (HAND/* - counter_turns*/); counter_cards++)
-          {
-            players_commands[i][counter_cards] = '\0';
-          }
-        } // end else (must play suit)
-        
-        // now that we have found valid cards, go on and only allow permitted cards
-        // we do not have to mind case:     all bock
-        // but                              trump (in case trump has been played)
-        //                                  suit
-        // what do we need? - (answer 1): called card's value
-        //                    (answer 2): called card's value and answer 1's value
-        
-        if (i == 1)
-        {
-          // if there is at least one valid card to answer with
-          if (!(count_suit == 0 && count_trump == 0))
-          {
-            // compare values and only allow weaker cards if there is not one
-            // which could trump call
-            counter_command = 0;
-            counter_cards   = 0;
-            count_permit    = 0;
-            
-            if (count_suit > 0)
-            {
-              while (players_commands[i][counter_command] != '\0')
-              {
-                if ((hands)[player[i] MINUS_ONE][counter_cards].value_ >
-                    /* called card */ hands[player[0] MINUS_ONE][position[0]].value_)
-                {
-                  printf("%s %d - %s %d\n", hands[player[0] MINUS_ONE][position[0]].suit_,
-                         hands[player[0] MINUS_ONE][position[0]].value_,
-                         (hands)[player[i] MINUS_ONE][counter_cards].suit_,
-                         (hands)[player[i] MINUS_ONE][counter_cards].value_);
-                  buffer_higher[counter_cards] = players_commands[i][counter_cards];
-                  buffer_higher[counter_cards ADD_ONE] = '\0';
-                  counter_cards++;
-                  
-                  if (player[0] == initial_order[0])
-                  {
-                    bool_trumped_already = TRUE;
-                  }
-                }
-                counter_command++;
-              }
-            }
-            
-            if (counter_cards > 0)
-            {
-              strcpy(players_commands[i], "\0\0\0\0\0\0");
-              strcpy(players_commands[i], buffer_higher);
-              strcpy(buffer_higher, "\0\0\0\0\0\0");
-            }
-          }
-        }
-        
-        else /* if (i == 2) */
-        {
-          // if there is at least one valid card to answer with
-          if (!(count_suit == 0 && count_trump == 0))
-          {
-            // compare values and only allow weaker cards if there is not one
-            // which could trump any (call || answer 1)
-            counter_command = 0;
-            counter_cards   = 0;
-            count_permit    = 0;
-            
-            if (count_suit > 0)
-            {
-              if (bool_trumped_already == FALSE)
-              {
-                while (players_commands[i][counter_command] != '\0')
-                {
-                  // has to trump caller if possible
-                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                      /* called card */ hands[player[0] MINUS_ONE][position[0]].value_
-                      || (hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                      /* answer 1's card */ hands[player[i - 1] MINUS_ONE][position[1/*0*/]].value_)
-                  {
-
-                  }
-                  else
-                  {
-                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
-                    buffer_higher[counter_cards ADD_ONE] = '\0';
-                    counter_cards++;
-                  }
-                counter_command++;
-                }
-              }
-
-              else
-              {
-                // no need to trump caller
-              }
-            }
-            
-            else if (count_trump > 0)
-            {
-//              printf("%d\n", (hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_);
-              if ((hands)[player[i] MINUS_ONE][position[i MINUS_ONE]].is_trump_)
-              {
-                while (players_commands[i][counter_command] != '\0')
-                {
-                  // only need to compare trump's value with answer 1
-                  if ((hands)[player[i] MINUS_ONE][counter_cards].value_ <
-                      /* answer 1's card */ hands[player[i MINUS_ONE] MINUS_ONE][position[i MINUS_ONE]].value_)
-                  {
-                    printf("\n!!! 3622 !!!\n");
-                  }
-                  else
-                  {
-                    buffer_higher[counter_cards] = players_commands[i][counter_cards];
-                    buffer_higher[counter_cards ADD_ONE] = '\0';
-                    counter_cards++;
-                  }
-                  counter_command++;
-                }
-              }
-            }
-            
-            if (counter_cards > 0)
-            {
-              strcpy(players_commands[i], "\0\0\0\0\0\0");
-              strcpy(players_commands[i], buffer_higher);
-              strcpy(buffer_higher, "\0\0\0\0\0\0");
-            }
-          }
-        }
-        
-        // -----------
-        
-        // check: human or CPU
-        if (players[player[i] MINUS_ONE].CPU_bool_ == FALSE)
-        {
-          do
-          {
-//            system ("/bin/stty raw");
-            buffer = getchar();
-            fflush(stdin);
-            printf("\r");
-            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-          } while (!check);
-//          system ("/bin/stty cooked");
-        }
-        
-        else
-        {
-          input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-          
-          while (input_CPU == RETRY)
-          {
-            input_CPU = checkCPU(players[player[i] MINUS_ONE], INSTANCE_CARD, players_commands[i]);
-          }
-          
-          buffer = input_CPU;
-        }
-        
-        switch (buffer)
-        {
-          case 'q':
-            position[i] = 0;
-            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-  //          playCard(&(buffer_turn)[i].card_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                      players[turn[i] MINUS_ONE].name_);
-            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                      players[player[i] MINUS_ONE].name_);
-            printf("---------------------------------------------------------------\n");
-            break;
-            
-          case 'w':
-            position[i] = 1;
-            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-  //          playCard(&(buffer_turn)[i].card_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                      players[turn[i] MINUS_ONE].name_);
-            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                      players[player[i] MINUS_ONE].name_);
-            printf("---------------------------------------------------------------\n");
-            break;
-            
-          case 'e':
-            position[i] = 2;
-            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-  //          playCard(&(buffer_turn)[i].card_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                      players[turn[i] MINUS_ONE].name_);
-            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                      players[player[i] MINUS_ONE].name_);
-            printf("---------------------------------------------------------------\n");
-            break;
-            
-          case 'a':
-            position[i] = 3;
-            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-  //          playCard(&(buffer_turn)[i].card_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                      players[turn[i] MINUS_ONE].name_);
-            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                      players[player[i] MINUS_ONE].name_);
-            printf("---------------------------------------------------------------\n");
-            break;
-            
-          case 's':
-            position[i] = 4;
-            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-  //          playCard(&(buffer_turn)[i].card_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                      players[turn[i] MINUS_ONE].name_);
-            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                      players[player[i] MINUS_ONE].name_);
-            printf("---------------------------------------------------------------\n");
-            break;
-            
-          case 'd':
-            position[i] = 5;
-            playCard(&(hands)[player[i] MINUS_ONE][position[i]]);
-  //          playCard(&(buffer_turn)[i].card_);
-//            printHand((hands)[player[i] MINUS_ONE], 6, turn[i],
-//                      players[turn[i] MINUS_ONE].name_);
-            printHand((hands)[player[i] MINUS_ONE], 6, player[i],
-                      players[player[i] MINUS_ONE].name_);
-            printf("---------------------------------------------------------------\n");
-            break;
-            
-          default:
-            break;
-        }
-      } // end else
-    } // end of for( i )
-    
-    // --------------------------------------------------------------------------------
-    if (i > 3) // exit condition: 20 or 40 shown only - enough & exit
-    {
-      printf("points caller: %d\n", points_call);
-      printf("points opponents: %d\n", points_opponents);
-      break;
-    }
-    // --------------------------------------------------------------------------------
-    
-    i = 0;
-    
-    next_and_points = next(initial_order, player,
-                           hands[player[i] MINUS_ONE][position[i]],
-                           (hands)[player[i + 1] MINUS_ONE][position[i + 1]],
-                           (hands)[player[i + 2] MINUS_ONE][position[i + 2]]);
-    
-    // ...
-    if (initial_order[0] == TURN_PLAYER_2)
-    {
-      if (next_and_points.winner_ == 2)
-        next_and_points.winner_ = TURN_PLAYER_3;
-      else if (next_and_points.winner_ == 3)
-        next_and_points.winner_ = TURN_PLAYER_1;
-      else
-        next_and_points.winner_ = TURN_PLAYER_2;
-    }
-    
-    if (initial_order[0] == TURN_PLAYER_3)
-    {
-      if (next_and_points.winner_ == 2)
-        next_and_points.winner_ = TURN_PLAYER_1;
-      else if (next_and_points.winner_ == 3)
-        next_and_points.winner_ = TURN_PLAYER_2;
-      else
-        next_and_points.winner_ = TURN_PLAYER_3;
-    }
-    // ...
-    
-    start = next_and_points.winner_;
-    
-    if (start == initial_order[0])
-      points_call += next_and_points.points_;
-    else
-      points_opponents += next_and_points.points_;
-    
-    getCall(start, &call, &answer_1, &answer_2);
-    
-    // reset (points) for next round
-    points[0] = 0;
-    points[1] = 0;
-    points[2] = 0;
-    pairs = resetPairs(position_Q);
-    resetHandlePairs(handle_pairs);
-    points_pair = 0;
-    next_and_points.points_ = 0;
-    next_and_points.winner_ = 0;
-    next_and_points.caller_ = 0;
-    bool_trumped_already = FALSE;
-    
-    if (points_call >= 66)
-    {
-//      points_and_caller = {};
-      break;
-    }
-    
-    else if (points_opponents >= 66)
-    {
-//      points_and_caller = {};
-      break;
-    }
-    
-    // who has played the highest card calls next - and exactly this is the bitch here
-    
-    // may we do this here -----------------------
-    removeCard(&hands[player[i] MINUS_ONE][position[i]]);
-    removeCard(&hands[player[i + 1] MINUS_ONE][position[i + 1]]);
-    removeCard(&hands[player[i + 2] MINUS_ONE][position[i + 2]]);
-    // -------------------------------------------
-    // write all left over cards onto commands
-
-    // player 1
-    counter_position = 0 ;
-    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-    {
-      if ((hands)[player[i] MINUS_ONE][counter_cards].suit_ != NULL)
-      {
-        players_commands[i][counter_position] = commands[counter_cards];
-        counter_position++;
-      }
-    }
-    players_commands[i][counter_position] = '\0';
-    
-    // player 2
-    counter_position = 0 ;
-    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-    {
-      if ((hands)[player[i + 1] MINUS_ONE][counter_cards].suit_ != NULL)
-      {
-        players_commands[i + 1][counter_position] = commands[counter_cards];
-        counter_position++;
-      }
-    }
-    players_commands[i + 1][counter_position] = '\0';
-    
-    // player 3
-    counter_position = 0 ;
-    for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-    {
-      if ((hands)[player[i + 2] MINUS_ONE][counter_cards].suit_ != NULL)
-      {
-        players_commands[i + 2][counter_position] = commands[counter_cards];
-        counter_position++;
-      }
-    }
-    players_commands[i + 2][counter_position] = '\0';
-    // -------------------------------------------
-    
-    // sort players' order
-//    getCall(start, &call, &answer_1, &answer_2); -> copied to 3771
-    
-    player[0] = call;
-    player[1] = answer_1;
-    player[2] = answer_2;
-    
-    
-    if (player[0] == TURN_PLAYER_1)
-    {
-      players_commands[0] = commands_1;
-      players_commands[1] = commands_2;
-      players_commands[2] = commands_3;
-    }
-    
-    if (player[0] == TURN_PLAYER_2)
-    {
-      players_commands[0] = commands_2;
-      players_commands[1] = commands_3;
-      players_commands[2] = commands_1;
-    }
-    
-    if (player[0] == TURN_PLAYER_3)
-    {
-      players_commands[0] = commands_3;
-      players_commands[1] = commands_1;
-      players_commands[2] = commands_2;
-    }
-    
-    // print points
-    printf("player:  %d\nopponents:  %d\n", points_call, points_opponents);
-
-  } // end for()
-  
-  // TODO: letzter Stuch bringt nix .. Call < 66 = TOT
-  
-  points_and_caller.caller_ = TURN_PLAYER_1;
-  
-  if (points_call < 66)
-  {
-    if (points_call == 0)
-    {
-      printf("Opponents win 3 points!\n");
-      printf("---------------------------------------------------------------\n");
-      points_and_caller.points_ = 3;
-      // points_and_caller.caller_ = IRGENDWER;
-      points_and_caller.winner_ = OPPONENTS_WIN;
-      return points_and_caller;
-    }
-    
-    else if (points_call < 33)
-    {
-      printf("Opponents win 2 points!\n");
-      printf("---------------------------------------------------------------\n");
-      points_and_caller.points_ = 2;
-      // points_and_caller.caller_ = IRGENDWER;
-      points_and_caller.winner_ = OPPONENTS_WIN;
-      return points_and_caller;
-    }
-    
-    else /*if (points_call > 33)*/
-    {
-      printf("Opponents win 1 points!\n");
-      printf("---------------------------------------------------------------\n");
-      points_and_caller.points_ = 1;
-      // points_and_caller.caller_ = IRGENDWER;
-      points_and_caller.winner_ = OPPONENTS_WIN;
-      return points_and_caller;
-    }
-  }
-  
-  else /* caller wins (modeGame() = player 1) */
-  {
-    if (points_opponents == 0)
-    {
-      printf("Player %d wins 3 points!\n", buffer_start);
-      printf("---------------------------------------------------------------\n");
-      points_and_caller.points_ = 3;
-      points_and_caller.winner_ = TURN_PLAYER_1 /*buffer_start*/;
-      return points_and_caller;
-    }
-    
-    else if (points_opponents < 33)
-    {
-      printf("Player %d wins 2 points!\n", buffer_start);
-      printf("---------------------------------------------------------------\n");
-      points_and_caller.points_ = 2;
-      points_and_caller.winner_ = TURN_PLAYER_1;
-      return points_and_caller;
-    }
-    
-    else /*if (points_opponent > 33)*/
-    {
-      printf("Player %d wins 1 points!\n", buffer_start);
-      printf("---------------------------------------------------------------\n");
-      points_and_caller.points_ = 1;
-      points_and_caller.winner_ = TURN_PLAYER_1;
-      return points_and_caller;
-    }
-  }
 }
 
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
@@ -4587,16 +2798,21 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         // first to call
         if (i == 0)
         {
-          do
-          {
-//            system ("/bin/stty raw");
-            buffer = getchar();
-            fflush(stdin);
-            printf("\r");
-            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-          } while (!check);
-//          system ("/bin/stty cooked");
+//          do
+//          {
+////            system ("/bin/stty raw");
+//            buffer = getchar();
+//            fflush(stdin);
+//            printf("\r");
+//            check = seekAndDestroy((char)buffer, players_commands[i]);
+//            if (!check)
+//              printf("Invalid input!\n");
+//          } while (!check);
+////          system ("/bin/stty cooked");
+          
+          // ------------- new 20220728 -------------
+          buffer = getInput(players_commands[i], IN_MODE);
+          // ------------- new 20220728 -------------
           
           callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
@@ -5942,16 +4158,20 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
 //          }
           // ---------------------
           
-          do
-          {
-//            system ("/bin/stty raw");
-            buffer = getchar();
-            fflush(stdin);
-            printf("\r");
-            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-          } while (!check);
-//          system ("/bin/stty cooked");
+//          do
+//          {
+////            system ("/bin/stty raw");
+//            buffer = getchar();
+//            fflush(stdin);
+//            printf("\r");
+//            if (!(check = seekAndDestroy(buffer, players_commands[i])))
+//              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//          } while (!check);
+////          system ("/bin/stty cooked");
+          
+          // ------------- new 20220728 -------------
+          buffer = getInput(players_commands[i], IN_MODE);
+          // ------------- new 20220728 -------------
           
           callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
@@ -6272,16 +4492,20 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_1 - 1])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy((char)buffer, players_commands[TURN_PLAYER_1 - 1])))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(players_commands[TURN_PLAYER_1 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -7546,16 +5770,20 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_2 - 1])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_2 - 1])))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(players_commands[TURN_PLAYER_2 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -7905,16 +6133,20 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_3 - 1])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_3 - 1])))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(players_commands[TURN_PLAYER_3 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -8458,16 +6690,20 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
           // first to call
           if (i == 0)
           {
-            do
-            {
-//              system ("/bin/stty raw");
-              buffer = getchar();
-              fflush(stdin);
-              printf("\r");
-              if (!(check = seekAndDestroy(buffer, players_commands[i])))
-                printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-            } while (!check);
-//            system ("/bin/stty cooked");
+//            do
+//            {
+////              system ("/bin/stty raw");
+//              buffer = getchar();
+//              fflush(stdin);
+//              printf("\r");
+//              if (!(check = seekAndDestroy(buffer, players_commands[i])))
+//                printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//            } while (!check);
+////            system ("/bin/stty cooked");
+            
+            // ------------- new 20220728 -------------
+            buffer = getInput(players_commands[i], IN_MODE);
+            // ------------- new 20220728 -------------
             
             callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
@@ -9797,16 +8033,20 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
             }
             // ------------- end of copy --------------------------------------------
             
-            do
-            {
-//              system ("/bin/stty raw");
-              buffer = getchar();
-              fflush(stdin);
-              printf("\r");
-              if (!(check = seekAndDestroy(buffer, players_commands[i])))
-                printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-            } while (!check);
-//            system ("/bin/stty cooked");
+//            do
+//            {
+////              system ("/bin/stty raw");
+//              buffer = getchar();
+//              fflush(stdin);
+//              printf("\r");
+//              if (!(check = seekAndDestroy(buffer, players_commands[i])))
+//                printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//            } while (!check);
+////            system ("/bin/stty cooked");
+            
+            // ------------- new 20220728 -------------
+            buffer = getInput(players_commands[i], IN_MODE);
+            // ------------- new 20220728 -------------
             
             callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
@@ -10091,16 +8331,20 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
     printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
     printf("---------------------------------------------------------------\n");
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_1)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_1)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_1, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10249,16 +8493,20 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_2)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_2)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_2, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10444,16 +8692,20 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_3)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_3)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_3, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10609,7 +8861,7 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
   
-  int player[3] = {call, answer_1, answer_2};
+//  int player[3] = {call, answer_1, answer_2};
   char* commands_players[3] = {/*commands*/ commands_1, commands_2, commands_3};
   char* commands_players_left[3] = {"qweasd", commands_2_left, commands_3_left};
   int positions[3] = {position_1, position_2, position_3};
@@ -10638,16 +8890,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
       printf("---------------------------------------------------------------\n");
       
-      do
-      {
-//        system ("/bin/stty raw");
-        buffer = getchar();
-        fflush(stdin);
-        printf("\r");
-        if (!(check = seekAndDestroy(buffer, commands_1)))
-          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (!check);
-//      system ("/bin/stty cooked");
+//      do
+//      {
+////        system ("/bin/stty raw");
+//        buffer = getchar();
+//        fflush(stdin);
+//        printf("\r");
+//        if (!(check = seekAndDestroy(buffer, commands_1)))
+//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//      } while (!check);
+////      system ("/bin/stty cooked");
+      
+      // ------------- new 20220728 -------------
+      buffer = getInput(commands_1, IN_MODE);
+      // ------------- new 20220728 -------------
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -10854,16 +9110,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       }
       // ---------------------
       
-      do
-      {
-//        system ("/bin/stty raw");
-        buffer = getchar();
-        fflush(stdin);
-        printf("\r");
-        if (!(check = seekAndDestroy(buffer, commands_2)))
-          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (!check);
-//      system ("/bin/stty cooked");
+//      do
+//      {
+////        system ("/bin/stty raw");
+//        buffer = getchar();
+//        fflush(stdin);
+//        printf("\r");
+//        if (!(check = seekAndDestroy(buffer, commands_2)))
+//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//      } while (!check);
+////      system ("/bin/stty cooked");
+      
+      // ------------- new 20220728 -------------
+      buffer = getInput(commands_2, IN_MODE);
+      // ------------- new 20220728 -------------
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -10936,7 +9196,6 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         {
           hands[answer_1 - 1][counter_cards].is_bock_ = FALSE;
         }
-        
       }
       
       // check position(s) of valid cards for this round
@@ -11101,16 +9360,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       }
       // ---------------------
       
-      do
-      {
-//        system ("/bin/stty raw");
-        buffer = getchar();
-        fflush(stdin);
-        printf("\r");
-        if (!(check = seekAndDestroy(buffer, commands_3)))
-          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (!check);
-//      system ("/bin/stty cooked");
+//      do
+//      {
+////        system ("/bin/stty raw");
+//        buffer = getchar();
+//        fflush(stdin);
+//        printf("\r");
+//        if (!(check = seekAndDestroy(buffer, commands_3)))
+//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//      } while (!check);
+////      system ("/bin/stty cooked");
+      
+      // ------------- new 20220728 -------------
+      buffer = getInput(commands_3, IN_MODE);
+      // ------------- new 20220728 -------------
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -11219,16 +9482,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
         printf("---------------------------------------------------------------\n");
 
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_1 MINUS_ONE])))
-            printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_1 MINUS_ONE])))
+//            printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(commands_players[TURN_PLAYER_1 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -11441,16 +9708,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         }
         // -----------------------
 
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_2 MINUS_ONE])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_2 MINUS_ONE])))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(commands_players[TURN_PLAYER_2 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -11527,7 +9798,6 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           {
             hands[TURN_PLAYER_3 MINUS_ONE][counter_cards].is_bock_ = FALSE;
           }
-
         }
 
         // check position(s) of valid cards for this round
@@ -11647,16 +9917,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         }
         // ---------------------------
 
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, commands_3)))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, commands_3)))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(commands_players[TURN_PLAYER_3 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -11784,16 +10058,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
         printf("---------------------------------------------------------------\n");
         
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, /*commands_1*/ commands_players[0])))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, /*commands_1*/ commands_players[0])))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(commands_players[TURN_PLAYER_1 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -12001,16 +10279,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         }
         // ---------------------
         
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, commands_2)))
-            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, commands_2)))
+//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(commands_players[TURN_PLAYER_2 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -12250,16 +10532,20 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         }
         // ---------------------
         
-        do
-        {
-//          system ("/bin/stty raw");
-          buffer = getchar();
-          fflush(stdin);
-          printf("\r");
-          if (!(check = seekAndDestroy(buffer, commands_3)))
-            printf ("Invalid input!\n");// printf("Gibt's nicht!\n");
-        } while (!check);
-//        system ("/bin/stty cooked");
+//        do
+//        {
+////          system ("/bin/stty raw");
+//          buffer = getchar();
+//          fflush(stdin);
+//          printf("\r");
+//          if (!(check = seekAndDestroy(buffer, commands_3)))
+//            printf ("Invalid input!\n");// printf("Gibt's nicht!\n");
+//        } while (!check);
+////        system ("/bin/stty cooked");
+        
+        // ------------- new 20220728 -------------
+        buffer = getInput(commands_players[TURN_PLAYER_3 MINUS_ONE], IN_MODE);
+        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -12412,16 +10698,20 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
     printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
     printf("---------------------------------------------------------------\n");
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_1)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_1)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_1, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12574,16 +10864,20 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_2)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_2)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_2, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12734,16 +11028,20 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_3)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_3)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_3, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -12905,16 +11203,20 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
     printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
     printf("---------------------------------------------------------------\n");
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_1)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_1)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_1, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -13041,16 +11343,20 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
       }
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_2)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_2)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_2, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -13123,7 +11429,6 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
       {
         hands[answer_1 - 1][counter_cards].is_bock_ = FALSE;
       }
-      
     }
     
     // check position(s) of valid cards for this round
@@ -13173,16 +11478,20 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
       }
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (!(check = seekAndDestroy(buffer, commands_3)))
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (!check);
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (!(check = seekAndDestroy(buffer, commands_3)))
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (!check);
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(commands_3, IN_MODE);
+    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -13325,6 +11634,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     return BREAK;
   }
   
+  // the following loop may remain as it is
   do
   {
 //    system ("/bin/stty raw");
@@ -13334,7 +11644,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     if ((buffer != '1' && buffer != '2' && buffer != '0')
         || (buffer == '1' && *done_1 == TRUE)
         || (buffer == '2' && *done_2 == TRUE))
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+      printf("Invalid input!\n");
   } while (buffer != '1' && buffer != '2' && buffer != '0');
 //  system ("/bin/stty cooked");
   
@@ -13383,18 +11693,22 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
         break;
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-          && buffer != 's' && buffer != 'd')
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-             && buffer != 's' && buffer != 'd');
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
+//          && buffer != 's' && buffer != 'd')
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
+//             && buffer != 's' && buffer != 'd');
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(COMMANDS_CARDS, PRIOR);
+    // ------------- new 20220728 -------------
     
     // log onto black box
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -13481,18 +11795,22 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
         break;
     }
     
-    do
-    {
-//      system ("/bin/stty raw");
-      buffer = getchar();
-      fflush(stdin);
-      printf("\r");
-      if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-          && buffer != 's' && buffer != 'd')
-        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-    } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-             && buffer != 's' && buffer != 'd');
-//    system ("/bin/stty cooked");
+//    do
+//    {
+////      system ("/bin/stty raw");
+//      buffer = getchar();
+//      fflush(stdin);
+//      printf("\r");
+//      if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
+//          && buffer != 's' && buffer != 'd')
+//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//    } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
+//             && buffer != 's' && buffer != 'd');
+////    system ("/bin/stty cooked");
+    
+    // ------------- new 20220728 -------------
+    buffer = getInput(COMMANDS_CARDS, PRIOR);
+    // ------------- new 20220728 -------------
     
     // log onto black box
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -13542,7 +11860,8 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
     return GO_ON;
   }
   
-  // formal "else" will never be executed - as far as I know
+  // formal "else" will never be executed - as far as I understand
+  // maybe find a more eegant way
   else
     return GO_ON;
 }
@@ -14543,10 +12862,10 @@ void sortHands(Card** hands, char** suits)
   // access like this
   // (hands[1])[0].image_ = (hands[1])[2].image_;
   int counter_hands   = 0;
-  int counter_cards   = 0;
+//  int counter_cards   = 0;
   int counter_suits   = 0;
   int counter_values  = 0;
-  int values[QUANTITY_VALUES] = {ACE, TEN, KING, QUEEN, JACK};
+//  int values[QUANTITY_VALUES] = {ACE, TEN, KING, QUEEN, JACK};
   Card buffer_hand[HAND] = {};    // one hand
   int quantity        = 0;
   int positions[6]   = {-1, -1, -1, -1, -1, -1};    // gibt's sicher einen
@@ -15290,16 +13609,20 @@ int checkContinue(char* player, FILE* file_pointer)
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
   
-  do
-  {
-//    system ("/bin/stty raw");
-    buffer = getchar();
-    fflush(stdin);
-    printf("\r");
-    if (buffer != 'y' && buffer != 'n')
-      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  } while (buffer != 'y' && buffer != 'n');
-//  system ("/bin/stty cooked");
+//  do
+//  {
+////    system ("/bin/stty raw");
+//    buffer = getchar();
+//    fflush(stdin);
+//    printf("\r");
+//    if (buffer != 'y' && buffer != 'n')
+//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//  } while (buffer != 'y' && buffer != 'n');
+////  system ("/bin/stty cooked");
+  
+  // ------------- new 20220728 -------------
+  buffer = getInput(COMMANDS_POLAR, PRIOR);
+  // ------------- new 20220728 -------------
   
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
@@ -15316,7 +13639,7 @@ int checkContinue(char* player, FILE* file_pointer)
 
 void swapOrder(Player* players)
 {
-  Player buffer = {"Hausdepp", 555};      // maybe an unprofessional choice
+  Player buffer = {"Hausdepp", 555, FALSE};      // maybe an unprofessional choice
   int counter = 0;
   
   strcpy(buffer.name_, players[0].name_);
@@ -15854,16 +14177,20 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
     {
 //      printf("possible commands: %s\n", players_commands[counter]);
       
-      do
-      {
-//        system ("/bin/stty raw");
-        buffer = getchar();
-        fflush(stdin);
-        printf("\r");
-        if (!(check = (int)seekAndDestroy(buffer, players_commands[counter])))
-          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (!check);
-//      system ("/bin/stty cooked");
+//      do
+//      {
+////        system ("/bin/stty raw");
+//        buffer = getchar();
+//        fflush(stdin);
+//        printf("\r");
+//        if (!(check = (int)seekAndDestroy(buffer, players_commands[counter])))
+//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//      } while (!check);
+////      system ("/bin/stty cooked");
+      
+      // ------------- new 20220728 -------------
+      buffer = getInput(players_commands[counter], IN_MODE);
+      // ------------- new 20220728 -------------
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -17290,16 +15617,20 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
       
       printf("possible commands: %s\n", players_commands[counter]);
       
-      do
-      {
-//        system ("/bin/stty raw");
-        buffer = getchar();
-        fflush(stdin);
-        printf("\r");
-        if (!(check = seekAndDestroy(buffer, players_commands[counter])))
-          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-      } while (!check);
-//      system ("/bin/stty cooked");
+//      do
+//      {
+////        system ("/bin/stty raw");
+//        buffer = getchar();
+//        fflush(stdin);
+//        printf("\r");
+//        if (!(check = seekAndDestroy(buffer, players_commands[counter])))
+//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
+//      } while (!check);
+////      system ("/bin/stty cooked");
+      
+      // ------------- new 20220728 -------------
+      buffer = getInput(players_commands[counter], IN_MODE);
+      // ------------- new 20220728 -------------
       
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
@@ -17668,7 +15999,7 @@ Points distributePoints(int points_call, int points_opponents)
     }
   }
   
-  else /* caller wins (modeGame() = player 1) */
+  else /* caller wins (modeRufer() = player 1) */
   {
     if (points_opponents == 0)
     {
@@ -17759,7 +16090,7 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order)
 void sortOrderCommands(int start, char** players_commands,
                        int* current_players_order)
 {
-  int counter = 0;
+//  int counter = 0;
   char buffer_commands[7] = "\0\0\0\0\0\0\0";
   strcpy(buffer_commands, players_commands[0]);
   
@@ -17988,10 +16319,10 @@ void getTime(char* string_time)
   strftime(string_time, 20, "%Y-%m-%d %H:%M:%S", local_time);
 }
 
-unsigned int in(const char* list, char wanted)
+int in(char* list, char wanted)
 {
   unsigned long size = sizeof(list);
-  unsigned int is_valid = FALSE;
+  int is_valid = FALSE;
   int counter = 0;
   
   for (counter = 0; counter < size; counter++)
@@ -18006,19 +16337,24 @@ unsigned int in(const char* list, char wanted)
   return is_valid;
 }
 
-char getInput(const char* permitted)
+char getInput(char* permitted, unsigned int flag)
 {
   char valid_input = '\0';
-  unsigned int check = FALSE;
+  int check = FALSE;
+  
+  printf("possible input: %s\n", permitted);
   
 //  system ("/bin/stty raw");
-  
+
   do
   {
     valid_input = (char)getchar();
     fflush(stdin);
     // printf("\r");
-    check = in(permitted, valid_input);
+    if (flag == PRIOR)
+      check = in(permitted, valid_input);
+    else if (flag == IN_MODE)
+      check = seekAndDestroy((char)valid_input, permitted);
     if (!check)
       printf("Invalid input!\n");
   } while (!check);
@@ -18053,5 +16389,5 @@ void raiseCommands(char* permitted, char* invalid)
       counter_permitted++;
     }
   }
-  printf("permitted: %s\n", permitted);
+//  printf("permitted: %s\n", permitted);
 }
