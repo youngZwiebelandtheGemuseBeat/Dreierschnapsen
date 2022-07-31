@@ -103,7 +103,7 @@
 #define APPLE           2
 #define UNIX            3
 static char* signs_windows[4]  = {"HEARTS  ", "SPADES  ", "CLUBS   ",
-                                        "DIAMONDS"};
+                                  "DIAMONDS"};
 static char* signs_unix[4]     = {"♥", "♠", "♣", "♦"};
 
 //-----------------------------------------------------------------------------
@@ -740,11 +740,12 @@ void printHand(Card* deck, int number, int player, char* name)
 
 //-----------------------------------------------------------------------------
 ///
-/// This function creates a full deck by taking four of each of the "dummy
-/// deck's" cards.
+/// This function creates a full deck by taking four of each of the "dummy deck's" cards.
 ///
-/// @param  deck          full deck to be played with (52 cards)
-/// @param  dummy_deck    deck that holds one card definition of each type
+/// @param  deck                               full deck to be played with (52 cards)
+/// @param  dummy_deck                  deck that holds one card definition of each type
+/// @param  suits                             suits
+/// @param  operating_system    operating system
 //
 void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
                     int operating_system)
@@ -754,6 +755,7 @@ void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
 //  char* signs_windows[SUITS]  = {"HEARTS  ", "SPADES  ", "CLUBS   ",
 //                                 "DIAMONDS"};
 //  char* signs_unix[SUITS]  = {"♥", "♠", "♣", "♦"};
+  
   char* signs[SUITS] = {};
   
   if (operating_system == WINDOWS)
@@ -787,14 +789,12 @@ void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
   {
     if (counter < SUITS)
     {
-//      printf("counter_suits: %d\nsuit: %s\n", counter_suits, suits[counter_suits]);
       deck[counter] = ace;
       deck[counter].suit_ = suits[counter_suits];
-//      strcpy(deck[counter].suit_, suits[counter_suits]);
       deck[counter].sign_ = signs[counter_suits];
       counter++;
       counter_suits++;
-//      printf("Wert: %d, Farbe: %s\n", deck[counter].value_, deck[counter].suit_);
+      
       if (counter_suits == 4)
         counter_suits = 0;
     }
@@ -847,14 +847,7 @@ void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
 
 //-----------------------------------------------------------------------------
 ///
-/// Fisher Yates shuffle algorithm as shown as pseudo code in the assignment's
-/// description.
-///
-/// This particular function was implemented in the exact way the pseudo code
-/// is represented in the assignment's description to make sure it works on
-/// the test system just the way it is supposed to. I would like to mention
-/// this hereby just in case of being accused of plagiarism. I did not copy
-/// any code. I just followed the given pseudo code and made it work in C.
+/// Fisher Yates shuffle algorithm
 ///
 /// @param  deck            deck whose cards shall be shuffled
 /// @param  size            number of cards in deck
@@ -886,7 +879,7 @@ void FisherYates(Card* deck, int size, unsigned int random_seed)
 //-----------------------------------------------------------------------------
 ///
 /// This function represents taking the card on top of a deck and dealing it
-/// to either a player or the dealer
+/// to either a player or the Talon
 ///
 /// @param  turn      number of card being dealt
 /// @param  index     index of target's deck
@@ -1037,6 +1030,7 @@ void startGame(Card* deck, Card* deck_dealer,
 /// message.
 ///
 /// @param  error_code    value to decide which error message to print
+///
 /// @param  argument      argv[0]: the path this game is called from
 //
 void printErrorMessage(int error_code, char* argument)
@@ -1071,7 +1065,9 @@ void printErrorMessage(int error_code, char* argument)
 /// functions and how to use it myself. I would like to mention this hereby
 /// just in case of being accused of plagiarism. I did not copy any code.
 ///
-/// @param  argument    argv[1]
+/// @param  argument             argv[1]
+///
+/// @param  file_pointer    points at .log file
 ///
 /// @return seed
 //
@@ -1127,17 +1123,6 @@ unsigned int getSeed(char* argument, FILE* file_pointer)
 /// displaying card images and scores and checking who wins or loses. It does
 /// this by calling several functions in the right order and checking each
 /// possibile outcome that comes with each turn.
-///
-/// @param  deck            the whole deck to be played with
-/// @param  deck_dealer     the dealer's cards
-/// @param  turns           number of current turn
-/// @param  index_dealer    index of dealer's cards
-/// @param  state           represents whose turn it is or
-///                         if one's turn is over
-/// @param  score_dealer    sum of dealer's cards' value
-/// @param  call            representing hit or stand
-///
-/// @return no return value since this is a 'void' function
 //
 Points playGame(Card* deck, Card* deck_dealer,
                 Card* deck_player_1, Card* deck_player_2, Card* deck_player_3,
@@ -1461,6 +1446,10 @@ Points playGame(Card* deck, Card* deck_dealer,
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to call trump
+//
 int callTrump(Card auf, FILE* file_pointer, int operating_system)
 {
   int trump = 0;
@@ -1595,6 +1584,10 @@ int callTrump(Card auf, FILE* file_pointer, int operating_system)
   return (int) trump - '0';
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to call suit (in which JODLER is being played)
+//
 int callSuit(int start, FILE* file_pointer, int operating_system)
 {
   int suit = 0;
@@ -1618,21 +1611,8 @@ int callSuit(int start, FILE* file_pointer, int operating_system)
     printf("4       DIAMONDS (♦)\n");
     printf("---------------------------------------------------------------\n");
   }
-  
-//  do
-//  {
-////    system ("/bin/stty raw");     // does not work like this on windows
-//    suit = getchar();
-//    fflush(stdin);
-//    printf("\r");
-//    if (suit != '1' && suit != '2' && suit != '3' && suit != '4')
-//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//  } while (suit != '1' && suit != '2' && suit != '3' && suit != '4');
-////  system ("/bin/stty cooked");    // does not work like this on windows
-  
-  // ------------- new 20220728 -------------
+
   suit = getInput(COMMANDS_SUIT, PRIOR);
-  // ------------- new 20220728 -------------
   
   callBlackBox(file_pointer, "callSuit()");
   callBlackBox(file_pointer, (char[2]) {(char)suit, '\0'});
@@ -1643,6 +1623,10 @@ int callSuit(int start, FILE* file_pointer, int operating_system)
   return (int) suit - '0';
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to call mode
+//
 int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
 {
   int buffer_mode = mode;
@@ -1729,6 +1713,10 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
   return mode;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to raise mode
+//
 int callRaise(int mode, /*int state,*/ int start, Player* players,
               FILE* file_pointer)
 {
@@ -1766,6 +1754,10 @@ int callRaise(int mode, /*int state,*/ int start, Player* players,
   return mode;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to switch mode to be played
+//
 void switchMode(int* mode)
 {
   // "automated smack talk"
@@ -1812,6 +1804,10 @@ void switchMode(int* mode)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to contra
+//
 int fleck(int player, FILE* file_pointer)
 {
   int buffer = 0;
@@ -1820,23 +1816,8 @@ int fleck(int player, FILE* file_pointer)
   printf("y       YES\n");
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
-  
-//  do
-//  {
-////    system ("/bin/stty raw");
-//    buffer = getchar();
-//    fflush(stdin);
-//    printf("\r");
-//    if (buffer != 'y' && buffer != 'n')
-//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//  } while (buffer != 'y' && buffer != 'n');
-////  system ("/bin/stty cooked");
-  
-  // ------------- new 20220728 -------------
+
   buffer = getInput(COMMANDS_POLAR, PRIOR);
-  // ------------- new 20220728 -------------
-  
-  // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
@@ -1848,6 +1829,10 @@ int fleck(int player, FILE* file_pointer)
     return FALSE;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to re contra
+//
 int fleckBack(int player, FILE* file_pointer)
 {
   int buffer = 0;
@@ -1856,23 +1841,8 @@ int fleckBack(int player, FILE* file_pointer)
   printf("y       YES\n");
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
-  
-//  do
-//  {
-////    system ("/bin/stty raw");
-//    buffer = getchar();
-//    fflush(stdin);
-//    printf("\r");
-//    if (buffer != 'y' && buffer != 'n')
-//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//  } while (buffer != 'y' && buffer != 'n');
-////  system ("/bin/stty cooked");
-  
-  // ------------- new 20220728 -------------
+
   buffer = getInput(COMMANDS_POLAR, PRIOR);
-  // ------------- new 20220728 -------------
-  
-  // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
@@ -1887,9 +1857,12 @@ int fleckBack(int player, FILE* file_pointer)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to raise mode
+//
 int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
 {
-//  *mode = *mode CHAR_TO_INT;
   int mode_buffer = *mode;
   char permitted[6] = "\0\0\0\0\0\0";
   
@@ -1909,32 +1882,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//
-//          printf("\r");
-//          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;                     // char-to-int???
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -1954,29 +1906,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////            system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
-//              && *mode != JODLER && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != LAND && *mode != BAUERNSCHNAPSER
-//                 && *mode != JODLER && *mode != HERREN_JODLER);
-////          system ("/bin/stty cooked");
-      
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -1995,29 +1929,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+ 
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2035,27 +1951,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != JODLER && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2072,27 +1972,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("---------------------------------------------------------------\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2128,31 +2012,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");  // not perfect
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2176,31 +2040,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != SCHNAPSER
-//              && *mode != LAND && *mode != BAUERNSCHNAPSER
-//              && *mode != JODLER && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != SCHNAPSER
-//                 && *mode != LAND && *mode != BAUERNSCHNAPSER
-//                 && *mode != JODLER && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         // set bool_contra
@@ -2229,31 +2073,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != SCHNAPSER
-//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != SCHNAPSER
-//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2275,29 +2099,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2318,26 +2124,10 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2377,30 +2167,10 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
         
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2434,28 +2204,10 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
           printf("6       HERRENJODLER\n");
           printf("---------------------------------------------------------------\n");
           
-  //        do
-  //        {
-  ////          system ("/bin/stty raw");
-  //          *mode = getchar();
-  //          fflush(stdin);
-  //          *mode = *mode CHAR_TO_INT;
-  //          printf("\r");
-  //          if (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
-  //              && *mode != JODLER && *mode != HERREN_JODLER)
-  //            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  //        } while (*mode != WEITER /*&& *mode != LAND*/ && *mode != BAUERNSCHNAPSER
-  //                 && *mode != JODLER && *mode != HERREN_JODLER);
-  ////        system ("/bin/stty cooked");
-          
-          // ------------- new 20220728 -------------
           *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
           
           // reset permitted
           strcpy(permitted, "\0\0\0\0\0\0");
-          // ------------- new 20220728 -------------
-          
-          // log onto black box
           callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
           
           if (*mode == WEITER)
@@ -2486,30 +2238,10 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
           printf("6       HERRENJODLER\n");
           printf("---------------------------------------------------------------\n");
           
-  //        do
-  //        {
-  ////          system ("/bin/stty raw");
-  //          *mode = getchar();
-  //          fflush(stdin);
-  //          *mode = *mode CHAR_TO_INT;
-  //          printf("\r");
-  //          if (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-  //              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-  //              && *mode != HERREN_JODLER)
-  //            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-  //        } while (*mode != WEITER && *mode != SCHNAPSER && *mode != LAND
-  //                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-  //                 && *mode != HERREN_JODLER);
-  ////        system ("/bin/stty cooked");
-          
-          // ------------- new 20220728 -------------
           *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
           
           // reset permitted
           strcpy(permitted, "\0\0\0\0\0\0");
-          // ------------- new 20220728 -------------
-          
-          // log onto black box
           callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
           
           if (*mode == WEITER)
@@ -2541,31 +2273,9 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != SCHNAPSER
-//              && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != SCHNAPSER
-//                 && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
-        
-        // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2595,30 +2305,9 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("5       JODLER\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//              && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != BAUERNSCHNAPSER && *mode != JODLER
-//                 && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
-        
-        
-        // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2646,27 +2335,11 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
         printf("---------------------------------------------------------------\n");
         printf("6       HERRENJODLER\n");
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          *mode = getchar();
-//          fflush(stdin);
-//          *mode = *mode CHAR_TO_INT;
-//          printf("\r");
-//          if (*mode != WEITER && *mode != HERREN_JODLER)
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (*mode != WEITER && *mode != HERREN_JODLER);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         *mode = getInput(permitted, PRIOR) CHAR_TO_INT;
         
         // reset permitted
         strcpy(permitted, "\0\0\0\0\0\0");
-        // ------------- new 20220728 -------------
-        
-        // log onto black box
         callBlackBox(file_pointer, (char[2]) {(char)(*mode), '\0'});
         
         if (*mode == WEITER)
@@ -2698,11 +2371,13 @@ int raiseMode(int* mode, int start, int* bool_contra, FILE* file_pointer)
   return start;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to determine beginning player
+//
 int determineBeginner(int value_1, int value_2, int value_3, int* mode,
                       Player* players, int* order)
 {
-//  if ((value_2 == value_1 && value_1 < value_3)
-//      || (value_1 < value_2 && value_2 < value_3))
   if (value_3 >= value_1 && value_3 >= value_2 && value_3 != RUFER)
   {
     printf("Player %d (%s) starts!\n", order[2] ADD_ONE, players[order[2]].name_);
@@ -2717,14 +2392,6 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
     *mode = value_1;
     return /*TURN_PLAYER_1*/ order[0] ADD_ONE;
   }
-  
-//  else if (value_1 == value_2 && value_1 == value_3 && value_1 == BAUERNSCHNAPSER)
-//  else if ()
-//  {
-//    printf("Player 3 (%s) starts!\n", players[order[2]].name_);
-//    *mode = value_1;
-//    return TURN_PLAYER_3;
-//  }
   
   else if (value_1 == value_2 && value_1 == value_3 && value_1 == RUFER)
   {
@@ -2741,6 +2408,10 @@ int determineBeginner(int value_1, int value_2, int value_3, int* mode,
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to handle priority
+//
 int priority(int start, int* mode, char* player, FILE* file_pointer)
 {
   int buffer = 0;
@@ -2749,28 +2420,12 @@ int priority(int start, int* mode, char* player, FILE* file_pointer)
   printf("y       YES\n");
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
-  
-//  do
-//  {
-////    system ("/bin/stty raw");
-//    buffer = getchar();
-//    fflush(stdin);
-//    printf("\r");
-//    if (buffer != 'y' && buffer != 'n')
-//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//  } while (buffer != 'y' && buffer != 'n');
-////  system ("/bin/stty cooked");
-  
-  // ------------- new 20220728 -------------
+
   buffer = getInput(COMMANDS_POLAR, PRIOR) CHAR_TO_INT;
-  // ------------- new 20220728 -------------
-  
-  // log onto black box
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
   {
-//    printf("Ah! Des hab I selber!\n");
     printf("Player 1 (%s) takes precedence!\n", player);
     return TURN_PLAYER_1;
   }
@@ -2779,6 +2434,10 @@ int priority(int start, int* mode, char* player, FILE* file_pointer)
     return start;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// SCHNAPSER / KONTRASCHNAPSER
+//
 Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
                      FILE* file_pointer)
 {
@@ -2787,7 +2446,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
   // 4 rounds
   // win with 66
   
-  // TODO: check "call" und "start"
+  // TODO: check "call" and "start"
   //       can't we abandone call?
   
   int counter_turns = 0;
@@ -8394,6 +8053,10 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
   } // end of else (= KontraSchnapser)
 }
 
+//-----------------------------------------------------------------------------
+///
+/// LAND
+//
 Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
                 FILE* file_pointer)
 {
@@ -8930,16 +8593,17 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
     }
   } // end for()
   
-//  if (start == buffer_start)
-//  {
-    printf("test: land won!\n");
-    points_and_caller.points_ = 9;
-    points_and_caller.winner_ = buffer_start;
-    points_and_caller.caller_ = buffer_start;
-    return points_and_caller;
-//  }
+  printf("test: land won!\n");
+  points_and_caller.points_ = 9;
+  points_and_caller.winner_ = buffer_start;
+  points_and_caller.caller_ = buffer_start;
+  return points_and_caller;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// BAUERNSCHNAPSER
+//
 Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trump,
                          Player* players, FILE* file_pointer)
 {
@@ -10741,6 +10405,10 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// JODLER
+//
 Points modeJodler(Card** hands, int start, char* suit, Player* players,
                   FILE* file_pointer)
 {
@@ -11246,8 +10914,10 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
 
 // ----------------------------------------------------------------------------
 ///
-/// might not even need STUCHZWANG, since at the end there will only be one card left for each player
+/// HERRENJODLER
 ///
+/// @note:  might not even need STUCHZWANG, since at the end there will only be one card left for
+///        each player
 //
 Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
                         FILE* file_pointer)
@@ -11261,7 +10931,6 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
   int counter_trump = 0;
   int buffer_start = 0;
   buffer_start = start;
-//  char buffer = 0;
   int buffer = 0;
   
   char commands[7] = "qweasd";
@@ -11271,8 +10940,6 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
   char commands_2_left[7] = "qweasd";
   char commands_3_left[7] = "qweasd";
   strcpy(commands_1, commands);
-//  strcpy(commands_2, commands);
-//  strcpy(commands_3, commands);
   int position_1 = 0;
   int position_2 = 0;
   int position_3 = 0;
@@ -11281,8 +10948,6 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
   int call      = TURN_PLAYER_1;
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
-  
-//  int check = FALSE;
   int bool_trump = TRUE;
   
   Points points_and_caller = {0, 0, 0};
@@ -11297,7 +10962,7 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
   
   if (counter_trump < 5)
   {
-    printf("FOLD!\n"); //printf("TOT!\n");
+    printf("FOLD!\n");
     printf("---------------------------------------------------------------\n");
     
     points_and_caller.points_ = 24;
@@ -11317,21 +10982,7 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
     printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
     printf("---------------------------------------------------------------\n");
     
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_1)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
     buffer = getInput(commands_1, IN_MODE);
-    // ------------- new 20220728 -------------
-    
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
@@ -11457,21 +11108,7 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
       }
     }
     
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_2)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
     buffer = getInput(commands_2, IN_MODE);
-    // ------------- new 20220728 -------------
-    
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
@@ -11591,22 +11228,8 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
         hands[answer_2 - 1][counter_cards].is_bock_ = TRUE;
       }
     }
-    
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_3)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
+
     buffer = getInput(commands_3, IN_MODE);
-    // ------------- new 20220728 -------------
-    
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
@@ -11695,6 +11318,10 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
   return points_and_caller;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to handle the act of buying cards from Talon
+//
 int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
         int* done_2, Player* players, int* order, FILE* file_pointer)
 {
@@ -11739,7 +11366,6 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
       printf("               |1|         |0|\n");
       printf("---------------------------------------------------------------\n");
     }
-    
   }
   
   // two replacements done
@@ -11807,24 +11433,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
         break;
     }
     
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-//          && buffer != 's' && buffer != 'd')
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-//             && buffer != 's' && buffer != 'd');
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
     buffer = getInput(COMMANDS_CARDS, PRIOR);
-    // ------------- new 20220728 -------------
-    
-    // log onto black box
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
@@ -11908,23 +11517,8 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
       default:
         break;
     }
-    
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-//          && buffer != 's' && buffer != 'd')
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (buffer != 'q' && buffer != 'w' && buffer != 'e' && buffer != 'a'
-//             && buffer != 's' && buffer != 'd');
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
+
     buffer = getInput(COMMANDS_CARDS, PRIOR);
-    // ------------- new 20220728 -------------
     
     // log onto black box
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
@@ -11940,7 +11534,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
       case 'w':
         switchCards(&(hands)[start MINUS_ONE][1], &(deck_dealer)[1]);
         printHand(hands[start MINUS_ONE], 6, start/*1*/,
-                  players[order[start MINUS_ONE]].name_);                   // better: start
+                  players[order[start MINUS_ONE]].name_);
         break;
         
       case 'e':
@@ -11975,11 +11569,15 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
   }
   
   // formal "else" will never be executed - as far as I understand
-  // maybe find a more eegant way
+  // maybe find a more elegant way - post production
   else
     return GO_ON;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Classic swap function
+//
 void switchCards(Card* a, Card* b)
 {
   Card buffer  = {"\0", 0, "\0", "\0", 0, 0};
@@ -11991,6 +11589,10 @@ void switchCards(Card* a, Card* b)
   *b  = buffer;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to determine highest card
+//
 int highest(int bool_trump, int start, Card call, Card answer_1,
             Card answer_2)
 {
@@ -12285,6 +11887,10 @@ int highest(int bool_trump, int start, Card call, Card answer_1,
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to remove a card's apperance
+//
 void playCard(Card* card)
 {
   (*card).image_  = " ";
@@ -12292,6 +11898,10 @@ void playCard(Card* card)
 //  (*card).suit_   = 0;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to entirely remove a card
+//
 void removeCard(Card* card)
 {
   (*card).value_    = 0;
@@ -12299,26 +11909,21 @@ void removeCard(Card* card)
   (*card).is_trump_  = FALSE;  // this should do it
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to find and delete a character from a string
+///
+/// @param  find      character to find
+///
+/// @param  trump    string to detect and modify
+//
 int seekAndDestroy(char find, char* list)
 {
   int spot = 0;
   int counter = 0;
-  // WorkAround ---
-  unsigned long length = strlen(list) /* - 1 */;                   // I glaub da scheißt mir
-                                                    // die Input-Funktion rein
-                                                    // und hängt da irgendwie
-                                                    // ebend den gesuchten
-                                                    // character an
-//  list[length - 1] = '\0';
-  // ---
   
-//  printf("%c", *(*list) + 1);
-//  printf("%s\n", list);
-  
-//  for (counter = 0; counter < 6; counter++)
-//  {
-//    buffer[counter] = (*list)[counter];
-//  }
+  // WorkAround:
+  unsigned long length = strlen(list) /* - 1 */;
   
   for (spot = 0; spot < length; spot++)
   {
@@ -12336,12 +11941,11 @@ int seekAndDestroy(char find, char* list)
   {
     for (counter = spot; counter < length - 1; counter++)
     {
-      (list)[counter] = (list)[counter + 1];  // vielleicht will er da irgendeinen string operator
-                                                  // und in diesem Sinne, Gute Nacht :*
+      (list)[counter] = (list)[counter + 1];
     }
+    
     list[counter] = '\0';
     
-//    printf("%s\n", list);
     return TRUE;
   }
   
@@ -12349,6 +11953,10 @@ int seekAndDestroy(char find, char* list)
     return FALSE;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to determine calling player
+//
 void getCall(int start, int* call, int* answer_1, int* answer_2)
 {
   switch (start)
@@ -12376,6 +11984,12 @@ void getCall(int start, int* call, int* answer_1, int* answer_2)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Something like a dictionary: int -> string
+///
+/// @param  trump    trump
+//
 char* decodeSuit(int trump)
 {
   static char string_trump[10] = "\0";    // not too keen on this method
@@ -12409,28 +12023,14 @@ char* decodeSuit(int trump)
   return string_trump;
 }
 
-//void countPoints(int bool_trump, int start, Card call, Card answer_1,
-//                 Card answer_2, int* points_call, int* points_opponents)
-//// TODO: der Trumpf rufende Spieler bleibtn "points_call", sowie opponents
-////       sich ihre Punkte teilen
-//{
-//  int buffer_start = 0;
+//-----------------------------------------------------------------------------
+///
+/// Function to set trump
+///
+/// @param  deck      all cards
+///
+/// @param  trump    trump
 //
-//  // save start
-//  // to remember whether calling player makes points or the opponents
-//  buffer_start = start;
-//
-//  if (buffer_start == highest(bool_trump, start, call, answer_1, answer_2))
-//  {
-//    *points_call = call.value_ + answer_1.value_ + answer_2.value_;
-//  }
-//
-//  else
-//  {
-//    *points_opponents = call.value_ + answer_1.value_ + answer_2.value_;
-//  }
-//}
-
 void setTrump(Card* deck, int trump)
 {
   for (int i = 0; i < HAND; i++)
@@ -12443,6 +12043,10 @@ void setTrump(Card* deck, int trump)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to determine next player to call and calculate points to be distributed
+//
 void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
                    Card answer_2, int* points_call, int* points_opponents,
                    int* points_1, int* points_2, int* points_3, int* order)
@@ -12810,7 +12414,10 @@ void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
   //                    hier ist nämlich immer der "Ausspielende" call
   //                     .. und nicht der Trumpf-rufende
 
-// determine next to call round
+//-----------------------------------------------------------------------------
+///
+/// Function to determine next to call round
+//
 Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2)
 {
@@ -12883,7 +12490,13 @@ Points next(int* initial_order, int* player, Card call, Card answer_1,
   return next;
 }
 
-// returns index of the player who has the highest card on the table
+//-----------------------------------------------------------------------------
+///
+/// This function returns index of the player who has the highest card on the table
+///
+/// @param  cards    cards on the table
+//
+//
 int highestCard(Card* cards)
 {
   int index = 0;
@@ -12906,18 +12519,20 @@ int highestCard(Card* cards)
   if (count_trump == 0 || count_trump == QUANTITY_PLAYERS)
   {
 //    printf("NONE OR ALL TRUMP ON THE TABLE\n");
-    // TODO: check highest card's index and pass
+    // check highest card's index and pass
     if (cards[0].value_ > cards[1].value_ && cards[0].value_ > cards[2].value_)
     {
       index = TURN_PLAYER_1;
     }
     
-    else if (cards[1].value_ > cards[0].value_ && cards[1].value_ > cards[2].value_)
+    else if (cards[1].value_ > cards[0].value_
+             && cards[1].value_ > cards[2].value_)
     {
       index = TURN_PLAYER_2;
     }
     
-    else /* if (cards[2].value_ > cards[0].value_ && cards[2].value_ > cards[1].value_) */
+    else /* if (cards[2].value_ > cards[0].value_
+          && cards[2].value_ > cards[1].value_) */
     {
       index = TURN_PLAYER_3;
     }
@@ -12973,19 +12588,19 @@ int highestCard(Card* cards)
   return index;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to sort hands
+///
+/// @param  hands    list of players
+///
+/// @param  suits    suits
+//
 void sortHands(Card** hands, char** suits)
 {
-//  printf("first in hands[0]: %s\n", hands[0]->image_);
-//  printf("first in hands[1]: %s\n", hands[1]->image_);
-//  printf("first in hands[2]: %s\n", hands[2]->image_);
-  
-  // access like this
-  // (hands[1])[0].image_ = (hands[1])[2].image_;
   int counter_hands   = 0;
-//  int counter_cards   = 0;
   int counter_suits   = 0;
   int counter_values  = 0;
-//  int values[QUANTITY_VALUES] = {ACE, TEN, KING, QUEEN, JACK};
   Card buffer_hand[HAND] = {};    // one hand
   int quantity        = 0;
   int positions[6]   = {-1, -1, -1, -1, -1, -1};    // gibt's sicher einen
@@ -13001,34 +12616,11 @@ void sortHands(Card** hands, char** suits)
     // loop suits
     while (counter_suits < QUANTITY_SUITS)
     {
-//      // order: hearts, spades, clubs, diamonds
-//      printf("suit: %s\n", suits[counter_suits]);
-//
-//      // find position(s)
-//      for (counter_cards = 0; counter_cards < HAND; counter_cards++)
-//      {
-//        if (buffer_hand[counter_cards].suit_ == suits[counter_suits])
-//        {
-//          quantity++;
-//          positions[counter_cards] = counter_cards;
-//          printf("%d\n", counter_cards + 1);
-//        }
-//      }
-      // loop values
-//      while (counter_values < QUANTITY_VALUES)  // better while (counter_suits < QUANTITY_SUITS)
-//      while (counter_suits < QUANTITY_SUITS)
-//      {
-        // check order
-        sort(positions, hands[counter_hands], quantity, &position_hand,
-             buffer_hand, suits[counter_suits]);
-        
-        counter_values++;
-        counter_suits++;
+      sort(positions, hands[counter_hands], quantity, &position_hand,
+           buffer_hand, suits[counter_suits]);
       
-//      }
-      
-//      counter_values  = 0;
-//      counter_suits   = 0;
+      counter_values++;
+      counter_suits++;
     }
     
     counter_values  = 0;
@@ -13037,9 +12629,7 @@ void sortHands(Card** hands, char** suits)
     
     // write buffer (= sorted hand) onto hand
     
-//    hands[counter_hands] = buffer_hand;         // geht (wohl) nicht
-    
-    // now applay the order to all three hands
+    // now apply the order to all three hands
     // could be outsources as a separate function
     // falls amol geil bist
     for (int i = 0; i < 6; i++)
@@ -13056,6 +12646,10 @@ void sortHands(Card** hands, char** suits)
   } // end for (hands)
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to sort cards
+//
 void sort(int* positions, Card* hand, int quantity, int* position_hand,
           Card* buffer, char* suit)
 {
@@ -13066,9 +12660,6 @@ void sort(int* positions, Card* hand, int quantity, int* position_hand,
     
     if (hand[counter].value_ == ACE && hand[counter].suit_ == suit)
     {
-      // place
-//      buffer[*position_hand] = hand[counter];   // das geht glaub'halt wirklich nicht
-      
       buffer[*position_hand].image_ = hand[counter].image_;
       buffer[*position_hand].value_ = hand[counter].value_;
       buffer[*position_hand].suit_ = hand[counter].suit_;
@@ -13085,9 +12676,6 @@ void sort(int* positions, Card* hand, int quantity, int* position_hand,
     
     if (hand[counter].value_ == TEN && hand[counter].suit_ == suit)
     {
-      // place
-//      buffer[*position_hand] = hand[counter];
-      
       buffer[*position_hand].image_ = hand[counter].image_;
       buffer[*position_hand].value_ = hand[counter].value_;
       buffer[*position_hand].suit_ = hand[counter].suit_;
@@ -13104,9 +12692,6 @@ void sort(int* positions, Card* hand, int quantity, int* position_hand,
     
     if (hand[counter].value_ == KING && hand[counter].suit_ == suit)
     {
-      // place
-//      buffer[*position_hand] = hand[counter];
-      
       buffer[*position_hand].image_ = hand[counter].image_;
       buffer[*position_hand].value_ = hand[counter].value_;
       buffer[*position_hand].suit_ = hand[counter].suit_;
@@ -13123,9 +12708,6 @@ void sort(int* positions, Card* hand, int quantity, int* position_hand,
     
     if (hand[counter].value_ == QUEEN && hand[counter].suit_ == suit)
     {
-      // place
-//      buffer[*position_hand] = hand[counter];
-      
       buffer[*position_hand].image_ = hand[counter].image_;
       buffer[*position_hand].value_ = hand[counter].value_;
       buffer[*position_hand].suit_ = hand[counter].suit_;
@@ -13142,9 +12724,6 @@ void sort(int* positions, Card* hand, int quantity, int* position_hand,
     
     if (hand[counter].value_ == JACK && hand[counter].suit_ == suit)
     {
-      // place
-//      buffer[*position_hand] = hand[counter];
-      
       buffer[*position_hand].image_ = hand[counter].image_;
       buffer[*position_hand].value_ = hand[counter].value_;
       buffer[*position_hand].suit_ = hand[counter].suit_;
@@ -13157,12 +12736,21 @@ void sort(int* positions, Card* hand, int quantity, int* position_hand,
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to highlight pairs
+///
+/// @param  hand               hand
+///
+/// @param  player           player to call pair
+///
+/// @param  positions    positions of pairs in hands
+//
 int highlight(Card* hand, int player, int* positions)   // why player?
                                                         // maybe I had an idea
                                                         // of only checking
                                                         // player[i == 0]
 {
-//  int positions[3]    = {0};    // position of Queen
   int counter         = 0;
   int counter_pairs   = 0;
   
@@ -13365,6 +12953,12 @@ int highlight(Card* hand, int player, int* positions)   // why player?
   return counter_pairs;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to reset pairs' positions in players' hands
+///
+/// @param  position    positions of players' pairs
+//
 int resetPairs(int* position)
 {
   int counter = 0;
@@ -13377,13 +12971,14 @@ int resetPairs(int* position)
   return 0;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to handle pairs of king and queen
+//
 int pairHandler(Pair* handle_pairs, int position, int points_to_add,
                  int* counter, int* points_caller, int* points_opponents,
                  Card* hand, int is_caller)
 {
-//  handle_pairs[i].points_ = points_to_add;
-//  handle_pairs[i].position_played_ = position;
-  
   // QUEEN played and KING has not been played or
   // KING played and QUEEN has not been played or
   if ((hand[position].value_ == 3 && hand[position MINUS_ONE].value_ != 0)
@@ -13398,8 +12993,8 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       if (*points_caller + points_to_add >= 66)
       {
         *points_caller += points_to_add;
-        printf("It is enough to show.\n"); //printf("Brauch I nit ausspielen!\n");
-        *counter = ENOUGH;    // nenn'ma's a'foch 5
+        printf("It is enough to show.\n");
+        *counter = ENOUGH;
       }
     }
     
@@ -13408,8 +13003,8 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
       if (*points_opponents + points_to_add >= 66)
       {
         *points_opponents += points_to_add;
-        printf("No need to go on.\n"); //printf("Brauch'ma nit ausspielen!\n");
-        *counter = ENOUGH;    // nenn'ma's a'foch 5
+        printf("No need to go on.\n");
+        *counter = ENOUGH;
       }
     }
     
@@ -13423,10 +13018,18 @@ int pairHandler(Pair* handle_pairs, int position, int points_to_add,
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to test various situations
+///
+/// @param  deck               all cards
+///
+/// @param  test_case    cases to test
+///
+/// @param  trump             trump to set
+//
 void testingCheat(Card* deck, int test_case, int trump)
 {
-//  "♥", "♠", "♣", "♦"
-  
   switch (test_case)
   {
   // case: three pairs
@@ -13708,6 +13311,12 @@ void testingCheat(Card* deck, int test_case, int trump)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to reset passed values of pairs
+///
+/// @param  handle_pairs    potentially called pairs (20 || 40)
+//
 void resetHandlePairs(Pair* handle_pairs)
 {
   int counter = 0;
@@ -13716,10 +13325,17 @@ void resetHandlePairs(Pair* handle_pairs)
   {
     handle_pairs[counter].points_     = 0;
     handle_pairs[counter].bool_pair_  = FALSE;
-//    handle_pairs[counter].bool_trick_ = FALSE;
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to check if players want to continue after each Bummerl
+///
+/// @param  players               list of players
+///
+/// @param  file_pointer    points at .log file
+//
 int checkContinue(char* player, FILE* file_pointer)
 {
   int buffer = 0;
@@ -13728,17 +13344,6 @@ int checkContinue(char* player, FILE* file_pointer)
   printf("y       YES\n");
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
-  
-//  do
-//  {
-////    system ("/bin/stty raw");
-//    buffer = getchar();
-//    fflush(stdin);
-//    printf("\r");
-//    if (buffer != 'y' && buffer != 'n')
-//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//  } while (buffer != 'y' && buffer != 'n');
-////  system ("/bin/stty cooked");
   
   // ------------- new 20220728 -------------
   buffer = getInput(COMMANDS_POLAR, PRIOR);
@@ -13757,9 +13362,15 @@ int checkContinue(char* player, FILE* file_pointer)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to swap players
+///
+/// @param  players    list of players
+//
 void swapOrder(Player* players)
 {
-  Player buffer = {"Hausdepp", 555, FALSE};      // maybe an unprofessional choice
+  Player buffer = {"Hausdepp", 555, FALSE};  // maybe an unprofessional choice
   int counter = 0;
   
   strcpy(buffer.name_, players[0].name_);
@@ -13775,7 +13386,10 @@ void swapOrder(Player* players)
   players[counter].points_ = buffer.points_;
 }
 
-// stupid helper function but I'm tired
+//-----------------------------------------------------------------------------
+///
+/// stupid helper function but I'm tired
+//
 int decomposeQWEASD (char character)
 {
   switch (character)
@@ -13810,6 +13424,10 @@ int decomposeQWEASD (char character)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// The following three functions could be used for potential inhuman players.
+//
 //char randomCall(int instance)
 //{
 //  srand((unsigned int)clock());
@@ -13863,18 +13481,22 @@ int decomposeQWEASD (char character)
 //  }
 //}
 
+//-----------------------------------------------------------------------------
+///
+/// This function may be handy to output played cards on table
+//
 void printTable(Player players)
 {
 //  for (int i = 0; i < 3; i++)
 //    printf("[%s %s] ", players[i].sign_, deck[counter].image_);
 }
 
+//-----------------------------------------------------------------------------
 ///
-// switchRufer()
-// sets order and calls modeRufer()
-// call like this:
-//                next_and_points
-//                  = switchRufer(hands, start, decodeSuit(*trump), players, order)
+/// Function to handle the outer loop of RUFER and therefore handles all the sorting and calls modeRufer()
+/// call like this:
+///                next_and_points
+///                  = switchRufer(hands, start, decodeSuit(*trump), players, order)
 //
 Points switchRufer(Card** hands, int start, char* trump, Player* players,
                   int* order, FILE* file_pointer)
@@ -14242,8 +13864,14 @@ Points switchRufer(Card** hands, int start, char* trump, Player* players,
                             //   points_ = 1, 2 or 3 }
 }
 
-// One turn only, so it has to be called in a loop. Maybe this way I can clean
-// it up a bit and finally make it work. And yes, I did.
+//-----------------------------------------------------------------------------
+///
+/// This function handles one turn of a RUFER
+///
+/// @notes:
+/// One turn only, so it has to be called in a loop. Maybe this way I can clean
+/// it up a bit and finally make it work. And yes, I did.
+//
 Points modeRufer(Card** hands, int start, char* trump, Player* players,
                  char** players_commands, int* initial_order,
                  Pair* handle_pairs, int* points_caller, int* points_opponents,
@@ -15918,6 +15546,12 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
   return points_and_next;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to print bummerl
+///
+/// @param  players    list of players
+//
 void printBummerl(Player* players)
 {
   // all different
@@ -16082,6 +15716,14 @@ void printBummerl(Player* players)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to distribute points during game
+///
+/// @param  points_call               caller's points
+///
+/// @param  points_opponents    opponents's points
+//
 Points distributePoints(int points_call, int points_opponents)
 {
   Points points_and_caller = {0, 0, 0};
@@ -16152,12 +15794,18 @@ Points distributePoints(int points_call, int points_opponents)
   return points_and_caller;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to sort players' hands' order
+///
+/// @param  start                      first to call
+///
+/// @param  hands                      sorted order
+///
+/// @param  initial_hands    initial order of players
+//
 void sortOrderHands(int start, Card** hands, Card** initial_hands)
 {
-//  Card buffer[6] = {"", 0, "", "", 0, 0};
-//  Card buffer_initial[6] = {"", 0, "", "", 0, 0};
-//  int counter_cards = 0;
-  
   if (start == TURN_PLAYER_1)
   {
     hands[0] = initial_hands[0];
@@ -16180,11 +15828,18 @@ void sortOrderHands(int start, Card** hands, Card** initial_hands)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to sort players' order
+///
+/// @param  start                     first to call
+///
+/// @param  players                 sorted order
+///
+/// @param  initial_order    initial order of players
+//
 void sortOrderPlayers(int start, Player* players, Player* initial_order)
 {
-  // sort commands to default order
-  
-  
   if (start == TURN_PLAYER_1)
   {
      players[0] = initial_order[0];
@@ -16207,14 +15862,21 @@ void sortOrderPlayers(int start, Player* players, Player* initial_order)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to sort players' commands
+///
+/// @param  start                                        first to call
+///
+/// @param  players_commands               strings of commands
+///
+/// @param  current_players_order    current order of players
+//
 void sortOrderCommands(int start, char** players_commands,
                        int* current_players_order)
 {
-//  int counter = 0;
   char buffer_commands[7] = "\0\0\0\0\0\0\0";
   strcpy(buffer_commands, players_commands[0]);
-  
-//  printf("players\n%s\n%s\n%s\n", players_commands[0], players_commands[1], players_commands[2]);
   
   // current order to default order
   if (current_players_order[0] == TURN_PLAYER_1)
@@ -16247,16 +15909,6 @@ void sortOrderCommands(int start, char** players_commands,
     strcpy(players_commands[2], buffer_commands);
   }
   
-//  printf("players\n%s\n%s\n%s\n", players_commands[0], players_commands[1], players_commands[2]);
-  
-  // default order to next order
-//  for (counter = 0; counter < 7; counter++)
-//  {
-//    if (players_commands[0][counter] == '\0')
-//      counter++;
-//    else
-//      buffer_commands[counter] = players_commands[0][counter];
-//  }
   strcpy(buffer_commands, players_commands[0]);
   
   if (start == TURN_PLAYER_1)
@@ -16299,6 +15951,14 @@ void sortOrderCommands(int start, char** players_commands,
 //  printf("players\n%s\n%s\n%s\n", players_commands[0], players_commands[1], players_commands[2]);
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to set initial order of players
+///
+/// @param  start                      first to call
+///
+/// @param  initial_order    sorted order
+//
 void setInitialOrder(int start, int* initial_order)
 {
   if (start == TURN_PLAYER_1)
@@ -16323,12 +15983,15 @@ void setInitialOrder(int start, int* initial_order)
   }
 }
 
-// greeting, just for fun with stdIO commands
+//-----------------------------------------------------------------------------
+///
+/// Function for initial output - just for the sake of a little fun with stdIO commands
+///
+/// @param  code    1 = written and colored Welcome text and seed
+///               2 = written and colored seed
+///               3 = written seed
+///               4 = static seed only
 //
-// code:  1 = written and colored Welcome text and seed
-//        2 = written and colored seed
-//        3 = written seed
-//        4 = static seed only
 void greeting(unsigned int code)
 {
   int counter = 0;
@@ -16392,6 +16055,14 @@ void greeting(unsigned int code)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to write on .log file
+///
+/// @param  file_pointer    points at .log file
+///
+/// @param  input                    content to be written to .log file
+//
 int blackBox(FILE* file_pointer, char* input)
 {
   int error_code = SUCCESS;
@@ -16402,12 +16073,23 @@ int blackBox(FILE* file_pointer, char* input)
     error_code = ERROR;
   }
   
-  fprintf(file_pointer, "%s", input);
-  error_code = SUCCESS;
+  else
+  {
+    fprintf(file_pointer, "%s", input);
+    error_code = SUCCESS;
+  }
   
   return error_code;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// This function opening and closing the .log file
+///
+/// @param  file_pointer    points at .log file
+///
+/// @param  input                    content to be written to .log file
+//
 int callBlackBox(FILE* file_pointer, char* input)
 {
   int error_code = SUCCESS;
@@ -16429,6 +16111,12 @@ int callBlackBox(FILE* file_pointer, char* input)
   return error_code;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// This function handles input during game
+///
+/// @param  string_time    current time as string
+//
 void getTime(char* string_time)
 {
   struct tm *local_time;
@@ -16439,6 +16127,14 @@ void getTime(char* string_time)
   strftime(string_time, 20, "%Y-%m-%d %H:%M:%S", local_time);
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to find a character in a string
+///
+/// @param  list        string to be detected
+///
+/// @param  wanted    character to find
+//
 int in(char* list, char wanted)
 {
   unsigned long size = sizeof(list);
@@ -16457,6 +16153,14 @@ int in(char* list, char wanted)
   return is_valid;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// This function handles input during game
+///
+/// @param  permitted    permitted commands
+///
+/// @param  flag               tells where in the game this function is called
+//
 char getInput(char* permitted, unsigned int flag)
 {
   char valid_input = '\0';
@@ -16487,11 +16191,20 @@ char getInput(char* permitted, unsigned int flag)
   return valid_input;
 }
 
-// only add valid members - in this case modes - from pre const list(s)
-// one possible issue could be, that loop runs only once - invalid = "251"
-// would nit work properly, but due to it just being a small helper function
-// and its usage is implemented properly in those few cases in which it is
-// used, let us just neglect that
+//-----------------------------------------------------------------------------
+///
+/// This function manipulates permitted commands
+///
+/// @param  permitted    permitted commands
+///
+/// @param  invalid         commands to throw out of permitted
+///
+/// @note:
+/// only add valid members - in this case modes - from pre const list(s)
+/// one possible issue could be, that loop runs only once - invalid = "251"
+/// would nit work properly, but due to it just being a small helper function
+/// and its usage is implemented properly in those few cases in which it is
+/// used, let us just neglect that
 //
 void raiseCommands(char* permitted, char* invalid)
 {
@@ -16515,6 +16228,10 @@ void raiseCommands(char* permitted, char* invalid)
 //  printf("permitted: %s\n", permitted);
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to check which machine we are operating on
+//
 int checkOS(void)
 {
   int operating_system = 0;
@@ -16536,6 +16253,14 @@ int checkOS(void)
   return operating_system;
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to set players' names
+///
+/// @param  operating_system    code of operating system
+///
+/// @param  string_OS                   operating systom's name as string
+//
 void printOS(int operating_system, char* string_OS)
 {
   switch (operating_system)
@@ -16560,6 +16285,14 @@ void printOS(int operating_system, char* string_OS)
   }
 }
 
+//-----------------------------------------------------------------------------
+///
+/// Function to set players' names
+///
+/// @param  names                                  source
+///
+/// @params  name_1, name_2, name_3   names from command line
+//
 void setNames(char names[][10], /* char command_line[][10] */
               char* name_1, char* name_2, char* name_3)
 {
