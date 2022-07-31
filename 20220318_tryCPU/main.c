@@ -174,7 +174,6 @@ typedef struct _Pair_
 
 //-----------------------------------------------------------------------------
 /// definition of the 'data type' Player
-///
 //
 typedef struct _Player_
 {
@@ -185,7 +184,6 @@ typedef struct _Player_
 
 //-----------------------------------------------------------------------------
 /// definition of the 'data type' Points
-///
 //
 typedef struct _Points_
 {
@@ -196,7 +194,6 @@ typedef struct _Points_
 
 //-----------------------------------------------------------------------------
 /// definition of the 'data type' Commands
-///
 //
 typedef struct _Commands_
 {
@@ -8070,7 +8067,6 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
   int counter_commands = 0;
   
   char commands[7] = "qweasd";
-//  long length_commands = strlen(commands);
   char commands_1[7] = "0";
   char commands_2[7] = "0";
   char commands_3[7] = "0";
@@ -8078,8 +8074,6 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
   char commands_3_left[7] = "qweasd";
   
   strcpy(commands_1, commands);
-//  strcpy(commands_2, commands);
-//  strcpy(commands_3, commands);
   int position_1 = 0;
   int position_2 = 0;
   int position_3 = 0;
@@ -8089,7 +8083,6 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
   
-//  int check = FALSE;
   int bool_trump = FALSE;
   
   Points points_and_caller = {0, 0, 0};
@@ -8107,22 +8100,8 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
     printf("                         ^     ^     ^     ^     ^     ^  \n");
     printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
     printf("---------------------------------------------------------------\n");
-    
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_1)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
+
     buffer = getInput(commands_1, IN_MODE);
-    // ------------- new 20220728 -------------
-    
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
@@ -8269,22 +8248,8 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
       strcpy(commands_2, buffer_higher);
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
-    
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_2)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
+
     buffer = getInput(commands_2, IN_MODE);
-    // ------------- new 20220728 -------------
-    
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
     switch (buffer)
@@ -8468,21 +8433,8 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
       strcpy(commands_3, buffer_higher);
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
-    
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_3)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
+
     buffer = getInput(commands_3, IN_MODE);
-    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -8617,19 +8569,15 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   int counter_trump = 0;
   int buffer_start = 0;
   buffer_start = start;
-//  char buffer = 0;
   int buffer = 0;
   
   char commands[7] = "qweasd";
-//  long length_commands = strlen(commands);
   char commands_1[7] = "0";
   char commands_2[7] = "0";
   char commands_3[7] = "0";
   char commands_2_left[7] = "qweasd";
   char commands_3_left[7] = "qweasd";
   strcpy(commands_1, commands);
-//  strcpy(commands_2, commands);
-//  strcpy(commands_3, commands);
   int position_1 = 0;
   int position_2 = 0;
   int position_3 = 0;
@@ -8639,7 +8587,6 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
   
-//  int player[3] = {call, answer_1, answer_2};
   char* commands_players[3] = {/*commands*/ commands_1, commands_2, commands_3};
   char* commands_players_left[3] = {"qweasd", commands_2_left, commands_3_left};
   int positions[3] = {position_1, position_2, position_3};
@@ -8667,22 +8614,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
       printf("                         ^     ^     ^     ^     ^     ^  \n");
       printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
       printf("---------------------------------------------------------------\n");
-      
-//      do
-//      {
-////        system ("/bin/stty raw");
-//        buffer = getchar();
-//        fflush(stdin);
-//        printf("\r");
-//        if (!(check = seekAndDestroy(buffer, commands_1)))
-//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//      } while (!check);
-////      system ("/bin/stty cooked");
-      
-      // ------------- new 20220728 -------------
+
       buffer = getInput(commands_1, IN_MODE);
-      // ------------- new 20220728 -------------
-      
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
@@ -8886,23 +8819,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         strcpy(commands_2, buffer_higher);
         strcpy(buffer_higher, "\0\0\0\0\0\0");
       }
-      // ---------------------
-      
-//      do
-//      {
-////        system ("/bin/stty raw");
-//        buffer = getchar();
-//        fflush(stdin);
-//        printf("\r");
-//        if (!(check = seekAndDestroy(buffer, commands_2)))
-//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//      } while (!check);
-////      system ("/bin/stty cooked");
-      
-      // ------------- new 20220728 -------------
+
       buffer = getInput(commands_2, IN_MODE);
-      // ------------- new 20220728 -------------
-      
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
@@ -9136,23 +9054,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         strcpy(commands_3, buffer_higher);
         strcpy(buffer_higher, "\0\0\0\0\0\0");
       }
-      // ---------------------
       
-//      do
-//      {
-////        system ("/bin/stty raw");
-//        buffer = getchar();
-//        fflush(stdin);
-//        printf("\r");
-//        if (!(check = seekAndDestroy(buffer, commands_3)))
-//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//      } while (!check);
-////      system ("/bin/stty cooked");
-      
-      // ------------- new 20220728 -------------
       buffer = getInput(commands_3, IN_MODE);
-      // ------------- new 20220728 -------------
-      
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
@@ -9260,20 +9163,7 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
         printf("---------------------------------------------------------------\n");
 
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_1 MINUS_ONE])))
-//            printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         buffer = getInput(commands_players[TURN_PLAYER_1 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -9484,22 +9374,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           strcpy(commands_2, buffer_higher);
           strcpy(buffer_higher, "\0\0\0\0\0\0");
         }
-        // -----------------------
 
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, commands_players[TURN_PLAYER_2 MINUS_ONE])))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         buffer = getInput(commands_players[TURN_PLAYER_2 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -9693,22 +9569,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           strcpy(commands_3, buffer_higher);
           strcpy(buffer_higher, "\0\0\0\0\0\0");
         }
-        // ---------------------------
 
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, commands_3)))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         buffer = getInput(commands_players[TURN_PLAYER_3 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
 
@@ -9767,57 +9629,15 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         }
         counter_1++;
       }
-      
-      // ----------------------------------------------------------------------
-      // rest of the game after initial call
 
-      // who has played the highest card
+      start = highest(bool_trump, TURN_PLAYER_1,
+                      hands[TURN_PLAYER_1 MINUS_ONE][position_1],
+                      hands[TURN_PLAYER_2 MINUS_ONE][position_2],
+                      hands[TURN_PLAYER_3 MINUS_ONE][position_3]);
       
-      // first turn
-//      if (counter_turns == 0)
-//      {
-        start = highest(bool_trump, TURN_PLAYER_1,
-                        hands[TURN_PLAYER_1 MINUS_ONE][position_1],
-                        hands[TURN_PLAYER_2 MINUS_ONE][position_2],
-                        hands[TURN_PLAYER_3 MINUS_ONE][position_3]);
-        
-        removeCard(&hands[TURN_PLAYER_1 MINUS_ONE][position_1]);
-        removeCard(&hands[TURN_PLAYER_2 MINUS_ONE][position_2]);
-        removeCard(&hands[TURN_PLAYER_3 MINUS_ONE][position_3]);
-//      }
-      // following turns
-//      else
-//      {
-//        switch (start)
-//        {
-//          // case TURN_PLAYER_1:  equals an usual BAUERNSCHNAPSER
-//
-//          case TURN_PLAYER_2:
-//            start = highest(bool_trump, TURN_PLAYER_2,
-//                            hands[TURN_PLAYER_2 MINUS_ONE][position_2],
-//                            hands[TURN_PLAYER_3 MINUS_ONE][position_3],
-//                            hands[TURN_PLAYER_1 MINUS_ONE][position_1]);
-//
-//            removeCard(&hands[TURN_PLAYER_1 MINUS_ONE][position_1]);
-//            removeCard(&hands[TURN_PLAYER_2 MINUS_ONE][position_2]);
-//            removeCard(&hands[TURN_PLAYER_3 MINUS_ONE][position_3]);
-//            break;
-//
-//          case TURN_PLAYER_3:
-//            start = highest(bool_trump, TURN_PLAYER_3,
-//                            hands[TURN_PLAYER_3 MINUS_ONE][position_3],
-//                            hands[TURN_PLAYER_1 MINUS_ONE][position_1],
-//                            hands[TURN_PLAYER_2 MINUS_ONE][position_2]);
-//
-//            removeCard(&hands[TURN_PLAYER_1 MINUS_ONE][position_1]);
-//            removeCard(&hands[TURN_PLAYER_2 MINUS_ONE][position_2]);
-//            removeCard(&hands[TURN_PLAYER_3 MINUS_ONE][position_3]);
-//            break;
-//
-//          default:
-//            break;
-//        }
-//      }
+      removeCard(&hands[TURN_PLAYER_1 MINUS_ONE][position_1]);
+      removeCard(&hands[TURN_PLAYER_2 MINUS_ONE][position_2]);
+      removeCard(&hands[TURN_PLAYER_3 MINUS_ONE][position_3]);
       
       // following turns
       if (counter_turns == 0)
@@ -9836,21 +9656,7 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
         printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
         printf("---------------------------------------------------------------\n");
         
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, /*commands_1*/ commands_players[0])))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         buffer = getInput(commands_players[TURN_PLAYER_1 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
-        
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)
@@ -10055,23 +9861,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           strcpy(commands_2, buffer_higher);
           strcpy(buffer_higher, "\0\0\0\0\0\0");
         }
-        // ---------------------
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, commands_2)))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         buffer = getInput(commands_players[TURN_PLAYER_2 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
-        
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)
@@ -10308,22 +10099,8 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
           strcpy(commands_3, buffer_higher);
           strcpy(buffer_higher, "\0\0\0\0\0\0");
         }
-        // ---------------------
         
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, commands_3)))
-//            printf ("Invalid input!\n");// printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
         buffer = getInput(commands_players[TURN_PLAYER_3 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
         
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
@@ -10423,7 +10200,6 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
   int counter_commands = 0;
   int buffer_start = 0;
   buffer_start = start;
-//  char buffer = 0;
   int buffer = 0;
   
   char commands[7] = "qweasd";
@@ -10433,8 +10209,6 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
   char commands_2_left[7] = "qweasd";
   char commands_3_left[7] = "qweasd";
   strcpy(commands_1, commands);
-//  strcpy(commands_2, commands);
-//  strcpy(commands_3, commands);
   int position_1 = 0;
   int position_2 = 0;
   int position_3 = 0;
@@ -10480,20 +10254,7 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
     printf("                        |Q|   |W|   |E|   |A|   |S|   |D| \n");
     printf("---------------------------------------------------------------\n");
     
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_1)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
     buffer = getInput(commands_1, IN_MODE);
-    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10646,20 +10407,7 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
     
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_2)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
     buffer = getInput(commands_2, IN_MODE);
-    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
@@ -10810,20 +10558,7 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
       strcpy(buffer_higher, "\0\0\0\0\0\0");
     }
     
-//    do
-//    {
-////      system ("/bin/stty raw");
-//      buffer = getchar();
-//      fflush(stdin);
-//      printf("\r");
-//      if (!(check = seekAndDestroy(buffer, commands_3)))
-//        printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//    } while (!check);
-////    system ("/bin/stty cooked");
-    
-    // ------------- new 20220728 -------------
     buffer = getInput(commands_3, IN_MODE);
-    // ------------- new 20220728 -------------
     
     callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
     
