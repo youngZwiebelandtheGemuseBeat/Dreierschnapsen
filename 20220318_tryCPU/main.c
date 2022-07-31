@@ -327,6 +327,8 @@ int in(char* list, char wanted);
 void raiseCommands(char* permitted, char* invalid);
 int checkOS(void);
 void printOS(int operating_system, char* string_OS);
+void setNames(char names[][10], /* char command_line[][10] */
+              char* name_1, char* name_2, char* name_3);
 
 //-----------------------------------------------------------------------------
 ///
@@ -372,12 +374,26 @@ int main(int argc, char* argv[])
   void playCard(Card* card);
   int bool_fleck            = 0;
   int bool_retour           = 0;
-//  int points_A              = 0;
-//  int points_B              = 0;
-//  int points_C              = 0;
-  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
-                                      {"Hansi ", 0, FALSE},
-                                      {"Franzi", 0, FALSE}};
+  char names[3][10]         = {"\0"};
+//  char* argv_names          = {argv[2], argv[3], argv[4]};
+//  printf("%s %s %s\n", argv[2], argv[3], argv[4]);
+  
+  // get players' names - currently limited to 9 letters each
+  // Right now I do not want to allocate dynamic memory just for something
+  // moderately important as names
+  // input "deafult" as first name to use the three default names
+  // "Seppi", "Hansi" and "Lissi"
+  setNames(names, /* argv_names */ argv[2], argv[3], argv[4]);
+  
+  Player players[QUANTITY_PLAYERS] = {{"\0", 0, FALSE},
+                                      {"\0", 0, FALSE},
+                                      {"\0", 0, FALSE}};
+  strcpy(players[0].name_, names[0]);
+  strcpy(players[1].name_, names[1]);
+  strcpy(players[2].name_, names[2]);
+//  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
+//                                      {"Hansi ", 0, FALSE},
+//                                      {"Lissi", 0, FALSE}};
   Player initial_players[QUANTITY_PLAYERS] = {players[0], players[1], players[2]};
   int counter_players       = 0;
   int go_on                 = TRUE;
@@ -1067,7 +1083,7 @@ void printErrorMessage(int error_code, char* argument)
 /// functions and how to use it myself. I would like to mention this hereby
 /// just in case of being accused of plagiarism. I did not copy any code.
 ///
-/// @param  argument    argv[2]
+/// @param  argument    argv[1]
 ///
 /// @return seed
 //
@@ -16550,5 +16566,51 @@ void printOS(int operating_system, char* string_OS)
       
     default:
       break;
+  }
+}
+
+void setNames(char names[][10], /* char command_line[][10] */
+              char* name_1, char* name_2, char* name_3)
+{
+  int counter = 0;
+  char buffer[10] = "\0";
+  int length = 0;
+  
+  if (name_1 == NULL)
+  {
+    for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
+    {
+      printf("Player %d, what is your name? (limit = 9 letters, no space)\n>> ",
+             counter ADD_ONE);
+      scanf("%9s%n", buffer, &length);
+      fflush(stdin);
+      
+      // default
+      if (!strcmp(buffer, "default"))
+      {
+        strcpy(names[0], "Seppi");
+        strcpy(names[1], "Hansi");
+        strcpy(names[2], "Lissi");
+        printf("Player 1 is now logged in as (default)%s.\n", "Seppi");
+        printf("Player 2 is now logged in as (default)%s.\n", "Hansi");
+        printf("Player 3 is now logged in as (default)%s.\n", "Lissi");
+        break;
+      }
+      
+      strcpy(names[counter], buffer);
+      
+      printf("Player %d is now logged in as %s.\n", counter ADD_ONE, buffer);
+      strcpy(buffer, "\0");
+    }
+  }
+  
+  else
+  {
+    strcpy(names[0], name_1);
+    strcpy(names[1], name_2);
+    strcpy(names[2], name_3);
+    printf("Player 1 is now logged in as %s.\n", name_1);
+    printf("Player 2 is now logged in as %s.\n", name_2);
+    printf("Player 3 is now logged in as %s.\n", name_3);
   }
 }
