@@ -363,12 +363,12 @@ int main(int argc, char* argv[])
   int counter               = 0;
   int trump                 = 0;
   // die gehören eigentlich alle "sauberer"/eleganter initialisiert -----------
-  Card dummy_deck[CARD_QUANTITY]    = {{NULL}, {0}, {"", ' '}};
-  Card deck[CARD_QUANTITY * 4]      = {{NULL}, {0}, "", ' '};
-  Card deck_dealer[2]       = {{NULL}, {0}, "", ' '};
-  Card deck_player_1[HAND]  = {{NULL}, {0}, "", ' '};
-  Card deck_player_2[HAND]  = {{NULL}, {0}, "", ' '};
-  Card deck_player_3[HAND]  = {{NULL}, {0}, "", ' '};
+  Card dummy_deck[CARD_QUANTITY]    = {{"\0", 0, "\0", "\0", 0, 0}}; // {{NULL}, {0}, {"", ' '}};
+  Card deck[CARD_QUANTITY * 4]      = {{"\0", 0, "\0", "\0", 0, 0}};
+  Card deck_dealer[2]               = {{"\0", 0, "\0", "\0", 0, 0}};
+  Card deck_player_1[HAND]          = {{"\0", 0, "\0", "\0", 0, 0}};
+  Card deck_player_2[HAND]          = {{"\0", 0, "\0", "\0", 0, 0}};
+  Card deck_player_3[HAND]          = {{"\0", 0, "\0", "\0", 0, 0}};
   // --------------------------------------------------------------------------
   char* suits[SUITS]  = {"hearts", "spades", "clubs", "diamonds"};
   void playCard(Card* card);
@@ -394,12 +394,12 @@ int main(int argc, char* argv[])
 //  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
 //                                      {"Hansi ", 0, FALSE},
 //                                      {"Lissi", 0, FALSE}};
-  Player initial_players[QUANTITY_PLAYERS] = {players[0], players[1], players[2]};
+//  Player initial_players[QUANTITY_PLAYERS] = {players[0], players[1], players[2]};
   int counter_players       = 0;
   int go_on                 = TRUE;
   int check_continue[QUANTITY_PLAYERS] = {0, 0, 0};
   
-  Points points_and_caller  = {0, 0, 0, 0};
+  Points points_and_caller  = {0, 0, 0};
   int bummerl[QUANTITY_PLAYERS] = {0, 0, 0};
   int order[3] = {0, 1, 2};
   
