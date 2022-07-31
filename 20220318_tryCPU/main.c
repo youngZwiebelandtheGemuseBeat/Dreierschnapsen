@@ -11913,9 +11913,9 @@ void removeCard(Card* card)
 ///
 /// Function to find and delete a character from a string
 ///
-/// @param  find      character to find
+/// @param  find    character to find
 ///
-/// @param  trump    string to detect and modify
+/// @param  list    string to detect and modify
 //
 int seekAndDestroy(char find, char* list)
 {
@@ -13332,7 +13332,7 @@ void resetHandlePairs(Pair* handle_pairs)
 ///
 /// Function to check if players want to continue after each Bummerl
 ///
-/// @param  players               list of players
+/// @param  player                list of players
 ///
 /// @param  file_pointer    points at .log file
 //
@@ -16289,9 +16289,11 @@ void printOS(int operating_system, char* string_OS)
 ///
 /// Function to set players' names
 ///
-/// @param  names                                  source
+/// @param  names     source
 ///
-/// @params  name_1, name_2, name_3   names from command line
+/// @params  name_1   names from command line
+///         name_2
+///         name_3
 //
 void setNames(char names[][10], /* char command_line[][10] */
               char* name_1, char* name_2, char* name_3)
