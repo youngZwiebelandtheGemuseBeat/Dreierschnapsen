@@ -1601,6 +1601,11 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       {
         printf("Player 3 (%s), would you want to raise the mode?", player);
         printf("\n-----------------------\n");
+        
+        // quick and dirty fix
+        if (mode == SCHNAPSER && *start == TURN_PLAYER_2)
+          bool_contra = TRUE;
+        
         *start = raiseMode(&mode, TURN_PLAYER_3, &bool_contra, file_pointer);
         
         if (/* mode >= buffer_mode && */
