@@ -99,6 +99,12 @@
 #define COMMANDS_RAISE  "0123456"
 #define IN_MODE         1
 #define PRIOR           0
+#define WINDOWS         1
+#define APPLE           2
+#define UNIX            3
+static char* signs_windows[4]  = {"HEARTS  ", "SPADES  ", "CLUBS   ",
+                                        "DIAMONDS"};
+static char* signs_unix[4]     = {"♥", "♠", "♣", "♦"};
 
 //-----------------------------------------------------------------------------
 /// ADDITIONAL definitions of various colors and stuff for stdout
@@ -203,7 +209,8 @@ typedef struct _Commands_
 //
 void initializeDummyDeck(Card* dummy_deck);
 void printHand(Card* deck, int number, int player, char* name);
-void createFullDeck(Card* deck, Card* dummy_deck, char** suits);
+void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
+                    int operating_system);
 void FisherYates(Card* deck, int size, unsigned int random_seed);
 void dealCards(int turn, int* index, Card* source, Card* target);
 void startGame(Card* deck, Card* deck_dealer,
@@ -231,8 +238,9 @@ Points playGame(Card* deck, Card* deck_dealer,
                 int* score_player_1, int* score_player_2, int* score_player_3,
                 int* call, int* trump, char** suits, int* bool_fleck,
                 int* bool_retour, char* player_1, char* player_2, char* player_3,
-                Player* players, int* order, FILE* file_pointer);
-int callTrump(Card auf, FILE* file_pointer);
+                Player* players, int* order, FILE* file_pointer,
+                int operating_system);
+int callTrump(Card auf, FILE* file_pointer, int operating_system);
 int callMode(int mode, int state, int* start, char* player, FILE* file_pointer);
 int fleck(int player, FILE* file_pointer);
 int fleckBack(int player, FILE* file_pointer);
@@ -272,7 +280,7 @@ void playCard(Card* card);
 void getCall(int start, int* call, int* answer_1, int* answer_2);
 void removeCard(Card* card);
 char* decodeSuit(int trump);
-int callSuit(int start, FILE* file_pointer);
+int callSuit(int start, FILE* file_pointer, int operating_system);
 void setTrump(Card* deck, int trump);
 void nextAndPoints(int* start, int buffer_start, Card call, Card answer_1,
                    Card answer_2, int* points_call, int* points_opponents,
@@ -317,6 +325,8 @@ void getTime(char* string_time);
 char getInput(char* permitted, unsigned int flag);
 int in(char* list, char wanted);
 void raiseCommands(char* permitted, char* invalid);
+int checkOS(void);
+void printOS(int operating_system, char* string_OS);
 
 //-----------------------------------------------------------------------------
 ///
@@ -379,6 +389,16 @@ int main(int argc, char* argv[])
   
   char string_time[20] = "\0";
   FILE *file_pointer = NULL;
+  char string_OS[8] = "\0";
+  
+  printOS(checkOS(), string_OS);
+  if (checkOS() == WINDOWS)
+  {
+    printf("Sorry for the inconvenience, but I have not found a way to ");
+    printf("output suit symbols on windows, so either try playing this ");
+    printf("game in a unix or apple console or just enjoy reading suits as ");
+    printf("strings.\nCheers and have fun!\n\nLuca");
+  }
   
   // TODO:
   // CHECK USAGE:
@@ -397,9 +417,12 @@ int main(int argc, char* argv[])
     getTime(string_time);
     callBlackBox(file_pointer, "log: ");
     callBlackBox(file_pointer, string_time);
+    callBlackBox(file_pointer, "\n");
+    callBlackBox(file_pointer, "OS: ");
+    callBlackBox(file_pointer, string_OS);
     callBlackBox(file_pointer, "\nseed: ");
     initializeDummyDeck(dummy_deck);
-    createFullDeck(deck, dummy_deck, suits);
+    createFullDeck(deck, dummy_deck, suits, checkOS());
     
     if (error_code == SUCCESS)
     {
@@ -480,7 +503,7 @@ int main(int argc, char* argv[])
                                        &players[0].points_, &players[1].points_, &players[2].points_,
                                        &call, &trump, suits, &bool_fleck, &bool_retour,
                                        players[0].name_, players[1].name_, players[2].name_,
-                                       players, order, file_pointer);
+                                       players, order, file_pointer, checkOS());
           callBlackBox(file_pointer, "\n");
           printf("---------------------------------------------------------------\n");
           // ------------------------------------------------------------------
@@ -713,12 +736,32 @@ void printHand(Card* deck, int number, int player, char* name)
 ///
 /// @return no return value since this is a 'void' function
 //
-void createFullDeck(Card* deck, Card* dummy_deck, char** suits)
+void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
+                    int operating_system)
 {
 //  int suits   = 4;
 //  char* suits[SUITS]  = {"hearts  ", "spades  ", "clubs   ", "diamonds"};
-//  char* signs[SUITS]  = {"♥", "♠", "♣", "♦"};
-  char* signs[SUITS]  = {"HEARTS  ", "SPADES  ", "CLUBS   ", "DIAMONDS"};
+//  char* signs_windows[SUITS]  = {"HEARTS  ", "SPADES  ", "CLUBS   ",
+//                                 "DIAMONDS"};
+//  char* signs_unix[SUITS]  = {"♥", "♠", "♣", "♦"};
+  char* signs[SUITS] = {};
+  
+  if (operating_system == WINDOWS)
+  {
+    signs[0]  = signs_windows[0];
+    signs[1]  = signs_windows[1];
+    signs[2]  = signs_windows[2];
+    signs[3]  = signs_windows[3];
+  }
+  
+  else
+  {
+    signs[0]  = signs_unix[0];
+    signs[1]  = signs_unix[1];
+    signs[2]  = signs_unix[2];
+    signs[3]  = signs_unix[3];
+  }
+  
   int counter         = 0;
   int counter_suits   = 0;
   
@@ -878,7 +921,7 @@ void startGame(Card* deck, Card* deck_dealer,
   }
   
   printHand(/*deck_player_1*/hands[order[0]], 3, /*TURN_PLAYER_1*/order[0] ADD_ONE,
-            players[order[0]].name_);         // ACHTUNG HARD CODED VALUE
+            players[order[0]].name_);         // HARD CODED VALUE
   
   // 3 CARDS FOR PLAYER 2
   for (counter = 0; counter < 3; counter++)
@@ -922,7 +965,7 @@ void startGame(Card* deck, Card* deck_dealer,
   if (players[order[0]].CPU_bool_ == FALSE)
   {
     callBlackBox(file_pointer, "Trump: ");
-    *trump = callTrump(deck[ANE_AUF], file_pointer);
+    *trump = callTrump(deck[ANE_AUF], file_pointer, checkOS());
     callBlackBox(file_pointer, "\n");
   }
   
@@ -1103,7 +1146,8 @@ Points playGame(Card* deck, Card* deck_dealer,
                 int* score_player_1, int* score_player_2, int* score_player_3,
                 int* call, int* trump, char** suits, int* bool_fleck,
                 int* bool_retour, char* player_1, char* player_2, char* player_3,
-                Player* players, int* order, FILE* file_pointer)
+                Player* players, int* order, FILE* file_pointer,
+                int operating_system)
 {
   int mode          = RUFER;
   int mode_buffer_1 = RUFER;
@@ -1140,10 +1184,10 @@ Points playGame(Card* deck, Card* deck_dealer,
   // check: human or CPU
   if (players[order[0]].CPU_bool_ == FALSE)
   {
-    callBlackBox(file_pointer, "callMode(): ");
+//    callBlackBox(file_pointer, "callMode(): ");
     mode = callMode(mode, *state, &start, /*player_1*/ players[order[0]].name_,
                     file_pointer);
-    callBlackBox(file_pointer, "\n");
+//    callBlackBox(file_pointer, "\n");
   }
   
   else
@@ -1159,10 +1203,10 @@ Points playGame(Card* deck, Card* deck_dealer,
     // check: human or CPU
     if (players[order[1]].CPU_bool_ == FALSE)
     {
-      callBlackBox(file_pointer, "callMode(): ");
+//      callBlackBox(file_pointer, "callMode(): ");
       mode = callMode(mode, *state, &start, players[order[1]].name_,
                       file_pointer);
-      callBlackBox(file_pointer, "\n");
+//      callBlackBox(file_pointer, "\n");
     }
     
     else
@@ -1180,10 +1224,10 @@ Points playGame(Card* deck, Card* deck_dealer,
     // check: human or CPU
     if (players[order[2]].CPU_bool_ == FALSE)
     {
-      callBlackBox(file_pointer, "callMode(): ");
+//      callBlackBox(file_pointer, "callMode(): ");
       mode = callMode(mode, *state, &start, players[order[2]].name_,
                       file_pointer);
-      callBlackBox(file_pointer, "\n");
+//      callBlackBox(file_pointer, "\n");
     }
     else
     {
@@ -1393,7 +1437,8 @@ Points playGame(Card* deck, Card* deck_dealer,
       printf("With which suit would you like to play the JODLER, Player %d?\n",
              start);
       points_and_caller = modeJodler(hands, start,
-                                     decodeSuit(callSuit(start, file_pointer)),
+                                     decodeSuit(callSuit(start, file_pointer,
+                                                         checkOS())),
                                      players, file_pointer);
       return points_and_caller;
       break;
@@ -1415,100 +1460,163 @@ Points playGame(Card* deck, Card* deck_dealer,
   }
 }
 
-int callTrump(Card auf, FILE* file_pointer)
+int callTrump(Card auf, FILE* file_pointer, int operating_system)
 {
   int trump = 0;
-//  printf("Player 1, call trump!\n-----------------------\n");
-  printf("1       CLUBS    (♣)\n");
-  printf("2       SPADES   (♠)\n");
-  printf("3       HEARTS   (♥)\n");
-  printf("4       DIAMONDS (♦)\n");
-  printf("---------------------------------------------------------------\n");
-//  printf("0       \"Ane auf!\"\n");
-  printf("0       \"Hit me!\"\n");
-  printf("---------------------------------------------------------------\n");
   
-//  do
-//  {
-//    system ("/bin/stty raw");
-//    trump = getchar();
-//    fflush(stdin);
-//    printf("\r");
-//    if (trump != '1' && trump != '2' && trump != '3' && trump != '4'
-//        && trump != '0')
-//      printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//  } while (trump != '1' && trump != '2' && trump != '3' && trump != '4'
-//           && trump != '0');
-//  system ("/bin/stty cooked");
-  
-  // ------------- new 20220728 -------------
-  trump = getInput(COMMANDS_TRUMP, PRIOR);
-  // ------------- new 20220728 -------------
-  
-  // log onto black box
-  callBlackBox(file_pointer, (char[2]) {(char)trump, '\0'});  // fun cast
-  
-  switch (trump)
+  if (operating_system == WINDOWS)
   {
-    case '0':
-      printf("AUF: [%s %s]\n", auf.sign_, auf.image_);
-      
-      if (!strcmp(auf.suit_, "clubs"))
-      {
-        trump = '1';
-      }
-      
-      else if (!strcmp(auf.suit_, "spades"))
-      {
-        trump = '2';
-      }
-      
-      else if (!strcmp(auf.suit_, "hearts"))
-      {
-        trump = '3';
-      }
-      
-      else /* if (!strcmp(auf.suit_, "diamonds")) */
-      {
-        trump = '4';
-      }
-      
-      break;
-      
-    case '1':
-      printf("CLUBS (♣) is trump!\n");
-      break;
-      
-    case '2':
-      printf("SPADES (♠) is trump!\n");
-      break;
-      
-    case '3':
-      printf("HEARTS (♥) is trump!\n");
-      break;
-      
-    case '4':
-      printf("DIAMONDS (♦) is trump!\n");
-      break;
-      
-    default:
-      break;
+  //  printf("Player 1, call trump!\n-----------------------\n");
+    printf("1       CLUBS\n");
+    printf("2       SPADES\n");
+    printf("3       HEARTS\n");
+    printf("4       DIAMONDS\n");
+    printf("---------------------------------------------------------------\n");
+  //  printf("0       \"Ane auf!\"\n");
+    printf("0       \"Hit me!\"\n");
+    printf("---------------------------------------------------------------\n");
+    
+    switch (trump)
+    {
+      case '0':
+        printf("AUF: [%s %s]\n", auf.sign_, auf.image_);
+        
+        if (!strcmp(auf.suit_, "clubs"))
+        {
+          trump = '1';
+        }
+        
+        else if (!strcmp(auf.suit_, "spades"))
+        {
+          trump = '2';
+        }
+        
+        else if (!strcmp(auf.suit_, "hearts"))
+        {
+          trump = '3';
+        }
+        
+        else /* if (!strcmp(auf.suit_, "diamonds")) */
+        {
+          trump = '4';
+        }
+        
+        break;
+        
+      case '1':
+        printf("CLUBS is trump!\n");
+        break;
+        
+      case '2':
+        printf("SPADES is trump!\n");
+        break;
+        
+      case '3':
+        printf("HEARTS is trump!\n");
+        break;
+        
+      case '4':
+        printf("DIAMONDS is trump!\n");
+        break;
+        
+      default:
+        break;
+    }
   }
+  
+  else
+  {
+  //  printf("Player 1, call trump!\n-----------------------\n");
+    printf("1       CLUBS    (♣)\n");
+    printf("2       SPADES   (♠)\n");
+    printf("3       HEARTS   (♥)\n");
+    printf("4       DIAMONDS (♦)\n");
+    printf("---------------------------------------------------------------\n");
+  //  printf("0       \"Ane auf!\"\n");
+    printf("0       \"Hit me!\"\n");
+    printf("---------------------------------------------------------------\n");
+    
+    trump = getInput(COMMANDS_TRUMP, PRIOR);
+    
+    switch (trump)
+    {
+      case '0':
+        printf("AUF: [%s %s]\n", auf.sign_, auf.image_);
+        
+        if (!strcmp(auf.suit_, "clubs"))
+        {
+          trump = '1';
+        }
+        
+        else if (!strcmp(auf.suit_, "spades"))
+        {
+          trump = '2';
+        }
+        
+        else if (!strcmp(auf.suit_, "hearts"))
+        {
+          trump = '3';
+        }
+        
+        else /* if (!strcmp(auf.suit_, "diamonds")) */
+        {
+          trump = '4';
+        }
+        
+        break;
+        
+      case '1':
+        printf("CLUBS (♣) is trump!\n");
+        break;
+        
+      case '2':
+        printf("SPADES (♠) is trump!\n");
+        break;
+        
+      case '3':
+        printf("HEARTS (♥) is trump!\n");
+        break;
+        
+      case '4':
+        printf("DIAMONDS (♦) is trump!\n");
+        break;
+        
+      default:
+        break;
+    }
+  }
+
+  
+  callBlackBox(file_pointer, decodeSuit(trump CHAR_TO_INT));
   
   printf("---------------------------------------------------------------\n");
 //  printf("%d\n", (int)trump-'0');
   return (int) trump - '0';
 }
 
-int callSuit(int start, FILE* file_pointer)
+int callSuit(int start, FILE* file_pointer, int operating_system)
 {
   int suit = 0;
-  printf("Player %d, call trump!\n-----------------------\n", start);
-  printf("1       CLUBS    (♣)\n");
-  printf("2       SPADES   (♠)\n");
-  printf("3       HEARTS   (♥)\n");
-  printf("4       DIAMONDS (♦)\n");
-  printf("---------------------------------------------------------------\n");
+  
+  if (operating_system == WINDOWS)
+  {
+    printf("Player %d, call trump!\n-----------------------\n", start);
+    printf("1       CLUBS\n");
+    printf("2       SPADES\n");
+    printf("3       HEARTS\n");
+    printf("4       DIAMONDS\n");
+    printf("---------------------------------------------------------------\n");
+  }
+  
+  else
+  {
+    printf("Player %d, call trump!\n-----------------------\n", start);
+    printf("1       CLUBS    (♣)\n");
+    printf("2       SPADES   (♠)\n");
+    printf("3       HEARTS   (♥)\n");
+    printf("4       DIAMONDS (♦)\n");
+    printf("---------------------------------------------------------------\n");
+  }
   
 //  do
 //  {
@@ -16349,7 +16457,8 @@ char getInput(char* permitted, unsigned int flag)
   
   printf("possible input: %s\n", permitted);
   
-  system ("/bin/stty raw");
+  if (checkOS() == APPLE)
+    system ("/bin/stty raw");
 
   do
   {
@@ -16364,7 +16473,9 @@ char getInput(char* permitted, unsigned int flag)
       printf("Invalid input!\n");
   } while (!check);
   
-  system ("/bin/stty cooked");
+  if (checkOS() == APPLE)
+    system ("/bin/stty cooked");
+  // might not look too save, but how would OS change during input
   
   return valid_input;
 }
@@ -16395,4 +16506,49 @@ void raiseCommands(char* permitted, char* invalid)
     }
   }
 //  printf("permitted: %s\n", permitted);
+}
+
+int checkOS(void)
+{
+  int operating_system = 0;
+  
+  #ifdef _WIN32
+    operating_system = WINDOWS;
+  #endif
+  
+  #ifdef __APPLE__
+//    printf("APPLE\n");
+    operating_system = APPLE;
+  #endif
+    
+  #ifdef __unix__
+//    printf("UNIX\n");
+    operating_system = UNIX;
+  #endif
+  
+  return operating_system;
+}
+
+void printOS(int operating_system, char* string_OS)
+{
+  switch (operating_system)
+  {
+    case WINDOWS:
+//      printf("WINDOWS\n");
+      strcpy(string_OS, "WINDOWS");
+      break;
+      
+    case APPLE:
+//      printf("APPLE\n");
+      strcpy(string_OS, "APPLE");
+      break;
+      
+    case UNIX:
+//      printf("UNIX\n");
+      strcpy(string_OS, "UNIX");
+      break;
+      
+    default:
+      break;
+  }
 }
