@@ -137,7 +137,7 @@ static char* signs_unix[4]     = {"♥", "♠", "♣", "♦"};
 typedef struct _Card_
 {
   char* image_;
-  unsigned int value_;
+  int value_;
   char* suit_;
   char* sign_;
   int is_bock_;
@@ -301,9 +301,9 @@ void swapOrder(Player* players);
 int decomposeQWEASD (char character);
 void printTable(Player players);
 // CPU players
-char randomCall(int instance);
-int validCommandCPU(char to_compare, char* with);
-char checkCPU(Player to_check, int instance, char* commands);
+//char randomCall(int instance);
+//int validCommandCPU(char to_compare, char* with);
+//char checkCPU(Player to_check, int instance, char* commands);
 // new additions and fixes 20220628
 Points next(int* initial_order, int* player, Card call, Card answer_1,
           Card answer_2);
@@ -346,7 +346,7 @@ void setNames(char names[][10], /* char command_line[][10] */
 //
 int main(int argc, char* argv[])
 {
-  char* path                = NULL;
+//  char* path                = NULL;
   int error_code            = SUCCESS;
   int turns                 = 0;
   int index_dealer          = 0;
@@ -694,17 +694,15 @@ int main(int argc, char* argv[])
 /// any images stored in this deck yet.
 ///
 /// @param  dummy_deck    array that stores each type of card
-///
-/// @return no return value since this is a 'void' function
 //
 void initializeDummyDeck(Card* dummy_deck)
 {
   // define card values
-  Card ace      = {"A",  11, ""};
-  Card king     = {"K",  4, ""};
-  Card queen    = {"Q",  3, ""};
-  Card jack     = {"J",  2, ""};
-  Card ten      = {"10", 10, ""};
+  Card ace      = {"A",  11, "\0", "\0", 0, 0};
+  Card king     = {"K",  4, "\0", "\0", 0, 0};
+  Card queen    = {"Q",  3, "\0", "\0", 0, 0};
+  Card jack     = {"J",  2, "\0", "\0", 0, 0};
+  Card ten      = {"10", 10, "\0", "\0", 0, 0};
 
   // store card dummies
   dummy_deck[0] = ace;
@@ -722,8 +720,6 @@ void initializeDummyDeck(Card* dummy_deck)
 /// @param  number  number of cards to display
 /// @param  player  number of player
 /// @param  name      name of player
-///
-/// @return no return value since this is a 'void' function
 //
 void printHand(Card* deck, int number, int player, char* name)
 {
@@ -749,8 +745,6 @@ void printHand(Card* deck, int number, int player, char* name)
 ///
 /// @param  deck          full deck to be played with (52 cards)
 /// @param  dummy_deck    deck that holds one card definition of each type
-///
-/// @return no return value since this is a 'void' function
 //
 void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
                     int operating_system)
@@ -782,11 +776,11 @@ void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
   int counter_suits   = 0;
   
   // define card values
-  Card ace      = {dummy_deck[0].image_, 11};
-  Card king     = {dummy_deck[1].image_, 4};
-  Card queen    = {dummy_deck[2].image_, 3};
-  Card jack     = {dummy_deck[3].image_, 2};
-  Card ten      = {dummy_deck[4].image_, 10};
+  Card ace      = {dummy_deck[0].image_, 11, "\0", "\0", 0, 0};
+  Card king     = {dummy_deck[1].image_, 4, "\0", "\0", 0, 0};
+  Card queen    = {dummy_deck[2].image_, 3, "\0", "\0", 0, 0};
+  Card jack     = {dummy_deck[3].image_, 2, "\0", "\0", 0, 0};
+  Card ten      = {dummy_deck[4].image_, 10, "\0", "\0", 0, 0};
   
   // store dummies in deck
   while (counter < (CARD_QUANTITY * 4))
@@ -865,8 +859,6 @@ void createFullDeck(Card* deck, Card* dummy_deck, char** suits,
 /// @param  deck            deck whose cards shall be shuffled
 /// @param  size            number of cards in deck
 /// @param  random_seed     seed for pseudo randomisation
-///
-/// @return no return value since this is a 'void' function
 //
 void FisherYates(Card* deck, int size, unsigned int random_seed)
 {
@@ -900,8 +892,6 @@ void FisherYates(Card* deck, int size, unsigned int random_seed)
 /// @param  index     index of target's deck
 /// @param  source    source deck to pick the top card from
 /// @param  target    target deck to pass the picked card to
-///
-/// @return no return value since this is a 'void' function
 //
 void dealCards(int turn, int* index, Card* source, Card* target)
 {
@@ -1048,8 +1038,6 @@ void startGame(Card* deck, Card* deck_dealer,
 ///
 /// @param  error_code    value to decide which error message to print
 /// @param  argument      argv[0]: the path this game is called from
-///
-/// @return no return value since this is a 'void' function
 //
 void printErrorMessage(int error_code, char* argument)
 {
@@ -1142,14 +1130,11 @@ unsigned int getSeed(char* argument, FILE* file_pointer)
 ///
 /// @param  deck            the whole deck to be played with
 /// @param  deck_dealer     the dealer's cards
-/// @param  deck_player     the player's cards
 /// @param  turns           number of current turn
 /// @param  index_dealer    index of dealer's cards
-/// @param  index_player    index of player's cards
 /// @param  state           represents whose turn it is or
 ///                         if one's turn is over
 /// @param  score_dealer    sum of dealer's cards' value
-/// @param  score_player    sum of player's cards' value
 /// @param  call            representing hit or stand
 ///
 /// @return no return value since this is a 'void' function
@@ -2813,7 +2798,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
   int counter_hand = 0;
   int count_permit  = 0;
   int counter_command = 0;
-  int counter_commands  = 0;
+//  int counter_commands  = 0;
   char commands[7] = "qweasd";
   char commands_1[7] = "\0";
   char commands_2[7] = "\0";
@@ -2835,7 +2820,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
   int position_Q[3] = {0};
   int pairs         = 0;
   
-  int check = FALSE;
+//  int check = FALSE;
   int buffer = 0;
   int i = 0;
   int points_call = 0;
@@ -2851,8 +2836,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
   int count_suit    = 0;   // right suit
   int count_trump   = 0;   // trump
   
-  Pair handle_pairs[3] = {0, 0, 0};
-  Points points_and_caller = {0, 0};
+  Pair handle_pairs[3] = {{0, 0}};
+  Points points_and_caller = {0, 0, 0};
   
   char buffer_higher[6] = {'\0'};
   
@@ -2892,7 +2877,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
     }
   }
   
-  Turn buffer_turn[3] = {{{NULL}, {0}, "", ' '}, ' ', 0};
+//  Turn buffer_turn[3] = {{{"\0", 0, "\0", "\0", 0, 0}, '\0', 0}}; // {{{NULL}, {0}, "", ' '}, ' ', 0};
   getCall(start, &call, &answer_1, &answer_2);
   buffer_start = start;
   
@@ -8441,7 +8426,7 @@ Points modeLand(/*int bool_trump,*/ Card** hands, int start, Player* players,
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
   
-  int check = FALSE;
+//  int check = FALSE;
   int bool_trump = FALSE;
   
   Points points_and_caller = {0, 0, 0};
@@ -8995,7 +8980,7 @@ Points modeBauernschnapser(/*int bool_trump,*/ Card** hands, int start, int trum
   char* commands_players_left[3] = {"qweasd", commands_2_left, commands_3_left};
   int positions[3] = {position_1, position_2, position_3};
   
-  int check       = FALSE;
+//  int check       = FALSE;
   int bool_trump  = TRUE;
   
   int counter_commands  = 0;
@@ -10791,7 +10776,7 @@ Points modeJodler(Card** hands, int start, char* suit, Player* players,
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
   
-  int check = FALSE;
+//  int check = FALSE;
   int bool_trump = FALSE;
   
   Points points_and_caller = {0, 0, 0};
@@ -11297,7 +11282,7 @@ Points modeHerrenJodler(Card** hands, int start, char* trump, Player* players,
   int answer_1  = TURN_PLAYER_2;
   int answer_2  = TURN_PLAYER_3;
   
-  int check = FALSE;
+//  int check = FALSE;
   int bool_trump = TRUE;
   
   Points points_and_caller = {0, 0, 0};
@@ -11997,7 +11982,7 @@ int buy(int start, Card** hands, Card* deck_dealer, int* done_1,
 
 void switchCards(Card* a, Card* b)
 {
-  Card buffer  = {NULL, 0, NULL, NULL};
+  Card buffer  = {"\0", 0, "\0", "\0", 0, 0};
   
 //  printf("|%s %s| |%s %s|\n", a->sign_, a->image_, b->sign_, b->image_);
   
@@ -12393,29 +12378,35 @@ void getCall(int start, int* call, int* answer_1, int* answer_2)
 
 char* decodeSuit(int trump)
 {
+  static char string_trump[10] = "\0";    // not too keen on this method
+  
   switch (trump)
   {
     case 1:
-      return "clubs";
+      strcpy(string_trump, "clubs");
+//      return "clubs";
       break;
       
     case 2:
-      return "spades";
+      strcpy(string_trump, "spades");
+//      return "spades";
       break;
       
     case 3:
-      return "hearts";
+      strcpy(string_trump, "hearts");
+//      return "hearts";
       break;
       
     case 4:
-      return "diamonds";
+      strcpy(string_trump, "diamonds");
+//      return "diamonds";
       break;
       
     default:
       break;
   }
   
-  return ERROR_CODE_INVALID_FILES;
+  return string_trump;
 }
 
 //void countPoints(int bool_trump, int start, Card call, Card answer_1,
@@ -13819,58 +13810,58 @@ int decomposeQWEASD (char character)
   }
 }
 
-char randomCall(int instance)
-{
-  srand((unsigned int)clock());
-  
-  switch (instance)
-  {
-    case INSTANCE_CARD:
-      return COMMANDS_CARDS[rand() % INSTANCE_CARD];
-      break;
-      
-    case INSTANCE_POLAR:
-      return COMMANDS_POLAR[rand() % INSTANCE_POLAR];
-      break;
-      
-    case INSTANCE_TRUMP:
-      return COMMANDS_TRUMP[rand() % INSTANCE_TRUMP];
-      break;
-      
-    default:
-      return HUMAN;
-      break;
-  }
-}
+//char randomCall(int instance)
+//{
+//  srand((unsigned int)clock());
+//
+//  switch (instance)
+//  {
+//    case INSTANCE_CARD:
+//      return COMMANDS_CARDS[rand() % INSTANCE_CARD];
+//      break;
+//
+//    case INSTANCE_POLAR:
+//      return COMMANDS_POLAR[rand() % INSTANCE_POLAR];
+//      break;
+//
+//    case INSTANCE_TRUMP:
+//      return COMMANDS_TRUMP[rand() % INSTANCE_TRUMP];
+//      break;
+//
+//    default:
+//      return HUMAN;
+//      break;
+//  }
+//}
 
-int validCommandCPU(char to_compare, char* with)
-{
-  for (int i = 0; i < strlen(with); i++)
-  {
-    if (to_compare == with[i])
-    {
-      return to_compare;
-    }
-  }
-  return RETRY;
-}
-
-char checkCPU(Player to_check, int instance, char* commands_possible)
-{
-  int call_CPU = RETRY;
-  
-  if (to_check.CPU_bool_ == TRUE)
-  {
-    call_CPU = validCommandCPU(randomCall(instance), commands_possible);
-    
-    return call_CPU;
-  }
-  
-  else
-  {
-    return RETRY;
-  }
-}
+//int validCommandCPU(char to_compare, char* with)
+//{
+//  for (int i = 0; i < strlen(with); i++)
+//  {
+//    if (to_compare == with[i])
+//    {
+//      return to_compare;
+//    }
+//  }
+//  return RETRY;
+//}
+//
+//char checkCPU(Player to_check, int instance, char* commands_possible)
+//{
+//  int call_CPU = RETRY;
+//
+//  if (to_check.CPU_bool_ == TRUE)
+//  {
+//    call_CPU = validCommandCPU(randomCall(instance), commands_possible);
+//
+//    return call_CPU;
+//  }
+//
+//  else
+//  {
+//    return RETRY;
+//  }
+//}
 
 void printTable(Player players)
 {
@@ -14272,7 +14263,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
   int position[3]         = {0};
   int position_Q[3]       = {0};
   int pairs               = 0;
-  int check               = FALSE;
+//  int check               = FALSE;
   int buffer              = 0;
 //  int points_call         = 0;
 //  int points_opponents    = 0;
