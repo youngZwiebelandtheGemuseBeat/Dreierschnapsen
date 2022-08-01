@@ -16,12 +16,12 @@ the following default names. _"Seppi, Hansi, Lissi"_.
 
 ### Developers
 
-./ <EXECUTABLE> <SEED> <NAME_1> <NAME_2> <NAME_3>
+./ EXECUTABLE SEED NAME_1 NAME_2 NAME_3
 
 ### Players/Testers
 
 Either double click an executable (.exe/.out) or compile the game on your
-preffered mashine and get started with playing/testing. At the first time 
+preferred machine and get started with playing/testing. At the first time 
 having played/tested the game a second file called 
 DreierschnapsenBlackBox.log can be found in the same directory. 
 Please do not delete it. It contains informations about each "Bummerl" played
