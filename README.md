@@ -10,7 +10,7 @@ therefore ino drivers or installing is required.
 Except a seed to set up a pseudo random number for playing/testing the game 
 there is nothing that might have to be configured by a player.
 Lately I added the feature to change players' names. Enter "default" to use
-the following default names. "Seppi, Hansi, Lissi".
+the following default names. _"Seppi, Hansi, Lissi"_.
 
 ## Usage
 
@@ -36,12 +36,12 @@ No questions yet.
 
 ## Contributing
 
-No other than Luca Candussi himself.
+No other than __Luca Candussi__ himself.
 
 ## Maintainers
 
-Luca Candussi
+__Luca Candussi__
 
 ## License
 
-Each line of this pure C-Code was written and thought up by Luca Candussi.
+Each line of this _pure C-Code_ was written and thought up by __Luca Candussi__.
