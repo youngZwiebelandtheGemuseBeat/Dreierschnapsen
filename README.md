@@ -1,4 +1,4 @@
-### Dreierschnapsen
+# Dreierschnapsen
 
 ## Installation
 
@@ -14,9 +14,16 @@ the following default names. _"Seppi, Hansi, Lissi"_.
 
 ## Usage
 
-Double click the Beta_Dreierschnapsen_20220726_windows.exe/.out and get started 
-with playing/testing. At the first time having played/tested the game a second 
-file called DreierschnapsenBlackBox.log can be found in the same directory. 
+### Developers
+
+./ <EXECUTABLE> <SEED> <NAME_1> <NAME_2> <NAME_3>
+
+### Players/Testers
+
+Either double click an executable (.exe/.out) or compile the game on your
+preffered mashine and get started with playing/testing. At the first time 
+having played/tested the game a second file called 
+DreierschnapsenBlackBox.log can be found in the same directory. 
 Please do not delete it. It contains informations about each "Bummerl" played
 for further testing, servicing and most importantly "finishing" the backend of 
 this very game.
@@ -33,10 +40,9 @@ Please do not move the .exe, .out or the .log data from its directory.
 
 No questions yet.
 
-
 ## Contributing
 
-No other than __Luca Candussi__ himself.
+So far no other than __Luca Candussi__ himself.
 
 ## Maintainers
 
@@ -45,3 +51,7 @@ __Luca Candussi__
 ## License
 
 Each line of this _pure C-Code_ was written and thought up by __Luca Candussi__.
+
+## Contact
+
+youngzwiebelandthegemusebeat@gmail.com
