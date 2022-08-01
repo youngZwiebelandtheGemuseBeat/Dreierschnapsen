@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <limits.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 //-----------------------------------------------------------------------------
 /// definition of various precompiler directives
@@ -102,8 +102,7 @@
 #define WINDOWS         1
 #define APPLE           2
 #define UNIX            3
-static char* signs_windows[4]  = {"HEARTS  ", "SPADES  ", "CLUBS   ",
-                                  "DIAMONDS"};
+static char* signs_windows[4]  = {"h", "s", "c", "d"};
 static char* signs_unix[4]     = {"♥", "♠", "♣", "♦"};
 
 //-----------------------------------------------------------------------------
@@ -116,15 +115,17 @@ static char* signs_unix[4]     = {"♥", "♠", "♣", "♦"};
 #define ANSI_COLOR_MAGENTA "\x1b[35m"
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
-#define WELCOME   "Wellcome to " ANSI_COLOR_MAGENTA "Dreierschnapsen\n" \
+#define WELCOME_COLOR  "Welcome to " ANSI_COLOR_MAGENTA "Dreierschnapsen\n" \
                   ANSI_COLOR_RESET
-#define MAKER     "made in C by " ANSI_COLOR_MAGENTA "Luca Candussi\n\n" \
+#define MAKER_COLOR    "made in C by " ANSI_COLOR_MAGENTA "Luca Candussi\n\n" \
                   ANSI_COLOR_RESET
 #define SEED_COLOR  "For testing porpuses please type in a " ANSI_COLOR_GREEN \
                     "seed " ANSI_COLOR_RESET "and press " \
                    "ENTER to get started.\n>> "
 #define SEED_PLAIN "For testing purposes please type in a seed and press " \
                    "ENTER to get started.\n>> "
+#define MAKER_PLAIN "made in C by Luca Candussi\n\n"
+#define WELCOME_PLAIN "Welcome to Dreierschnapsen\n"
 #define STEPS_1 100000
 #define STEPS_2 10000
 
@@ -324,7 +325,7 @@ int in(char* list, char wanted);
 void raiseCommands(char* permitted, char* invalid);
 int checkOS(void);
 void printOS(int operating_system, char* string_OS);
-void setNames(char names[][10], /* char command_line[][10] */
+void setNames(int argc, char names[][10], /* char command_line[][10] */
               char* name_1, char* name_2, char* name_3);
 
 //-----------------------------------------------------------------------------
@@ -343,7 +344,6 @@ void setNames(char names[][10], /* char command_line[][10] */
 //
 int main(int argc, char* argv[])
 {
-//  char* path                = NULL;
   int error_code            = SUCCESS;
   int turns                 = 0;
   int index_dealer          = 0;
@@ -354,13 +354,9 @@ int main(int argc, char* argv[])
   int call                  = 0;
   unsigned int random_seed  = 0;
   int score_dealer          = 0;
-//  int score_player_1        = 0;
-//  int score_player_2        = 0;
-//  int score_player_3        = 0;
   int counter               = 0;
   int trump                 = 0;
-  // die gehören eigentlich alle "sauberer"/eleganter initialisiert -----------
-  Card dummy_deck[CARD_QUANTITY]    = {{"\0", 0, "\0", "\0", 0, 0}}; // {{NULL}, {0}, {"", ' '}};
+  Card dummy_deck[CARD_QUANTITY]    = {{"\0", 0, "\0", "\0", 0, 0}};
   Card deck[CARD_QUANTITY * 4]      = {{"\0", 0, "\0", "\0", 0, 0}};
   Card deck_dealer[2]               = {{"\0", 0, "\0", "\0", 0, 0}};
   Card deck_player_1[HAND]          = {{"\0", 0, "\0", "\0", 0, 0}};
@@ -372,26 +368,9 @@ int main(int argc, char* argv[])
   int bool_fleck            = 0;
   int bool_retour           = 0;
   char names[3][10]         = {"\0"};
-//  char* argv_names          = {argv[2], argv[3], argv[4]};
-//  printf("%s %s %s\n", argv[2], argv[3], argv[4]);
-  
-  // get players' names - currently limited to 9 letters each
-  // Right now I do not want to allocate dynamic memory just for something
-  // moderately important as names
-  // input "deafult" as first name to use the three default names
-  // "Seppi", "Hansi" and "Lissi"
-  setNames(names, /* argv_names */ argv[2], argv[3], argv[4]);
-  
   Player players[QUANTITY_PLAYERS] = {{"\0", 0, FALSE},
                                       {"\0", 0, FALSE},
                                       {"\0", 0, FALSE}};
-  strcpy(players[0].name_, names[0]);
-  strcpy(players[1].name_, names[1]);
-  strcpy(players[2].name_, names[2]);
-//  Player players[QUANTITY_PLAYERS] = {{"Seppi ", 0, FALSE},
-//                                      {"Hansi ", 0, FALSE},
-//                                      {"Lissi", 0, FALSE}};
-//  Player initial_players[QUANTITY_PLAYERS] = {players[0], players[1], players[2]};
   int counter_players       = 0;
   int go_on                 = TRUE;
   int check_continue[QUANTITY_PLAYERS] = {0, 0, 0};
@@ -409,17 +388,12 @@ int main(int argc, char* argv[])
   {
     printf("Sorry for the inconvenience, but I have not found a way to ");
     printf("output suit symbols on windows, so either try playing this ");
-    printf("game in a unix or apple console or just enjoy reading suits as ");
-    printf("strings.\nCheers and have fun!\n\nLuca");
+    printf("game on a unix or apple or just enjoy reading suits as ");
+    printf("their first characters.\nCheers and have fun!\n\nLuca");
   }
   
   // TODO:
   // CHECK USAGE:
-//  if (argc < 2 || argc > 3)
-//  {
-//    error_code = ERROR_CODE_WRONG_USAGE;
-//    printErrorMessage(error_code, argv[0]);
-//  }
   
   // potential program call error handling
   if(0);
@@ -446,9 +420,6 @@ int main(int argc, char* argv[])
         counter_players = 0;
         do
         {
-          // initialize deck for each round
-//          initializeDummyDeck(dummy_deck);            // dummy_deck = initialization of values
-//          createFullDeck(deck, dummy_deck, suits);
           index_player_1  = 0;
           index_player_2  = 0;
           index_player_3  = 0;
@@ -456,32 +427,21 @@ int main(int argc, char* argv[])
           turns           = 0;
           state           = 0;
           
-          // with loop iterating check who's currently who
-//          if (!(counter % 3))
-//          {
-//            printf("Player %d (%s) calls trump.\n",
-//                   order[counter_players] ADD_ONE, players[order[counter_players]].name_);
-//            printf("---------------------------------------------------------------\n");
-//          }
-//
-//          else if (!((counter MINUS_ONE) % 3))
-//          {
-//            printf("Player %d (%s) calls trump.\n",
-//                   order[counter_players] ADD_ONE, players[order[counter_players]].name_);
-//            printf("---------------------------------------------------------------\n");
-//          }
-//
-//          else
-//          {
-//            printf("Player %d (%s) calls trump.\n",
-//                   order[counter_players] ADD_ONE, players[order[counter_players]].name_);
-//            printf("---------------------------------------------------------------\n");
-//          }
-          
           // GAME
           random_seed = getSeed(argv[1], file_pointer);
           FisherYates(deck, CARD_QUANTITY * 4, random_seed);
           callBlackBox(file_pointer, "\n");
+          
+          // get players' names - currently limited to 9 letters each
+          // Right now I do not want to allocate dynamic memory just for
+          // something moderately important as names
+          // input "default" as name to use the three default names
+          // "Seppi", "Hansi" and "Lissi"
+          setNames(argc, names, /* argv_names */ argv[2], argv[3], argv[4]);
+          strcpy(players[0].name_, names[0]);
+          strcpy(players[1].name_, names[1]);
+          strcpy(players[2].name_, names[2]);
+          
           callBlackBox(file_pointer, "Players' input:\n");
           
           // okay, just leave it quick and easy for now -------------------
@@ -506,7 +466,7 @@ int main(int argc, char* argv[])
             order[2] = 2;
           }
           
-          // ------------------------------------------------------------------------
+          // --------------------------------------------------------------
           
           points_and_caller = playGame(deck, deck_dealer,
                                        deck_player_1, deck_player_2, deck_player_3,
@@ -1055,7 +1015,8 @@ void printErrorMessage(int error_code, char* argument)
 ///
 /// This function checks if there is a command line argument that will be used
 /// as seed for the pseudo randomized Fisher Yates Shuffle Algorithm. If there
-/// is not one, a fixed seed will be used. Here it is 73.
+/// is not one, a fixed seed will be used. Here it is 73. - update: with 'q' seed
+/// will be set depending on the current time.
 ///
 /// The function "strtol()" was used in tutorium and I looked it up on the
 /// online reference "cplusplus.com" as well in order to understand how it
@@ -1083,8 +1044,8 @@ unsigned int getSeed(char* argument, FILE* file_pointer)
   // fixed seed
   else
   {
-//    printf("Please enter seed:\n>> ");
-    greeting(4); // 1, 2, 3 or 4
+    greeting(4);  // 1, 2, 3, 4 or 5 though 1 through 3 have been abandoned at
+                  // at the moment
     
     do
     {
@@ -1454,10 +1415,10 @@ int callTrump(Card auf, FILE* file_pointer, int operating_system)
   if (operating_system == WINDOWS)
   {
   //  printf("Player 1, call trump!\n-----------------------\n");
-    printf("1       CLUBS\n");
-    printf("2       SPADES\n");
-    printf("3       HEARTS\n");
-    printf("4       DIAMONDS\n");
+    printf("1       CLUBS    (c)\n");
+    printf("2       SPADES   (s)\n");
+    printf("3       HEARTS   (h)\n");
+    printf("4       DIAMONDS (d)\n");
     printf("---------------------------------------------------------------\n");
   //  printf("0       \"Ane auf!\"\n");
     printf("0       \"Hit me!\"\n");
@@ -1491,22 +1452,19 @@ int callTrump(Card auf, FILE* file_pointer, int operating_system)
         break;
         
       case '1':
-        printf("CLUBS is trump!\n");
+        printf("CLUBS (c) is trump!\n");
         break;
         
       case '2':
-        printf("SPADES is trump!\n");
+        printf("SPADES (s) is trump!\n");
         break;
         
       case '3':
-        printf("HEARTS is trump!\n");
+        printf("HEARTS (h) is trump!\n");
         break;
         
       case '4':
-        printf("DIAMONDS is trump!\n");
-        break;
-        
-      default:
+        printf("DIAMONDS (d) is trump!\n");
         break;
     }
   }
@@ -1642,26 +1600,7 @@ int callMode(int mode, int state, int* start, char* player, FILE* file_pointer)
       printf("6       HERRENJODLER\n");
       printf("---------------------------------------------------------------\n");
       
-//      do
-//      {
-////        system ("/bin/stty raw");
-//        mode = getchar();
-//        fflush(stdin);
-//        mode = mode CHAR_TO_INT;
-//
-//        printf("\r");
-//        if (mode != RUFER && mode != SCHNAPSER && mode != LAND
-//            && mode != BAUERNSCHNAPSER && mode != JODLER
-//            && mode != HERREN_JODLER)
-//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//      } while (mode != RUFER && mode != SCHNAPSER && mode != LAND
-//               && mode != BAUERNSCHNAPSER && mode != JODLER
-//               && mode != HERREN_JODLER);
-////      system ("/bin/stty cooked");
-      
-      // ------------- new 20220728 -------------
       mode = getInput(COMMANDS_MODE, PRIOR) CHAR_TO_INT;                  // CHAR_TO_INT ???
-      // ------------- new 20220728 -------------
       
       // log onto black box
       callBlackBox(file_pointer, (char[2]) {(char)mode, '\0'});
@@ -2568,22 +2507,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         // first to call
         if (i == 0)
         {
-//          do
-//          {
-////            system ("/bin/stty raw");
-//            buffer = getchar();
-//            fflush(stdin);
-//            printf("\r");
-//            check = seekAndDestroy((char)buffer, players_commands[i]);
-//            if (!check)
-//              printf("Invalid input!\n");
-//          } while (!check);
-////          system ("/bin/stty cooked");
-          
-          // ------------- new 20220728 -------------
           buffer = getInput(players_commands[i], IN_MODE);
-          // ------------- new 20220728 -------------
-          
           callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
           switch (buffer)     // copied from modeGame(first to call)
@@ -3902,47 +3826,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
           }
           
           // STUCHZWANG (answer 1&2)
-//          counter_commands  = 0;
-//          counter_cards     = 0;
-//
-//          if (!hands[player[i] MINUS_ONE][0].is_bock_)
-//          {
-//            while (players_commands[i][counter_commands] != '\0')
-//            {
-//              if (hands[player[i] MINUS_ONE][counter_commands].value_ >
-//                  hands[player[0] MINUS_ONE][position[0]].value_)
-//              {
-//                buffer_higher[counter_cards] = players_commands[i][counter_cards];
-//                buffer_higher[counter_cards ADD_ONE] = '\0';
-//                counter_cards++;
-//              }
-//              counter_commands++;
-//            }
-//          }
-//
-//          if (counter_cards > 0)
-//          {
-//            strcpy(players_commands[i], "\0\0\0\0\0\0");
-//            strcpy(players_commands[i], buffer_higher);
-//            strcpy(buffer_higher, "\0\0\0\0\0\0");
-//          }
-          // ---------------------
-          
-//          do
-//          {
-////            system ("/bin/stty raw");
-//            buffer = getchar();
-//            fflush(stdin);
-//            printf("\r");
-//            if (!(check = seekAndDestroy(buffer, players_commands[i])))
-//              printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//          } while (!check);
-////          system ("/bin/stty cooked");
-          
-          // ------------- new 20220728 -------------
+
           buffer = getInput(players_commands[i], IN_MODE);
-          // ------------- new 20220728 -------------
-          
           callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
           
           switch (buffer)       // stays the same, since it is answers only
@@ -4261,22 +4146,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         } */
         
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy((char)buffer, players_commands[TURN_PLAYER_1 - 1])))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         buffer = getInput(players_commands[TURN_PLAYER_1 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
-        
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)
@@ -5539,22 +5410,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         }
         
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_2 - 1])))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         buffer = getInput(players_commands[TURN_PLAYER_2 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
-        
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)   // does not need to be changed, since it is an answer
@@ -5902,22 +5759,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
         }
         
         printf("---------------------------------------------------------------\n");
-        
-//        do
-//        {
-////          system ("/bin/stty raw");
-//          buffer = getchar();
-//          fflush(stdin);
-//          printf("\r");
-//          if (!(check = seekAndDestroy(buffer, players_commands[TURN_PLAYER_3 - 1])))
-//            printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//        } while (!check);
-////        system ("/bin/stty cooked");
-        
-        // ------------- new 20220728 -------------
+
         buffer = getInput(players_commands[TURN_PLAYER_3 MINUS_ONE], IN_MODE);
-        // ------------- new 20220728 -------------
-        
         callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
         
         switch (buffer)     // hm .. don't knwo why I check 20 or 40 here,
@@ -6460,21 +6303,7 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
           // first to call
           if (i == 0)
           {
-//            do
-//            {
-////              system ("/bin/stty raw");
-//              buffer = getchar();
-//              fflush(stdin);
-//              printf("\r");
-//              if (!(check = seekAndDestroy(buffer, players_commands[i])))
-//                printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//            } while (!check);
-////            system ("/bin/stty cooked");
-            
-            // ------------- new 20220728 -------------
             buffer = getInput(players_commands[i], IN_MODE);
-            // ------------- new 20220728 -------------
-            
             callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
             switch (buffer)
@@ -7802,22 +7631,8 @@ Points modeSchnapser(Card** hands, int start, char* trump, Player* players,
               }
             }
             // ------------- end of copy --------------------------------------------
-            
-//            do
-//            {
-////              system ("/bin/stty raw");
-//              buffer = getchar();
-//              fflush(stdin);
-//              printf("\r");
-//              if (!(check = seekAndDestroy(buffer, players_commands[i])))
-//                printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//            } while (!check);
-////            system ("/bin/stty cooked");
-            
-            // ------------- new 20220728 -------------
+
             buffer = getInput(players_commands[i], IN_MODE);
-            // ------------- new 20220728 -------------
-            
             callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
             
             switch (buffer)     // no need to be changed, since it is an answer
@@ -13080,10 +12895,7 @@ int checkContinue(char* player, FILE* file_pointer)
   printf("n       NO\n");
   printf("---------------------------------------------------------------\n");
   
-  // ------------- new 20220728 -------------
   buffer = getInput(COMMANDS_POLAR, PRIOR);
-  // ------------- new 20220728 -------------
-  
   callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
   
   if (buffer == 'y')
@@ -13658,23 +13470,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
     // caller's input - may call arbitrary
     if (counter == 0)
     {
-//      printf("possible commands: %s\n", players_commands[counter]);
-      
-//      do
-//      {
-////        system ("/bin/stty raw");
-//        buffer = getchar();
-//        fflush(stdin);
-//        printf("\r");
-//        if (!(check = (int)seekAndDestroy(buffer, players_commands[counter])))
-//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//      } while (!check);
-////      system ("/bin/stty cooked");
-      
-      // ------------- new 20220728 -------------
       buffer = getInput(players_commands[counter], IN_MODE);
-      // ------------- new 20220728 -------------
-      
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
@@ -15100,21 +14896,7 @@ Points modeRufer(Card** hands, int start, char* trump, Player* players,
       
       printf("possible commands: %s\n", players_commands[counter]);
       
-//      do
-//      {
-////        system ("/bin/stty raw");
-//        buffer = getchar();
-//        fflush(stdin);
-//        printf("\r");
-//        if (!(check = seekAndDestroy(buffer, players_commands[counter])))
-//          printf("Invalid input!\n"); //printf("Gibt's nicht!\n");
-//      } while (!check);
-////      system ("/bin/stty cooked");
-      
-      // ------------- new 20220728 -------------
       buffer = getInput(players_commands[counter], IN_MODE);
-      // ------------- new 20220728 -------------
-      
       callBlackBox(file_pointer, (char[2]) {(char)buffer, '\0'});
       
       switch (buffer)
@@ -15722,33 +15504,34 @@ void setInitialOrder(int start, int* initial_order)
 ///
 /// Function for initial output - just for the sake of a little fun with stdIO commands
 ///
-/// @param  code    1 = written and colored Welcome text and seed
-///               2 = written and colored seed
-///               3 = written seed
-///               4 = static seed only
+/// @param  code    1 = written and colored Welcome text and seed .. abandoned - is not portable
+///               2 = written and colored seed                               .. abandoned - is not portable
+///               3 = written seed                                                   .. abandoned - is not portable
+///               4 = greeting and seed
+///               5 = static seed only
 //
 void greeting(unsigned int code)
 {
-  int counter = 0;
+//  int counter = 0;
   
   switch (code)
   {
-    case 1:
-      for (counter = 0; counter < sizeof(WELCOME); counter++)
+    /* case 1:
+      for (counter = 0; counter < sizeof(WELCOME_COLOR); counter++)
       {
-        printf("%c", WELCOME[counter]);
+        printf("%c", WELCOME_COLOR[counter]);
         fflush(stdout);
         usleep(STEPS_1);
       }
       
-      for (counter = 0; counter < sizeof(MAKER); counter++)
+      for (counter = 0; counter < sizeof(MAKER_COLOR); counter++)
       {
-        printf("%c", MAKER[counter]);
+        printf("%c", MAKER_COLOR[counter]);
         fflush(stdout);
         usleep(STEPS_1);
       }
       
-      for (counter = 0; counter < sizeof(MAKER); counter++)
+      for (counter = 0; counter < sizeof(MAKER_COLOR); counter++)
       {
         printf(" \b\b");
         fflush(stdout);
@@ -15779,9 +15562,15 @@ void greeting(unsigned int code)
         fflush(stdout);
         usleep(STEPS_1);
       }
-      break;
+      break; */
       
     case 4:
+      printf(WELCOME_PLAIN);
+      printf(MAKER_PLAIN);
+      printf(SEED_PLAIN);
+      break;
+      
+    case 5:
       printf(SEED_PLAIN);
       break;
       
@@ -16030,14 +15819,14 @@ void printOS(int operating_system, char* string_OS)
 ///         name_2
 ///         name_3
 //
-void setNames(char names[][10], /* char command_line[][10] */
+void setNames(int argc, char names[][10], /* char command_line[][10] */
               char* name_1, char* name_2, char* name_3)
 {
   int counter = 0;
   char buffer[10] = "\0";
   int length = 0;
   
-  if (name_1 == NULL)
+  if (argc < 5)
   {
     for (counter = 0; counter < QUANTITY_PLAYERS; counter++)
     {
