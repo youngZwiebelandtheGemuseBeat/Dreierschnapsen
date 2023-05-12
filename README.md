@@ -16,7 +16,7 @@ the following default names. _"Seppi, Hansi, Lissi"_.
 
 ### Developers
 
-./ EXECUTABLE SEED NAME_1 NAME_2 NAME_3
+./ <EXECUTABLE> <SEED> <NAME_1> <NAME_2> <NAME_3>
 
 ### Players/Testers
 
