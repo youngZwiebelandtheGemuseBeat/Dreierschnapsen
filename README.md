@@ -35,7 +35,7 @@ Please do not move the .exe, .out or the .log data from its directory.
 * Added function headers
 * Added feature to choose players' names
 * Made it portable
-* Added open issue to GIT
+* Added open issues to GIT
 
 ## FAQ
 
