@@ -4,6 +4,17 @@
 //
 //  Created by Luca Candussi on 26.12.21.
 //
+/*
+ * Copyright (c) 2026 Luca Candussi
+ * All rights reserved.
+ *
+ * This source code is publicly available for viewing and
+ * portfolio evaluation purposes only.
+ *
+ * No permission is granted to copy, modify, redistribute,
+ * sublicense, or use this software or substantial portions
+ * thereof in another project without explicit written permission.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
